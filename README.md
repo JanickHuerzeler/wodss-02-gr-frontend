@@ -3,12 +3,12 @@
 
 ## Prerequisites (NPM)
 ``` ZSH/CMD
+cd corona-navigator
 npm install
 ```
 
 ## Start
 
 ``` ZSH/CMD
-cd corona-navigator
 npm start
 ```
