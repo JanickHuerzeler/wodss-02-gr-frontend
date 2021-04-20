@@ -13,6 +13,7 @@
     "@types/react-redux": "^7.1.16",
     "bootstrap": "^4.6.0",
     "leaflet": "^1.7.1",
+    "leaflet-routing-machine": "^3.2.12",
     "node-sass": "^5.0.0",
     "react": "^17.0.2",
     "react-bootstrap": "^1.5.2",
