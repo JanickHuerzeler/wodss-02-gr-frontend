@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-// import Routing from './RoutingMachine';
+
 export default class MapComponent extends Component {
   state = {
     lat: 57.74,
@@ -30,7 +30,7 @@ export default class MapComponent extends Component {
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
         </Marker>
-        {this.state.isMapInit  
+        {this.state.isMapInit
         // && <Routing map={this.map} />
         }
       </MapContainer>
