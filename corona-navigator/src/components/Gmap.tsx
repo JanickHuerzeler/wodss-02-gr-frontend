@@ -43,7 +43,6 @@ class GoogleMaps extends Component<{}, any> {
                     travelMode: google.maps.TravelMode.DRIVING
                 },
                 (result: any, status: any) => {
-                    let routeLine;
                     if (status === google.maps.DirectionsStatus.OK) {
                         console.log('result', result);
                         // console.log('status', status);

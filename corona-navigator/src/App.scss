@@ -13,7 +13,3 @@ $header-height: 120px;
 .App {
   height: calc(100vh - #{$header-height});
 }
-
-.leaflet-container{
-  height: calc(100vh - 60px);
-}

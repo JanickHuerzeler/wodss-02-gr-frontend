@@ -1,9 +1,7 @@
 import React from "react";
 import "./App.scss";
 import { Button, Form, FormControl, Nav, Navbar } from "react-bootstrap";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import MapComponent from "./Map";
-import GoogleMaps from "./Gmap";
+import GoogleMaps from "./components/Gmap";
 
 function App() {
   return (
