@@ -1,14 +1,25 @@
-$header-height: 100px;
+$header-height: 114px;
 
 .nav-header {
-  color: #ffffff;
   background-color: #4c5c96;
   display: flex;
+  align-items: center;
+  justify-content: center;
+
   height: $header-height;
+
+  .search-wrapper {
+    width: 50vw;
+    display: flex;
+    gap: 60px;
+  }
+
+  .search-bar {
+    width: 50%;
+  }
 }
-.nav-header .navbar-brand {
-  color: #ffffff;
-}
+
+
 
 .App {
   height: calc(100vh - #{$header-height});

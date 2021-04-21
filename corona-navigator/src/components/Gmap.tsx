@@ -1,20 +1,19 @@
 import React, { Component } from "react";
-import GoogleMapReact, {Coords, MapOptions, Maps} from "google-map-react";
+import GoogleMapReact, { Coords } from "google-map-react";
 import "./Gmap.scss";
 
 const AnyReactComponent = ({ text }:any) => <div>{text}</div>;
-declare var google: any;
 
 // RouteBoxer: https://www.cookieshq.co.uk/posts/search-places-along-a-route-with-google-maps-and-routboxer
 // Google Cloud Platform: https://console.cloud.google.com/google/maps-apis/overview?project=corona-navigator&folder=&organizationId=
 // Google Console: https://console.cloud.google.com/billing/01EBC6-BFEABA-325AE3?hl=de&project=corona-navigator
 
 interface GmapProps {
-   /* silence is golden */
+    currentLocation: Coords
 }
+
 interface GmapState {
     defaultCenter: Coords;
-    currentLocation: Coords
     defaultZoom: number;
     googleAPIkey: string;
 }
@@ -33,12 +32,16 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
             lat: 47.52422,  // Waldhütte Würenlingen
             lng: 8.26181
         },
-        currentLocation: {  // Waldhütte Würenlingen
-            lat: 47.52422,
-            lng: 8.26181
-        },
+
         defaultZoom: 12,
         googleAPIkey: "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4"
+    }
+
+    static defaultProps = {
+        currentLocation: {
+            lat: 47.52422,  // Waldhütte Würenlingen
+            lng: 8.26181
+        }
     }
 
     constructor(props: GmapProps) {
@@ -130,7 +133,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                     }}
                     defaultCenter={this.state.defaultCenter}
                     defaultZoom={this.state.defaultZoom}
-                    center={this.state.currentLocation}
+                    center={this.props.currentLocation}
                     yesIWantToUseGoogleMapApiInternals
                     options={createMapOptions}
                     onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
@@ -138,7 +141,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                     <AnyReactComponent
                         lat={47.52422}
                         lng={8.26181}
-                        text="My Marker"
+                        text="Markus Winter"
                     />
                 </GoogleMapReact>
             </div>
