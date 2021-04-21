@@ -1,5 +1,8 @@
-# wodss-02-gr-frontend
+# WODSS Gruppe 02 Frontend
 
+Frontend für den Workshop in der Vertiefung "Distributed Software Systems" (WODSS).
+
+---
 
 ## Prerequisites (NPM)
 ``` ZSH/CMD
