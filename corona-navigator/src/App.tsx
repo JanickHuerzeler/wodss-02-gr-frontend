@@ -3,6 +3,7 @@ import "./App.scss";
 import { Button, Form, FormControl, Nav, Navbar } from "react-bootstrap";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MapComponent from "./Map";
+import GoogleMaps from "./Gmap";
 
 function App() {
   return (
@@ -32,7 +33,8 @@ function App() {
           </Navbar.Collapse>
         </Navbar>
       </div>
-      <MapComponent />
+      <GoogleMaps />
+
     </div>
   );
 }

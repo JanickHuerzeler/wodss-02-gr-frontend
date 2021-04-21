@@ -1,9 +1,17 @@
+$header-height: 120px;
+
 .nav-header {
-  color: #ffffff i !important;
+  color: #ffffff;
   background-color: #4c5c96;
+  display: flex;
+  height: $header-height;
 }
 .nav-header .navbar-brand {
-  color: #ffffff !important;
+  color: #ffffff;
+}
+
+.App {
+  height: calc(100vh - #{$header-height});
 }
 
 .leaflet-container{
