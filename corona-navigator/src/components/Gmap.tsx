@@ -23,6 +23,7 @@ interface GmapState {
     map: any | null;
     maps: any | null;
     mapLoaded: boolean;
+    places: any[];
 }
 
 const createMapOptions = () => {
@@ -31,6 +32,54 @@ const createMapOptions = () => {
         styles: [{stylers: [{'saturation': -100}, {'gamma': .8}, {'lightness': 5}]}]
     };
 }
+
+// InfoWindow component
+const InfoWindow = (props: { place: any; }) => {
+    const {place} = props;
+    const infoWindowStyle = {
+        position: 'relative',
+        bottom: 150,
+        left: '-45px',
+        width: 220,
+        backgroundColor: 'white',
+        boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.3)',
+        padding: 10,
+        fontSize: 14,
+        zIndex: 100,
+    };
+
+    return (
+        // @ts-ignore
+        <div style={infoWindowStyle}>
+            <div style={{fontSize: 16}}>
+                Windisch
+            </div>
+            <div style={{fontSize: 14, color: 'green'}}>
+                Incidence: 127.5
+            </div>
+        </div>
+    );
+};
+
+// Marker component
+const Marker = ({show, place}: any) => {
+    const markerStyle = {
+        border: '2px solid white',
+        borderRadius: '50%',
+        height: 20,
+        width: 20,
+        backgroundColor: show ? 'red' : '#394d90',
+        cursor: 'pointer',
+        zIndex: 10,
+    };
+
+    return (
+        <>
+            <div style={markerStyle}/>
+            {show && <InfoWindow place={place}/>}
+        </>
+    );
+};
 
 
 class GoogleMaps extends Component<GmapProps, GmapState> {
@@ -54,7 +103,21 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         googleAPIkey: "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4",
         map: null,
         maps: null,
-        mapLoaded: false
+        mapLoaded: false,
+        places: [
+            {
+                "formatted_address": "707 E 10th St, Los Angeles, CA 90021, USA",
+                "geometry": {
+                    "location": {
+                        "lat": 47.48107,
+                        "lng": 8.21162
+                    },
+                },
+                "id": "01c75569ea2c5ee7ae29e91990ff4d872bc1ca5b",
+                "rating": 4.5,
+                "reference": "CmRbAAAAPj4xP0HMJoDhx-P7C2JZTRSxu44XKoALQqupq2WaiqDjqiqi7g1ua7imgENWEH_fXu8XS5XxAmpkYV4XcDWfbLeZFuOKbgNGIvxQhXBhL-215hJQvoHFodeO9_lCGliNEhC6QZwCTKktRp33eibHgQJyGhRZf9Z_PHxTO-dxhjCFmIY8KQUYlQ",
+            }
+        ]
     }
 
     constructor(props: GmapProps) {
@@ -66,7 +129,40 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         this.directionsService = new google.maps.DirectionsService();
         this.directionsRenderer = new google.maps.DirectionsRenderer();
         this.mapPolygons = [];
+
+
+
+        this.setState((state) => {
+            state.places.forEach((result) => {
+                result.show = false; // eslint-disable-line no-param-reassign
+            });
+            return { places: state.places };
+        });
     }
+
+    // onChildClick callback can take two arguments: key and childProps
+    onChildClickCallback = (key: any) => {
+        this.setState((state) => {
+            const index = this.state.places.findIndex((e) => e.id === key);
+            state.places[index].show = !state.places[index].show;
+            return { places: state.places };
+        });
+    };
+    onChildEnterCallback = (key: any) => {
+        this.setState((state) => {
+            const index = this.state.places.findIndex((e) => e.id === key);
+            console.log('index', index);
+            if(index >= 0) state.places[index].show = true;
+            return { places: state.places };
+        });
+    };
+    onChildLeaveCallback = (key: any, value: boolean) => {
+        this.setState((state) => {
+            const index = this.state.places.findIndex((e) => e.id === key);
+            if(index >= 0) state.places[index].show = false;
+            return {places: state.places};
+        });
+    };
 
     testApiCall() {
         // api.helloworld.helloworldList().then((dt)=>{
@@ -201,9 +297,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
 
                 // center the map to the marker
                 if (this.state.center !== pos) {
-                    this.setState({
-                        center: pos
-                    });
+                    setTimeout( () => this.setState({ center: pos }), 0 )
                 }
             }
         }
@@ -211,6 +305,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     };
 
     render() {
+        const {places, defaultCenter, defaultZoom, center} = this.state;
 
         return (
             <div className={'gmap-wrapper'}>
@@ -218,11 +313,14 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                     bootstrapURLKeys={{
                         key: this.state.googleAPIkey // Kontingent auf max 2500/Tag eingestellt
                     }}
-                    defaultCenter={this.state.defaultCenter}
-                    defaultZoom={this.state.defaultZoom}
-                    center={this.state.center}
+                    defaultCenter={defaultCenter}
+                    defaultZoom={defaultZoom}
+                    center={center}
                     yesIWantToUseGoogleMapApiInternals
                     options={createMapOptions}
+                    onChildClick={this.onChildClickCallback}
+                    onChildMouseEnter={this.onChildEnterCallback}
+                    onChildMouseLeave={this.onChildLeaveCallback}
                     onGoogleApiLoaded={({map, maps}) => {
                         this.setState({
                             map: map,
@@ -236,6 +334,16 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         lng={8.26181}
                         text="Markus Winter"
                     />
+
+                    {places.map((place) => (
+                        <Marker
+                            key={place.id}
+                            lat={place.geometry.location.lat}
+                            lng={place.geometry.location.lng}
+                            show={place.show}
+                            place={place}
+                        />
+                    ))}
                 </GoogleMapReact>
                 {this.state.mapLoaded && this.handleMap()}
             </div>
