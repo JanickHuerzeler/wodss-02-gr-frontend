@@ -130,7 +130,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                                 </div>
                                 {suggestions.length > 0 && (
                                     <div className="SearchBar__autocomplete-container">
-                                        {suggestions.map((suggestion: any) => {
+                                        {suggestions.map((suggestion: any, index: number) => {
                                             // @ts-ignore
                                             const className = classnames('SearchBar__suggestion-item', {
                                                 'SearchBar__suggestion-item--active': suggestion.active,
@@ -139,6 +139,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                                             return (
                                                 <div
                                                     {...getSuggestionItemProps(suggestion, {className})}
+                                                    key={index}
                                                 >
                                                     <strong>
                                                         {suggestion.formattedSuggestion.mainText}
