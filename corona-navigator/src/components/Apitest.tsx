@@ -1,6 +1,6 @@
-import axios from "axios";
 import "./Apitest.scss";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Helloworldtype, HelloworldtypeMunicipality } from "../api";
 
@@ -27,11 +27,11 @@ const Apitest = () => {
       .get<Helloworldtype[]>(baseApiPath + helloWorldPath, {
         headers: headers.headers,
       })
-      .then((response) => {
+      .then((response: any) => {
         setHelloWorld(response.data[0]);
         setLoading(false);
       })
-      .catch((ex) => {
+      .catch((ex: { response: { status: number; }; }) => {
         const error =
           ex.response.status === 404
             ? "Resource not found"
@@ -51,11 +51,11 @@ const Apitest = () => {
       <span>Population: {helloworld.municipality?.population}</span><br/>
       <div>
         Polygons:
-        
+
           {helloworld.polygon?.flat().map((polygon, i) => (
             <p key={i}>{polygon.toString()}</p>
           ))}
-        
+
       </div>
       {error && <p className='error'>{error}</p>}
     </div>

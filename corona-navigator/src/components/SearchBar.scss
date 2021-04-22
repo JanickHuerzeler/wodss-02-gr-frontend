@@ -75,7 +75,7 @@
 }
 
 .SearchBar__suggestion-item--active {
-    background-color: #fafafa;
+    background-color: lighten(#4c5c96, 48%);
 }
 
 .SearchBar__dropdown-footer {
@@ -95,11 +95,13 @@
 }
 
 .SearchBar__error-message {
+    display: none;
     position: absolute;
     color: red;
 }
 
 .SearchBar__geocode-result {
+    display: none;
     position: absolute;
     z-index: 1;
     margin-top: 10px;

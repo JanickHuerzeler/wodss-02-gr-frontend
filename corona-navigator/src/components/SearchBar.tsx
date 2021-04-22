@@ -1,9 +1,22 @@
 import React from 'react';
 import "./SearchBar.scss";
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { classnames } from '../helpers';
+import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
+import {classnames} from '../helpers';
 
-class SearchBar extends React.Component<{ placeholder: string }, any> {
+interface SearchBoxProps {
+    onLocationChanged: (latitude: number | null, longitude: number | null) => void;
+    placeholder: string;
+}
+
+interface SearchBoxState {
+    address: string;
+    errorMessage: string;
+    latitude: number | null;
+    longitude: number | null;
+    isGeocoding: boolean;
+}
+
+class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -25,18 +38,20 @@ class SearchBar extends React.Component<{ placeholder: string }, any> {
     };
 
     handleSelect = (selected: any) => {
-        this.setState({ isGeocoding: true, address: selected });
+        this.setState({isGeocoding: true, address: selected});
+
         geocodeByAddress(selected)
             .then((res: any) => getLatLng(res[0]))
-            .then(({ lat, lng }: any) => {
+            .then(({lat, lng}: any) => {
                 this.setState({
                     latitude: lat,
                     longitude: lng,
                     isGeocoding: false,
                 });
+                this.props.onLocationChanged(lat, lng);
             })
             .catch((error: any) => {
-                this.setState({ isGeocoding: false });
+                this.setState({isGeocoding: false});
                 console.log('error', error); // eslint-disable-line no-console
             });
     };
@@ -47,13 +62,28 @@ class SearchBar extends React.Component<{ placeholder: string }, any> {
             latitude: null,
             longitude: null,
         });
+        this.props.onLocationChanged(null, null);
     };
 
     handleError = (status: any, clearSuggestions: () => void) => {
         console.log('Error from Google Maps API', status); // eslint-disable-line no-console
-        this.setState({ errorMessage: status }, () => {
+        this.setState({errorMessage: status}, () => {
             clearSuggestions();
         });
+    };
+
+    handleBlur = () => {
+        /*
+        this.setState({
+            address: '',
+            latitude: null,
+            longitude: null,
+        });
+        this.props.onLocationChanged(null, null);*/
+
+        if(this.state.address === "") {
+            this.handleCloseClick()
+        }
     };
 
     render() {
@@ -73,8 +103,12 @@ class SearchBar extends React.Component<{ placeholder: string }, any> {
                     onSelect={this.handleSelect}
                     onError={this.handleError}
                     shouldFetchSuggestions={address.length > 1}
+                    highlightFirstSuggestion={true}
+                    searchOptions={{
+                        componentRestrictions: {country: "CH"}
+                    }}
                 >
-                    {({ getInputProps, suggestions, getSuggestionItemProps }) => {
+                    {({getInputProps, suggestions, getSuggestionItemProps}) => {
                         return (
                             <div className="SearchBar__search-bar-container">
                                 <div className="SearchBar__search-input-container">
@@ -83,6 +117,7 @@ class SearchBar extends React.Component<{ placeholder: string }, any> {
                                             placeholder: this.props.placeholder,
                                             className: 'SearchBar__search-input',
                                         })}
+                                        onBlur={this.handleBlur}
                                     />
                                     {this.state.address.length > 0 && (
                                         <button
@@ -102,9 +137,8 @@ class SearchBar extends React.Component<{ placeholder: string }, any> {
                                             });
 
                                             return (
-                                                /* eslint-disable react/jsx-key */
                                                 <div
-                                                    {...getSuggestionItemProps(suggestion, { className })}
+                                                    {...getSuggestionItemProps(suggestion, {className})}
                                                 >
                                                     <strong>
                                                         {suggestion.formattedSuggestion.mainText}
@@ -134,7 +168,7 @@ class SearchBar extends React.Component<{ placeholder: string }, any> {
                         <h3 className="SearchBar__geocode-result-header">Geocode result</h3>
                         {isGeocoding ? (
                             <div>
-                                <i className="fa fa-spinner fa-pulse fa-3x fa-fw SearchBar__spinner" />
+                                <i className="fa fa-spinner fa-pulse fa-3x fa-fw SearchBar__spinner"/>
                             </div>
                         ) : (
                             <div>
