@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import GoogleMapReact, { Coords } from "google-map-react";
 import "./Gmap.scss";
+// import { Api } from "../api/navigatorApi";
+// const api = new Api({baseUrl:'http://localhost:5001'});
 
 const AnyReactComponent = ({ text }:any) => <div>{text}</div>;
 
@@ -46,6 +48,16 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
 
     constructor(props: GmapProps) {
         super(props);
+        // this.testApiCall();
+    }
+
+
+    
+
+    testApiCall(){
+        // api.helloworld.helloworldList().then((dt)=>{
+        //     console.log(dt.data);
+        // });
     }
 
     render() {
