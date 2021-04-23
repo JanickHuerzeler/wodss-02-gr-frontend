@@ -24,6 +24,25 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 /**
  * 
  * @export
+ * @interface CoordinateDTO
+ */
+export interface CoordinateDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof CoordinateDTO
+     */
+    lat?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CoordinateDTO
+     */
+    lng?: number;
+}
+/**
+ * 
+ * @export
  * @interface Helloworldtype
  */
 export interface Helloworldtype {
@@ -71,6 +90,61 @@ export interface HelloworldtypeMunicipality {
      */
     population?: number;
 }
+/**
+ * 
+ * @export
+ * @interface MunicipalityDTO
+ */
+export interface MunicipalityDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof MunicipalityDTO
+     */
+    bfs_nr?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MunicipalityDTO
+     */
+    canton?: string;
+    /**
+     * 
+     * @type {Array<CoordinateDTO>}
+     * @memberof MunicipalityDTO
+     */
+    geo_shape?: Array<CoordinateDTO>;
+    /**
+     * 
+     * @type {number}
+     * @memberof MunicipalityDTO
+     */
+    incidence?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MunicipalityDTO
+     */
+    incidence_color?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MunicipalityDTO
+     */
+    incidence_date?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MunicipalityDTO
+     */
+    name?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof MunicipalityDTO
+     */
+    plz?: number;
+}
 
 /**
  * DefaultApi - axios parameter creator
@@ -108,6 +182,74 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Municipalities with corona and geo-information
+         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        waypointsGet: async (waypoints?: Array<CoordinateDTO>, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/waypoints/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(waypoints, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Municipalities with corona and geo-information
+         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        waypointsPost: async (waypoints?: Array<CoordinateDTO>, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/waypoints/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(waypoints, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -126,6 +268,28 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async helloworldGet(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Helloworldtype>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.helloworldGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Municipalities with corona and geo-information
+         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async waypointsGet(waypoints?: Array<CoordinateDTO>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.waypointsGet(waypoints, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Municipalities with corona and geo-information
+         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async waypointsPost(waypoints?: Array<CoordinateDTO>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.waypointsPost(waypoints, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -147,6 +311,26 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         helloworldGet(options?: any): AxiosPromise<Helloworldtype> {
             return localVarFp.helloworldGet(options).then((request) => request(axios, basePath));
         },
+        /**
+         * Municipalities with corona and geo-information
+         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        waypointsGet(waypoints?: Array<CoordinateDTO>, options?: any): AxiosPromise<Array<MunicipalityDTO>> {
+            return localVarFp.waypointsGet(waypoints, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Municipalities with corona and geo-information
+         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        waypointsPost(waypoints?: Array<CoordinateDTO>, options?: any): AxiosPromise<Array<MunicipalityDTO>> {
+            return localVarFp.waypointsPost(waypoints, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -166,6 +350,30 @@ export class DefaultApi extends BaseAPI {
      */
     public helloworldGet(options?: any) {
         return DefaultApiFp(this.configuration).helloworldGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Municipalities with corona and geo-information
+     * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+     * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public waypointsGet(waypoints?: Array<CoordinateDTO>, options?: any) {
+        return DefaultApiFp(this.configuration).waypointsGet(waypoints, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Municipalities with corona and geo-information
+     * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+     * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public waypointsPost(waypoints?: Array<CoordinateDTO>, options?: any) {
+        return DefaultApiFp(this.configuration).waypointsPost(waypoints, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
