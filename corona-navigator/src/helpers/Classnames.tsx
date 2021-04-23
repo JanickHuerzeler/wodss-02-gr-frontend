@@ -2,6 +2,11 @@ const isObject = (val: null) => {
     return typeof val === 'object' && val !== null;
 };
 
+/**
+ * TODO: describe me
+ *
+ * @param args
+ */
 export const classnames = (...args: string[]) => {
     const classes: string[] = [];
     args.forEach(arg => {

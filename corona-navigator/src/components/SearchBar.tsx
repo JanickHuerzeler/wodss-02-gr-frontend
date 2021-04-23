@@ -3,29 +3,37 @@ import "../scss/SearchBar.scss";
 import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 import {classnames} from '../helpers/Classnames';
 
+// Props interface
 interface SearchBoxProps {
     onLocationChanged: (latitude: number | null, longitude: number | null) => void;
-    placeholder: string;
-    focus: boolean;
+    placeholder:       string;
+    focus:             boolean;
 }
 
+// State interface
 interface SearchBoxState {
-    address: string;
+    address:      string;
     errorMessage: string;
-    latitude: number | null;
-    longitude: number | null;
-    isGeocoding: boolean;
+    latitude:     number | null;
+    longitude:    number | null;
+    isGeocoding:  boolean;
 }
 
+/**
+ * TODO: describe me
+ */
 class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
-    private inputField: any;
+    private inputFieldRef: any;
 
+    // no autofocus per default
     static defaultProps = {
         focus: false
     }
 
     constructor(props: any) {
         super(props);
+
+        // default state
         this.state = {
             address: '',
             errorMessage: '',
@@ -34,13 +42,14 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
             isGeocoding: false
         };
 
-        this.inputField = null;
+        this.inputFieldRef = null;
     }
     componentDidMount() {
         // set autofocus
-        if(this.props.focus) this.inputField.focus();
+        if(this.props.focus) this.inputFieldRef.focus();
     }
 
+    // set new address
     handleChange = (address: any) => {
         this.setState({
             address,
@@ -50,17 +59,21 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
         });
     };
 
+    // set new address data
     handleSelect = (selected: any) => {
         this.setState({isGeocoding: true, address: selected});
 
+        // get geocode from google
         geocodeByAddress(selected)
             .then((res: any) => getLatLng(res[0]))
             .then(({lat, lng}: any) => {
                 this.setState({
-                    latitude: lat,
-                    longitude: lng,
+                    latitude:    lat,
+                    longitude:   lng,
                     isGeocoding: false,
                 });
+
+                // fire change event
                 this.props.onLocationChanged(lat, lng);
             })
             .catch((error: any) => {
@@ -69,15 +82,18 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
             });
     };
 
+    // clear inputfield and fire changeevent
     handleCloseClick = () => {
         this.setState({
             address: '',
             latitude: null,
             longitude: null,
         });
+
         this.props.onLocationChanged(null, null);
     };
 
+    // error handling
     handleError = (status: any, clearSuggestions: () => void) => {
         console.log('Error from Google Maps API', status); // eslint-disable-line no-console
         this.setState({errorMessage: status}, () => {
@@ -85,6 +101,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
         });
     };
 
+    // if input field is empty fire closeclick
     handleBlur = () => {
         if(this.state.address === "") {
             this.handleCloseClick()
@@ -118,7 +135,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                             <div className="SearchBar__search-bar-container">
                                 <div className="SearchBar__search-input-container">
                                     <input
-                                        ref={(input) => { this.inputField = input; }}
+                                        ref={(input) => { this.inputFieldRef = input; }}
                                         {...getInputProps({
                                             placeholder: this.props.placeholder,
                                             className: 'SearchBar__search-input',

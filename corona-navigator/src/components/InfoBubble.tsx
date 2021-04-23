@@ -2,21 +2,21 @@ import React, {Component} from "react";
 import "../scss/InfoBubble.scss";
 
 interface InfoBubbleProps {
-    lat: string;
-    lng: string;
+    lat:              string;
+    lng:              string;
     data: {
-        show: boolean;
-        lat: string;
-        lng: string;
+        show:         boolean;
+        lat:          string;
+        lng:          string;
         municipality: string;
-        incidence: number;
+        incidence:    number;
     }
 }
 
-interface InfoBubbleState {
-}
-
-class InfoBubble extends Component<InfoBubbleProps, InfoBubbleState> {
+/**
+ * TODO: describe me
+ */
+class InfoBubble extends Component<InfoBubbleProps, any> {
 
     render() {
         const {data} = this.props;
