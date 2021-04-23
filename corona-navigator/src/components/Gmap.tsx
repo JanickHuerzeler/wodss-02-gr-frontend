@@ -34,7 +34,9 @@ interface GmapState {
     }
 }
 
-
+/**
+ * TODO: describe me
+ */
 class GoogleMaps extends Component<GmapProps, GmapState> {
     private readonly directionsService:  any;
     private readonly directionsRenderer: any;
