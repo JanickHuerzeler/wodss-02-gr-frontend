@@ -1,0 +1,26 @@
+.infoBubble {
+  width: 200px;
+  background: #222222;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 12px 14px;
+  margin: -32px 0 0 18px;
+  box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.4);
+
+
+  &--municipality {
+    display: block;
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  &--incidence {
+    display: block;
+    font-size: 12px;
+
+    span {
+      font-weight: bold;
+    }
+  }
+}
