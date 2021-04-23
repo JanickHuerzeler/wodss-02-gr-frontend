@@ -6,6 +6,7 @@ import {classnames} from '../helpers';
 interface SearchBoxProps {
     onLocationChanged: (latitude: number | null, longitude: number | null) => void;
     placeholder: string;
+    focus: boolean;
 }
 
 interface SearchBoxState {
@@ -17,6 +18,12 @@ interface SearchBoxState {
 }
 
 class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
+    private inputField: any;
+
+    static defaultProps = {
+        focus: false
+    }
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -24,8 +31,14 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
             errorMessage: '',
             latitude: null,
             longitude: null,
-            isGeocoding: false,
+            isGeocoding: false
         };
+
+        this.inputField = null;
+    }
+    componentDidMount() {
+        // set autofocus on "Von"-Field
+        if(this.props.focus) this.inputField.focus();
     }
 
     handleChange = (address: any) => {
@@ -113,6 +126,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                             <div className="SearchBar__search-bar-container">
                                 <div className="SearchBar__search-input-container">
                                     <input
+                                        ref={(input) => { this.inputField = input; }}
                                         {...getInputProps({
                                             placeholder: this.props.placeholder,
                                             className: 'SearchBar__search-input',

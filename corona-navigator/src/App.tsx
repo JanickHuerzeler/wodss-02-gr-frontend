@@ -41,6 +41,7 @@ class App extends Component<AppProps, AppState> {
                             <SearchBar
                                 placeholder="Von"
                                 onLocationChanged={this.locationFromChanged}
+                                focus={true}
                             />
                         </div>
 
