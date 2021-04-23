@@ -1,10 +1,6 @@
 import React, {Component} from "react";
-import "./App.scss";
-import {Button, Form, FormControl, Nav, Navbar} from "react-bootstrap";
+import "./scss/App.scss";
 import GoogleMaps from "./components/Gmap";
-// import Example from "./components/Example";
-// import LocationInput from "./components/LocationInput";
-import {object, string} from "prop-types";
 import SearchBar from "./components/SearchBar";
 import Apitest from "./components/Apitest";
 import {Coords} from "google-map-react";
@@ -53,6 +49,7 @@ class App extends Component<AppProps, AppState> {
                         </div>
                     </div>
                 </div>
+
                 <GoogleMaps
                     locationFrom={this.state.locationFrom}
                     locationTo={this.state.locationTo}

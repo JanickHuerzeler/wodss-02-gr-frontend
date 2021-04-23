@@ -1,7 +1,7 @@
 import React from 'react';
-import "./SearchBar.scss";
+import "../scss/SearchBar.scss";
 import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
-import {classnames} from '../helpers';
+import {classnames} from '../helpers/Classnames';
 
 interface SearchBoxProps {
     onLocationChanged: (latitude: number | null, longitude: number | null) => void;
@@ -37,7 +37,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
         this.inputField = null;
     }
     componentDidMount() {
-        // set autofocus on "Von"-Field
+        // set autofocus
         if(this.props.focus) this.inputField.focus();
     }
 
@@ -86,14 +86,6 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
     };
 
     handleBlur = () => {
-        /*
-        this.setState({
-            address: '',
-            latitude: null,
-            longitude: null,
-        });
-        this.props.onLocationChanged(null, null);*/
-
         if(this.state.address === "") {
             this.handleCloseClick()
         }

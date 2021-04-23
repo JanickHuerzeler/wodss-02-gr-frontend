@@ -1,8 +1,7 @@
-import "./Apitest.scss";
+import "../scss/Apitest.scss";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { Helloworldtype, HelloworldtypeMunicipality } from "../api";
+import {Helloworldtype} from "../api";
 
 const baseApiPath = "http://localhost:5001";
 const helloWorldPath = "/helloworld";
