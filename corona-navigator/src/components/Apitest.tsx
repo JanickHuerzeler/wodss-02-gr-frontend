@@ -4,7 +4,7 @@ import axios from "axios";
 import {Helloworldtype} from "../api";
 
 const baseApiPath = "http://localhost:5001";
-const helloWorldPath = "/helloworld";
+const helloWorldPath = "/helloworld/";
 
 const headers = {
   headers: { "Content-Type": "application/json; charset=utf-8" },
