@@ -1,16 +1,13 @@
 import React, { Component } from "react";
 import "./scss/App.scss";
 import GoogleMaps from "./components/Gmap";
-import SearchBar from "./components/SearchBar";
-import Apitest from "./components/Apitest";
 import { Coords } from "google-map-react";
 import SideBar from "./components/SideBar";
 import "./resources/messages";
 import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
-import { FaHeart, FaBars } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 interface AppProps {}
-
 interface AppState {
   locationFrom: Coords | undefined;
   locationTo: Coords | undefined;
@@ -18,13 +15,13 @@ interface AppState {
   rtl: boolean;
   toggled: boolean;
   collapsed: boolean;
-  messages: {[key:string]: any}
+  messages: { [key: string]: any };
 }
 
 class App extends Component<AppProps, AppState> {
-  private locales: {[key:string]: string} = {
-    'en-GB': "English",
-    'de-DE': "Deutsch",
+  private locales: { [key: string]: string } = {
+    "en-GB": "English",
+    "de-DE": "Deutsch",
   };
 
   constructor(props: any) {
@@ -33,7 +30,7 @@ class App extends Component<AppProps, AppState> {
   state: AppState = {
     locationFrom: undefined,
     locationTo: undefined,
-    locale: 'en-GB', //navigator.language
+    locale: "en-GB", //navigator.language
     messages: messages,
     rtl: false,
     toggled: false,
@@ -49,10 +46,9 @@ class App extends Component<AppProps, AppState> {
     this.setState({ locationTo: location });
   };
 
-  localeChanged = (locale: string) =>{
-    //   alert("new locale: "+ locale);
-      this.setState({locale: locale});
-  }
+  localeChanged = (locale: string) => {
+    this.setState({ locale: locale });
+  };
 
   handleToggleSidebar = (toggled: boolean) => {
     this.setState({ toggled: toggled });
@@ -60,8 +56,10 @@ class App extends Component<AppProps, AppState> {
 
   render() {
     return (
-      <IntlProvider locale={this.state.locale} messages={this.state.messages[this.state.locale]}>
-        
+      <IntlProvider
+        locale={this.state.locale}
+        messages={this.state.messages[this.state.locale]}
+      >
         <div
           className={`App app ${this.state.rtl ? "rtl" : ""} ${
             this.state.toggled ? "toggled" : ""
@@ -91,7 +89,6 @@ class App extends Component<AppProps, AppState> {
               locationTo={this.state.locationTo}
             />
           </main>
-          {/* <Apitest/> */}
         </div>
       </IntlProvider>
     );

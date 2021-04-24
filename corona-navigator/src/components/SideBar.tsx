@@ -1,6 +1,6 @@
+import React, { Component } from "react";
 import axios from "axios";
-import React, { Component, useEffect, useState } from "react";
-import { FaGlobe, FaRegLaughWink, FaRoute } from "react-icons/fa";
+import { FaGlobe, FaRoute } from "react-icons/fa";
 import {
   injectIntl,
   FormattedMessage,
@@ -20,6 +20,9 @@ import { Helloworldtype } from "../api";
 import "../scss/SideBar.scss";
 import SearchBar from "./SearchBar";
 
+/**
+ * TODO: maybe refactor into config file?
+ * */
 const baseApiPath = "http://localhost:5001";
 const helloWorldPath = "/helloworld";
 const headers = {
@@ -47,7 +50,7 @@ class SideBar extends Component<
 > {
   constructor(props: any) {
     super(props);
-    this.setState({helloWorldCoordinates: []});
+    this.setState({ helloWorldCoordinates: [] });
   }
 
   componentDidMount() {
@@ -60,7 +63,7 @@ class SideBar extends Component<
         headers: headers.headers,
       })
       .then((response: any) => {
-        this.setState({helloWorldCoordinates: response.data});
+        this.setState({ helloWorldCoordinates: response.data });
       })
       .catch((ex: { response: { status: number } }) => {
         const error =
@@ -109,18 +112,30 @@ class SideBar extends Component<
           </Menu>
           {this.state?.helloWorldCoordinates?.map((municipality, i) => {
             return (
-              <Menu iconShape='square' className="route-waypoint">
+              <Menu iconShape='square' className='route-waypoint'>
                 <SubMenu
-                  suffix={<span className='badge purple'>{i+1.}</span>}
+                  suffix={<span className='badge purple'>{i + 1}</span>}
                   title={municipality.municipality?.bfs_nr?.toString()}
                   icon={<FaRoute />}
                 >
-                  <MenuItem>{intl.formatMessage({id: 'area'})}: {municipality.municipality?.area}</MenuItem>
-                  <MenuItem>{intl.formatMessage({id: 'population'})}: {municipality.municipality?.population}</MenuItem>
-                  <MenuItem>{intl.formatMessage({id: 'incidence'})}: {municipality.municipality?.incidence}</MenuItem>
-                  <MenuItem className="coords">{intl.formatMessage({id: 'coordinates'})}: {municipality.polygon?.flat().map((polygon, i) => (
-            <span key={i}>{polygon.toString()}</span>
-          ))}</MenuItem>
+                  <MenuItem>
+                    {intl.formatMessage({ id: "area" })}:{" "}
+                    {municipality.municipality?.area}
+                  </MenuItem>
+                  <MenuItem>
+                    {intl.formatMessage({ id: "population" })}:{" "}
+                    {municipality.municipality?.population}
+                  </MenuItem>
+                  <MenuItem>
+                    {intl.formatMessage({ id: "incidence" })}:{" "}
+                    {municipality.municipality?.incidence}
+                  </MenuItem>
+                  <MenuItem className='coords'>
+                    {intl.formatMessage({ id: "coordinates" })}:{" "}
+                    {municipality.polygon?.flat().map((polygon, i) => (
+                      <span key={i}>{polygon.toString()}</span>
+                    ))}
+                  </MenuItem>
                 </SubMenu>
               </Menu>
             );

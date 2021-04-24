@@ -5,8 +5,6 @@ import "../scss/Gmap.scss";
 import InfoBubble from "./InfoBubble";
 import {areLocationsEqual} from "../helpers/AreLocationsEqual";
 import {removeMarker, removePolygons, removeRoute} from "../helpers/MapInteractions";
-// import { Api } from "../api/navigatorApi";
-// const api = new Api({baseUrl:'http://localhost:5001'});
 
 const GOOGLE_API_KEY     = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
 const DEFAULT_MAP_CENTER = { lat: 47.48107, lng: 8.21162 };
