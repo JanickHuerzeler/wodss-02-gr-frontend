@@ -129,7 +129,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         });
 
                         // set chunk size
-                        chunkSize = Math.round(waypoints.length / 20);
+                        chunkSize = Math.round(waypoints.length / 4);
 
                         // draw linepath
                         // const linePath = this.drawLinepath(waypoints);
