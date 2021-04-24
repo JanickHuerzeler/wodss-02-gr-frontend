@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import { injectIntl, WrappedComponentProps } from "react-intl";
 import "../scss/InfoBubble.scss";
 
 interface InfoBubbleProps {
@@ -13,14 +14,14 @@ interface InfoBubbleProps {
     }
 }
 
-/**
- * TODO: describe me
- */
-class InfoBubble extends Component<InfoBubbleProps, any> {
+interface InfoBubbleState {
+}
+
+class InfoBubble extends Component<InfoBubbleProps & WrappedComponentProps, InfoBubbleState> {
 
     render() {
         const {data} = this.props;
-
+        const {intl} = this.props;
         return (
             data.show &&
             <div className='infoBubble'>
@@ -28,7 +29,7 @@ class InfoBubble extends Component<InfoBubbleProps, any> {
                     {data.municipality}
                 </span>
                 <span className="infoBubble--incidence">
-                    Incidence:
+                {intl.formatMessage({id: 'incidence'})}:
                     <span>{data.incidence}</span>
                 </span>
             </div>
@@ -36,4 +37,4 @@ class InfoBubble extends Component<InfoBubbleProps, any> {
     }
 }
 
-export default InfoBubble;
+export default injectIntl(InfoBubble);

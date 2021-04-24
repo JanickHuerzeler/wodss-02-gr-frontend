@@ -42,7 +42,7 @@ const Apitest = () => {
 
   return (
     <div className='apitest'>
-      <h1>ApiTest Request</h1>
+      {/* <h1>ApiTest Request</h1>
       <h3>BFSNR: {helloworld.municipality?.bfs_nr}</h3>
 
       <span>Area: {helloworld.municipality?.area}</span><br/>
@@ -56,7 +56,7 @@ const Apitest = () => {
           ))}
 
       </div>
-      {error && <p className='error'>{error}</p>}
+      {error && <p className='error'>{error}</p>} */}
     </div>
   );
 };

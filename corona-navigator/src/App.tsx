@@ -1,63 +1,101 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./scss/App.scss";
 import GoogleMaps from "./components/Gmap";
 import SearchBar from "./components/SearchBar";
 import Apitest from "./components/Apitest";
-import {Coords} from "google-map-react";
-
-interface AppProps {
-}
+import { Coords } from "google-map-react";
+import SideBar from "./components/SideBar";
+import "./resources/messages";
+import { IntlProvider } from "react-intl";
+import messages from "./resources/messages";
+import { FaHeart, FaBars } from "react-icons/fa";
+interface AppProps {}
 
 interface AppState {
-    locationFrom: Coords | undefined;
-    locationTo: Coords | undefined;
+  locationFrom: Coords | undefined;
+  locationTo: Coords | undefined;
+  locale: string;
+  rtl: boolean;
+  toggled: boolean;
+  collapsed: boolean;
+  messages: {[key:string]: any}
 }
 
 class App extends Component<AppProps, AppState> {
-    state: AppState = {
-        locationFrom: undefined,
-        locationTo: undefined
-    }
+  private locales: {[key:string]: string} = {
+    'en-GB': "English",
+    'de-DE': "Deutsch",
+  };
 
-    locationFromChanged = (lat: number | null, lng: number | null) => {
-        const location = (!lat || !lng) ? undefined : { lat: lat, lng: lng };
-        this.setState({ locationFrom: location });
-    }
-    locationToChanged = (lat: number | null, lng: number | null) => {
-        const location = (!lat || !lng) ? undefined : { lat: lat, lng: lng };
-        this.setState({ locationTo: location });
-    }
+  constructor(props: any) {
+    super(props);
+  }
+  state: AppState = {
+    locationFrom: undefined,
+    locationTo: undefined,
+    locale: 'en-GB', //navigator.language
+    messages: messages,
+    rtl: false,
+    toggled: false,
+    collapsed: false,
+  };
 
-    render() {
-        return (
-            <div className='App'>
-                <div className='nav-header'>
-                    <div className='search-wrapper'>
-                        <div className='search-bar'>
-                            <SearchBar
-                                placeholder="Von"
-                                onLocationChanged={this.locationFromChanged}
-                                focus={true}
-                            />
-                        </div>
+  locationFromChanged = (lat: number | null, lng: number | null) => {
+    const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
+    this.setState({ locationFrom: location });
+  };
+  locationToChanged = (lat: number | null, lng: number | null) => {
+    const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
+    this.setState({ locationTo: location });
+  };
 
-                        <div className='search-bar'>
-                            <SearchBar
-                                placeholder="Bis"
-                                onLocationChanged={this.locationToChanged}
-                            />
-                        </div>
-                    </div>
-                </div>
+  localeChanged = (locale: string) =>{
+    //   alert("new locale: "+ locale);
+      this.setState({locale: locale});
+  }
 
-                <GoogleMaps
-                    locationFrom={this.state.locationFrom}
-                    locationTo={this.state.locationTo}
-                />
-                <Apitest/>
+  handleToggleSidebar = (toggled: boolean) => {
+    this.setState({ toggled: toggled });
+  };
+
+  render() {
+    return (
+      <IntlProvider locale={this.state.locale} messages={this.state.messages[this.state.locale]}>
+        
+        <div
+          className={`App app ${this.state.rtl ? "rtl" : ""} ${
+            this.state.toggled ? "toggled" : ""
+          }`}
+        >
+          <SideBar
+            collapsed={this.state.collapsed}
+            rtl={this.state.rtl}
+            toggled={this.state.toggled}
+            handleToggleSidebar={this.handleToggleSidebar}
+            locationFromChanged={this.locationFromChanged}
+            locationToChanged={this.locationToChanged}
+            locales={this.locales}
+            localeChanged={this.localeChanged}
+          />
+          <main>
+            <div
+              className='btn-toggle'
+              onClick={() => {
+                this.handleToggleSidebar(true);
+              }}
+            >
+              <FaBars />
             </div>
-        );
-    }
+            <GoogleMaps
+              locationFrom={this.state.locationFrom}
+              locationTo={this.state.locationTo}
+            />
+          </main>
+          {/* <Apitest/> */}
+        </div>
+      </IntlProvider>
+    );
+  }
 }
 
 export default App;

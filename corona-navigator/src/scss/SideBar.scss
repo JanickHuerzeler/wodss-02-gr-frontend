@@ -1,0 +1,39 @@
+.sidebar-header{
+    padding: 24px 24px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12pt;
+    letter-spacing: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #ffffff;
+}
+
+.team-link{
+    font-size: 8pt;
+    color: #ffffff !important;
+}
+
+.localization-wrapper{
+    // padding-left: 20px;
+    // padding-top: 8px;
+}
+
+.sidebar-footer{
+    font-size:12pt !important;
+    color: #ffffff !important;
+    padding: 20px 24px 5px 20px;
+}
+
+.locales-select{
+  background-color: lighten(#4c5c96,10%);
+  margin-left: 0.5em;
+  vertical-align: bottom;
+  width: 190px;
+  color: #ffffff;
+}
+
+.route-waypoint{
+    color: #ffffff;
+}
