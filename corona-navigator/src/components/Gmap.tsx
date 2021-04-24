@@ -114,8 +114,11 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
                         const waypoints: any[] = [];
+                        const waypointsChunks: any[] = [];
+                        let chunkSize: number;
                         this.setState({ isLoading: true });
                         this.directionsRenderer.setDirections(result);
+
 
                         // generate linepath for backend
                         result.routes[0].overview_path.forEach(function (wp: any) {
@@ -123,75 +126,101 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                 lat: parseFloat(wp.lat()),
                                 lng: parseFloat(wp.lng())
                             });
-                        })
+                        });
+
+                        // set chunk size
+                        chunkSize = Math.round(waypoints.length / 20);
 
                         // draw linepath
                         // const linePath = this.drawLinepath(waypoints);
 
+                        // split waypoints-array in chunks
+                        for (let i = 0, j = waypoints.length; i < j; i += chunkSize) {
+                            waypointsChunks.push(waypoints.slice(i,i + chunkSize));
+                        }
+
                         /** Call backend for municipalities */
-                        this.sendWaypointsToBackend(waypoints, data => {
-                            // draw municipality polygons
-                            data.forEach((m: MunicipalityDTO) => {
-                                if(m.geo_shapes) {
-                                    const bounds = new google.maps.LatLngBounds();
+                        const currentPolygonsPLZ: (number | undefined)[] = [];
 
-                                    // TODO: Iterate geo_shapes (can have multiple Polygons)
-                                    const gPolygon = new google.maps.Polygon(
-                                        {
-                                            // TODO: Remove this [0] workaround (just here to not break stuff)
-                                            paths: m.geo_shapes[0].map((coords: CoordinateDTO) => {
-                                                const pos = {
-                                                    lat: coords.lat || 0,
-                                                    lng: coords.lng || 0
-                                                };
+                        waypointsChunks.forEach((wps: any[], index: number) => {
+                            console.log('get municipalities', index, wps);
 
-                                                bounds.extend(pos);
-                                                return pos;
-                                            }),
-                                            strokeWeight:  2,
-                                            strokeColor:   m.incidence_color,
-                                            fillColor:     m.incidence_color,
-                                            map:           this.state.map,
-                                            ...POLY_OPTIONS
+                            this.sendWaypointsToBackend(wps, data => {
+                                // draw municipality polygons
+                                data.forEach((m: MunicipalityDTO) => {
+                                    if(!currentPolygonsPLZ.includes(m.plz)) {
+                                        currentPolygonsPLZ.push(m.plz);
+
+                                        if (m.geo_shapes) {
+                                            const bounds = new google.maps.LatLngBounds();
+
+                                            // TODO: Iterate geo_shapes (can have multiple Polygons)
+                                            const gPolygon = new google.maps.Polygon(
+                                                {
+                                                    // TODO: Remove this [0] workaround (just here to not break stuff)
+                                                    paths: m.geo_shapes[0].map((coords: CoordinateDTO) => {
+                                                        const pos = {
+                                                            lat: coords.lat || 0,
+                                                            lng: coords.lng || 0
+                                                        };
+
+                                                        bounds.extend(pos);
+                                                        return pos;
+                                                    }),
+                                                    strokeWeight: 2,
+                                                    strokeColor: m.incidence_color,
+                                                    fillColor: m.incidence_color,
+                                                    map: this.state.map,
+                                                    draggable: true,
+                                                    ...POLY_OPTIONS
+                                                }
+                                            );
+
+                                            // show info bubble and set values
+                                            gPolygon.addListener("mouseover", () => {
+                                                gPolygon.setOptions(POLY_OPTIONS_HOVER);
+
+                                                this.setState({
+                                                    infoBubble: {
+                                                        show: true,
+                                                        lat: bounds.getCenter().lat().toString(),
+                                                        lng: bounds.getCenter().lng().toString(),
+                                                        name: m.name,
+                                                        zip: m.plz,
+                                                        incidence: m.incidence
+                                                    }
+                                                });
+                                            });
+
+                                            // hide info bubble
+                                            gPolygon.addListener("mouseout", () => {
+                                                gPolygon.setOptions(POLY_OPTIONS);
+
+                                                this.setState({
+                                                    infoBubble: {
+                                                        ...this.state.infoBubble,
+                                                        show: false
+                                                    }
+                                                });
+                                            });
+
+                                            this.mapPolygons.push(gPolygon);
+                                        } else {
+                                            console.warn('ERROR: no geo_shapes found')
                                         }
-                                    );
+                                    } else {
+                                        console.info('Polygon for ' + m.plz + ' already exist on map');
+                                    }
+                                });
 
-                                    // show info bubble and set values
-                                    gPolygon.addListener("mouseover", () => {
-                                        gPolygon.setOptions(POLY_OPTIONS_HOVER);
-
-                                        this.setState({
-                                            infoBubble: {
-                                                show:      true,
-                                                lat:       bounds.getCenter().lat().toString(),
-                                                lng:       bounds.getCenter().lng().toString(),
-                                                name:      m.name,
-                                                zip:       m.plz,
-                                                incidence: m.incidence
-                                            }
-                                        });
-                                    });
-
-                                    // hide info bubble
-                                    gPolygon.addListener("mouseout", () => {
-                                        gPolygon.setOptions(POLY_OPTIONS);
-
-                                        this.setState({
-                                            infoBubble: {
-                                                ...this.state.infoBubble,
-                                                show: false
-                                            }
-                                        });
-                                    });
-
-                                    this.mapPolygons.push(gPolygon);
-                                } else {
-                                    console.warn('ERROR: no geo_shapes found')
+                                if(index+1 == waypointsChunks.length) {
+                                    this.setState({ isLoading: false });
                                 }
                             });
 
-                            this.setState({ isLoading: false });
+
                         });
+
                     } else {
                         console.error(`error fetching directions ${result}`);
                     }
