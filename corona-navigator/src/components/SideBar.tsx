@@ -92,8 +92,8 @@ class SideBar extends Component<
         </SidebarHeader>
 
         <SidebarContent>
-          <Menu iconShape='circle'>
-            <MenuItem>
+          <Menu key='menuSearch' iconShape='circle'>
+            <MenuItem key='searchBarFrom'>
               <div className='search-bar'>
                 <SearchBar
                   placeholder={intl.formatMessage({ id: "destinationFrom" })}
@@ -102,7 +102,7 @@ class SideBar extends Component<
                 />
               </div>
             </MenuItem>
-            <MenuItem>
+            <MenuItem key='searchBarTo'>
               <div className='search-bar'>
                 <SearchBar
                   placeholder={intl.formatMessage({ id: "destinationTo" })}
@@ -113,25 +113,25 @@ class SideBar extends Component<
           </Menu>
           {this.state?.helloWorldCoordinates?.map((municipality, i) => {
             return (
-              <Menu iconShape='square' className='route-waypoint'>
+              <Menu key='menuWaypoint' iconShape='square' className='route-waypoint'>
                 <SubMenu
                   suffix={<span className='badge purple'>{i + 1}</span>}
                   title={municipality.municipality?.bfs_nr?.toString()}
                   icon={<FaRoute />}
                 >
-                  <MenuItem>
+                  <MenuItem key='municipalityArea'>
                     {intl.formatMessage({ id: "area" })}:{" "}
                     {municipality.municipality?.area}
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem key='municipalityPopulation'>
                     {intl.formatMessage({ id: "population" })}:{" "}
                     {municipality.municipality?.population}
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem key='municipalityIncidence'>
                     {intl.formatMessage({ id: "incidence" })}:{" "}
                     {municipality.municipality?.incidence}
                   </MenuItem>
-                  <MenuItem className='coords'>
+                  <MenuItem key='municipalityCoords' className='coords'>
                     {intl.formatMessage({ id: "coordinates" })}:{" "}
                     {municipality.polygon?.flat().map((polygon, i) => (
                       <span key={i}>{polygon.toString()}</span>

@@ -79,10 +79,10 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     }
 
     sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: any) => void) {
-        API.waypoints.municipalityList(waypoints
-        ).then((dt: { data: any; }) => {
-             callback(dt.data);
-        });
+        API.waypoints.municipalityList(waypoints)
+            .then((dt: { data: any; }) => {
+                 callback(dt.data);
+            });
     }
 
     handleMap = () => {
@@ -129,7 +129,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                             data.forEach((m: MunicipalityDTO) => {
                                 if(m.geo_shapes) {
                                     const bounds = new google.maps.LatLngBounds();
-                                    
+
                                     // TODO: Iterate geo_shapes (can have multiple Polygons)
                                     const gPolygon = new google.maps.Polygon(
                                         {
