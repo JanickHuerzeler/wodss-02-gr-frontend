@@ -13,6 +13,8 @@ const API = new Api({baseUrl:'http://localhost:5001'});
 const GOOGLE_API_KEY     = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
 const DEFAULT_MAP_CENTER = { lat: 47.48107, lng: 8.21162 };
 const MAP_OPTIONS        = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
+const POLY_OPTIONS       = { strokeOpacity: .5,  fillOpacity: .3 };
+const POLY_OPTIONS_HOVER = { strokeOpacity: .95, fillOpacity: .6 };
 
 // Props interface
 interface GmapProps {
@@ -143,21 +145,17 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                                 bounds.extend(pos);
                                                 return pos;
                                             }),
+                                            strokeWeight:  2,
                                             strokeColor:   m.incidence_color,
-                                            strokeOpacity: .8, // .7
-                                            strokeWeight:  1,
                                             fillColor:     m.incidence_color,
-                                            fillOpacity:   .3,
-                                            map:           this.state.map
+                                            map:           this.state.map,
+                                            ...POLY_OPTIONS
                                         }
                                     );
 
                                     // show info bubble and set values
                                     gPolygon.addListener("mouseover", () => {
-                                        gPolygon.setOptions({
-                                            strokeOpacity: .95, // .95
-                                            fillOpacity:   .6  // .45
-                                        });
+                                        gPolygon.setOptions(POLY_OPTIONS_HOVER);
 
                                         this.setState({
                                             infoBubble: {
@@ -173,10 +171,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
 
                                     // hide info bubble
                                     gPolygon.addListener("mouseout", () => {
-                                        gPolygon.setOptions({
-                                            strokeOpacity: .8,
-                                            fillOpacity:   0.3
-                                        });
+                                        gPolygon.setOptions(POLY_OPTIONS);
 
                                         this.setState({
                                             infoBubble: {
