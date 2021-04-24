@@ -110,10 +110,10 @@ export interface MunicipalityDTO {
     canton?: string;
     /**
      * 
-     * @type {Array<CoordinateDTO>}
+     * @type {Array<Array<CoordinateDTO>>}
      * @memberof MunicipalityDTO
      */
-    geo_shape?: Array<CoordinateDTO>;
+    geo_shapes?: Array<Array<CoordinateDTO>>;
     /**
      * 
      * @type {number}

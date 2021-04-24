@@ -127,11 +127,14 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         this.sendWaypointsToBackend(waypoints, data => {
                             // draw municipality polygons
                             data.forEach((m: MunicipalityDTO) => {
-                                if(m.geo_shape) {
+                                if(m.geo_shapes) {
                                     const bounds = new google.maps.LatLngBounds();
+                                    
+                                    // TODO: Iterate geo_shapes (can have multiple Polygons)
                                     const gPolygon = new google.maps.Polygon(
                                         {
-                                            paths: m.geo_shape.map((coords: CoordinateDTO) => {
+                                            // TODO: Remove this [0] workaround (just here to not break stuff)
+                                            paths: m.geo_shapes[0].map((coords: CoordinateDTO) => {
                                                 const pos = {
                                                     lat: coords.lat || 0,
                                                     lng: coords.lng || 0
@@ -185,7 +188,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
 
                                     this.mapPolygons.push(gPolygon);
                                 } else {
-                                    console.warn('ERROR: no geo_shape found')
+                                    console.warn('ERROR: no geo_shapes found')
                                 }
                             });
 
