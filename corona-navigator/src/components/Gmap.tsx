@@ -10,11 +10,12 @@ import {CoordinateDTO, MunicipalityDTO} from "../api";
 import {ImSpinner2} from "react-icons/all";
 
 const API = new Api({baseUrl:'http://localhost:5001'});
-const GOOGLE_API_KEY     = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
-const DEFAULT_MAP_CENTER = { lat: 47.48107, lng: 8.21162 };
-const MAP_OPTIONS        = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
-const POLY_OPTIONS       = { strokeOpacity: .5,  fillOpacity: .3 };
-const POLY_OPTIONS_HOVER = { strokeOpacity: .95, fillOpacity: .6 };
+const GOOGLE_API_KEY                = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
+const DEFAULT_MAP_CENTER            = { lat: 47.48107, lng: 8.21162 };
+const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
+const POLY_OPTIONS                  = { strokeOpacity: .5,  fillOpacity: .3 };
+const POLY_OPTIONS_HOVER            = { strokeOpacity: .95, fillOpacity: .6 };
+const WAYPOINT_DISTANCER_CHUNKER    = 30
 
 // Props interface
 interface GmapProps {
@@ -113,6 +114,10 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                 },
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
+
+                        let routeTotalDistance: number = this.computeTotalDistance(result);
+                        console.log("Distance: " + routeTotalDistance);
+
                         const waypoints: any[] = [];
                         const waypointsChunks: any[] = [];
                         let chunkSize: number;
@@ -129,7 +134,8 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         });
 
                         // set chunk size
-                        chunkSize = Math.round(waypoints.length / 4);
+                        chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeTotalDistance / WAYPOINT_DISTANCER_CHUNKER)));
+                        console.log("Chunksize:" + chunkSize);
 
                         // draw linepath
                         // const linePath = this.drawLinepath(waypoints);
@@ -140,7 +146,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         }
 
                         /** Call backend for municipalities */
-                        const currentPolygonsPLZ: (number | undefined)[] = [];
+                        const currentPolygons: (string | undefined)[] = [];
 
                         waypointsChunks.forEach((wps: any[], index: number) => {
                             console.log('get municipalities', index, wps);
@@ -148,8 +154,10 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                             this.sendWaypointsToBackend(wps, data => {
                                 // draw municipality polygons
                                 data.forEach((m: MunicipalityDTO) => {
-                                    if(!currentPolygonsPLZ.includes(m.plz)) {
-                                        currentPolygonsPLZ.push(m.plz);
+                                    if(!currentPolygons.includes(m.name)) {
+                                        currentPolygons.push(m.name);
+
+                                        console.log(m.name);
 
                                         if (m.geo_shapes) {
                                             const bounds = new google.maps.LatLngBounds();
@@ -209,7 +217,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                             console.warn('ERROR: no geo_shapes found')
                                         }
                                     } else {
-                                        console.info('Polygon for ' + m.plz + ' already exist on map');
+                                        console.info('Polygon for ' + m.name + ' already exist on map');
                                     }
                                 });
 
@@ -248,6 +256,21 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         }
 
     };
+
+    computeTotalDistance(result: google.maps.DirectionsResult) {
+        let total = 0;
+        const route = result.routes[0];
+
+        if (!route) {
+            return total;
+        }
+
+        for (let i = 0; i < route.legs.length; i++) {
+            total += route.legs[i]!.distance!.value;
+        }
+
+        return total / 1000;
+    }
 
     componentDidUpdate() {
         // handle map only if coords has been changed
