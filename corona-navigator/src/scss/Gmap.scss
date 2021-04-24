@@ -1,3 +1,42 @@
 .gmap-wrapper {
   height: 100%;
+
+  .is-loading {
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    right: 65px;
+    border-radius: 2px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #4c5c96;
+    color: #fff;
+    box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.18);
+    font-size: 17px;
+    padding: 0 14px;
+
+    span {
+      color: #eee;
+      font-size: 13px;
+      padding-left: 12px;
+      padding-right: 5px;
+    }
+  }
+
+  .icon-spin {
+    -webkit-animation: icon-spin 2s infinite linear;
+    animation: icon-spin 2s infinite linear;
+  }
+
+  @-webkit-keyframes icon-spin {
+    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(359deg); transform: rotate(359deg); }
+  }
+
+  @keyframes icon-spin {
+    0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(359deg); transform: rotate(359deg); }
+  }
 }

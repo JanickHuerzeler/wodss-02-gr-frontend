@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+import {MunicipalityDTO} from "./api";
+
 export interface Helloworldtype {
   municipality?: { area?: number; bfs_nr?: number; incidence?: number; population?: number };
   polygon?: Polygon[];
@@ -231,11 +233,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/helloworld/
      */
     helloworldList: (params: RequestParams = {}) =>
-      this.request<Helloworldtype, any>({
-        path: `/helloworld/`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
+        this.request<Helloworldtype, any>({
+          path: `/helloworld/`,
+          method: "GET",
+          format: "json",
+          ...params,
+        }),
+  };
+
+  waypoints = {
+    /**
+     * @description Get municipalities with geo_shape
+     *
+     * @name MunicipalityList
+     * @summary Get all municipalities along a given route.
+     * @request POST:/waypoints/
+     */
+    municipalityList: (body: any[]) =>
+        this.request<MunicipalityDTO, any>({
+          path: `/waypoints/`,
+          method: "POST",
+          format: "json",
+          type: ContentType.Json,
+          body: body,
+        }),
   };
 }

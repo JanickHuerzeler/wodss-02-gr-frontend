@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import "./scss/App.scss";
 import GoogleMaps from "./components/Gmap";
-import SearchBar from "./components/SearchBar";
-import Apitest from "./components/Apitest";
 import { Coords } from "google-map-react";
 import SideBar from "./components/SideBar";
 import "./resources/messages";
 import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
-import { FaHeart, FaBars } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 interface AppProps {}
 
 interface AppState {
@@ -61,7 +59,7 @@ class App extends Component<AppProps, AppState> {
   render() {
     return (
       <IntlProvider locale={this.state.locale} messages={this.state.messages[this.state.locale]}>
-        
+
         <div
           className={`App app ${this.state.rtl ? "rtl" : ""} ${
             this.state.toggled ? "toggled" : ""

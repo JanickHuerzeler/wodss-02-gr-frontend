@@ -3,14 +3,15 @@ import { injectIntl, WrappedComponentProps } from "react-intl";
 import "../scss/InfoBubble.scss";
 
 interface InfoBubbleProps {
-    lat:              string;
-    lng:              string;
+    lat:           string;
+    lng:           string;
     data: {
-        show:         boolean;
-        lat:          string;
-        lng:          string;
-        municipality: string;
-        incidence:    number;
+        show:      boolean;
+        lat:       string;
+        lng:       string;
+        name:      string | undefined;
+        zip:       number | undefined;
+        incidence: number | undefined;
     }
 }
 
@@ -26,11 +27,11 @@ class InfoBubble extends Component<InfoBubbleProps & WrappedComponentProps, Info
             data.show &&
             <div className='infoBubble'>
                 <span className="infoBubble--municipality">
-                    {data.municipality}
+                    {data.zip} {data.name}
                 </span>
                 <span className="infoBubble--incidence">
                 {intl.formatMessage({id: 'incidence'})}:
-                    <span>{data.incidence}</span>
+                    <span>{(data.incidence) ? data.incidence.toFixed(2) : '?'}</span>
                 </span>
             </div>
         );
