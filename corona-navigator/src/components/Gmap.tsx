@@ -18,25 +18,25 @@ const POLY_OPTIONS_HOVER = { strokeOpacity: .95, fillOpacity: .6 };
 
 // Props interface
 interface GmapProps {
-    locationFrom:     Coords | undefined;
-    locationTo:       Coords | undefined;
+    locationFrom:   Coords | undefined;
+    locationTo:     Coords | undefined;
 }
 
 // State interface
 interface GmapState {
-    defaultCenter:    Coords | undefined;
-    center:           Coords | undefined;
-    defaultZoom:      number;
-    map:              any | null;
-    mapLoaded:        boolean;
-    isLoading:        boolean;
+    defaultCenter:  Coords | undefined;
+    center:         Coords | undefined;
+    defaultZoom:    number;
+    map:            any | null;
+    mapLoaded:      boolean;
+    isLoading:      boolean;
     infoBubble: {
-        show:         boolean;
-        lat:          string;
-        lng:          string;
-        name:      string | undefined;
-        zip:       number | undefined;
-        incidence: number | undefined;
+        show:       boolean;
+        lat:        string;
+        lng:        string;
+        name:       string | undefined;
+        zip:        number | undefined;
+        incidence:  number | undefined;
     }
 }
 
@@ -80,10 +80,20 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         this.locationToBefore   = undefined;
     }
 
+    drawLinepath(waypoints: any[]) {
+        return new google.maps.Polyline({
+            path: waypoints,
+            strokeColor: "#f45017",
+            strokeOpacity: 1.0,
+            strokeWeight: 5,
+            map: this.state.map
+        });
+    }
+
     sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: any) => void) {
         API.waypoints.municipalityList(waypoints)
             .then((dt: { data: any; }) => {
-                 callback(dt.data);
+                callback(dt.data);
             });
     }
 
@@ -103,7 +113,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                 },
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
-                        const waypoints:        any = [];
+                        const waypoints: any[] = [];
                         this.setState({ isLoading: true });
                         this.directionsRenderer.setDirections(result);
 
@@ -115,15 +125,8 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                             });
                         })
 
-                        /*
                         // draw linepath
-                        const routeLine = new google.maps.Polyline({
-                            path: linePath,
-                            strokeColor: "#f45017",
-                            strokeOpacity: 1.0,
-                            strokeWeight: 5,
-                            map: this.state.map
-                        });*/
+                        // const linePath = this.drawLinepath(waypoints);
 
                         /** Call backend for municipalities */
                         this.sendWaypointsToBackend(waypoints, data => {
