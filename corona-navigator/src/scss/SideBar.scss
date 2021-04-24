@@ -1,3 +1,7 @@
+.pro-sidebar-layout {
+  overflow: visible !important;
+}
+
 .sidebar-header{
     padding: 24px 24px;
     text-transform: uppercase;
@@ -13,6 +17,9 @@
 .team-link{
     font-size: 8pt;
     color: #ffffff !important;
+    display: block;
+    margin: 10px 8px 5px;
+    text-align: right;
 }
 
 .localization-wrapper{
@@ -28,9 +35,9 @@
 
 .locales-select{
   background-color: lighten(#4c5c96,10%);
-  margin-left: 0.5em;
+  margin-left: 0.8em;
   vertical-align: bottom;
-  width: 190px;
+  width: 300px;
   color: #ffffff;
 }
 

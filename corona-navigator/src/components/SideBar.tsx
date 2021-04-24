@@ -80,6 +80,7 @@ class SideBar extends Component<
         toggled={this.props.toggled}
         breakPoint='md'
         onToggle={this.props.handleToggleSidebar}
+        width='380px'
       >
         <SidebarHeader>
           <div className='sidebar-header'>
