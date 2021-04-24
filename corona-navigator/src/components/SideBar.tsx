@@ -24,7 +24,7 @@ import SearchBar from "./SearchBar";
  * TODO: maybe refactor into config file?
  * */
 const baseApiPath = "http://localhost:5001";
-const helloWorldPath = "/helloworld";
+const helloWorldPath = "/helloworld/";
 const headers = {
   headers: { "Content-Type": "application/json; charset=utf-8" },
 };
