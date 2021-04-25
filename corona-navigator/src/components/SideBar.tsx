@@ -38,10 +38,19 @@ interface SideBarProps {
   handleToggleSidebar: (toggle: boolean) => void;
   locationFromChanged: (lat: number | null, lng: number | null) => void;
   locationToChanged: (lat: number | null, lng: number | null) => void;
+  locationStopOversChanged: (
+    coordsArray: StopOverCoords[]
+  ) => void;
 }
 
 interface SideBarState {
   helloWorldCoordinates: Helloworldtype[] | undefined;
+  stopOvers: StopOverCoords[];
+}
+
+export interface StopOverCoords {
+  lat: number | null;
+  lng: number | null;
 }
 
 class SideBar extends Component<
@@ -50,7 +59,7 @@ class SideBar extends Component<
 > {
   constructor(props: any) {
     super(props);
-    this.setState({ helloWorldCoordinates: [] });
+    this.setState({ helloWorldCoordinates: [], stopOvers: [] });
   }
 
   componentDidMount() {
@@ -74,6 +83,24 @@ class SideBar extends Component<
       });
   }
 
+  handleStopOverChanged = (
+    lat: number | null,
+    lng: number | null,
+    index: number
+  ) => {
+    const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
+    const currentStopOvers = this.state.stopOvers;
+    currentStopOvers[index] = location ? location : {lat: null, lng: null};
+    this.setState({stopOvers: currentStopOvers});
+    this.props.locationStopOversChanged(currentStopOvers);
+  };
+
+  handleAddSearchbar = () => {
+    const currentStopOvers = this.state?.stopOvers ? this.state.stopOvers : [];
+    this.setState({
+      stopOvers: [...currentStopOvers, { lat: null, lng: null }],
+    });
+  };
   render() {
     const { intl } = this.props;
     return (
@@ -102,6 +129,35 @@ class SideBar extends Component<
                 />
               </div>
             </MenuItem>
+            <MenuItem key='searchBarAddStopover' className='searchbar-add-stop-over-wrapper'>
+              {/* <div className="addStopover"> */}
+              <button
+                className='btn btn-purple'
+                onClick={this.handleAddSearchbar}
+              >
+                +
+              </button>
+              {/* </div> */}
+              {this.state?.stopOvers?.map((stopOverCoords, index) => {
+                return (<div className="search-bar-stop-over">
+                  <SearchBar key={'searchBarStopOver'+index}
+                    placeholder={intl.formatMessage({ id: "stopover" })}
+                    onLocationChanged={(lat, lng) => {
+                      this.handleStopOverChanged(lat, lng, index);
+                    }}
+                    focus={false}
+                  ></SearchBar>
+                  </div>
+                );
+              })}
+              {/* <div className='search-bar'>
+                <SearchBar
+                  placeholder={intl.formatMessage({ id: "destinationFrom" })}
+                  onLocationChanged={this.props.locationFromChanged}
+                  focus={true}
+                />
+              </div> */}
+            </MenuItem>
             <MenuItem key='searchBarTo'>
               <div className='search-bar'>
                 <SearchBar
@@ -113,7 +169,11 @@ class SideBar extends Component<
           </Menu>
           {this.state?.helloWorldCoordinates?.map((municipality, i) => {
             return (
-              <Menu key='menuWaypoint' iconShape='square' className='route-waypoint'>
+              <Menu
+                key='menuWaypoint'
+                iconShape='square'
+                className='route-waypoint'
+              >
                 <SubMenu
                   suffix={<span className='badge purple'>{i + 1}</span>}
                   title={municipality.municipality?.bfs_nr?.toString()}

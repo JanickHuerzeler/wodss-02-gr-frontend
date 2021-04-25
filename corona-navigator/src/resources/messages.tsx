@@ -7,7 +7,8 @@ export default{
         incidence: 'Inzidenz',
         population: 'Bevölkerkung',
         sideBarTitle: 'Corona Wegweiser',
-        sideBarFooter: 'Corona Navigator, Gruppe 02 Kt. Graubünden'
+        sideBarFooter: 'Corona Navigator, Gruppe 02 Kt. Graubünden',
+        stopover: 'Zwischenhalt'
     },
     'en-GB': {
         area: 'Area',
@@ -17,7 +18,8 @@ export default{
         incidence: 'Incidence',
         population: 'Population',
         sideBarTitle: 'Corona Navigator',
-        sideBarFooter: 'Corona Navigator, Group 02 Ct. Graubünden'
+        sideBarFooter: 'Corona Navigator, Group 02 Ct. Graubünden',
+        stopover: 'Stopover'
 
     }
     

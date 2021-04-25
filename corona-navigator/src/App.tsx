@@ -7,10 +7,12 @@ import "./resources/messages";
 import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
 import { FaBars } from "react-icons/fa";
+import {StopOverCoords} from './components/SideBar';
 interface AppProps {}
 interface AppState {
   locationFrom: Coords | undefined;
   locationTo: Coords | undefined;
+  locationStopOvers: Coords[];
   locale: string;
   rtl: boolean;
   toggled: boolean;
@@ -29,6 +31,7 @@ class App extends Component<AppProps, AppState> {
   }
   state: AppState = {
     locationFrom: undefined,
+    locationStopOvers: [],
     locationTo: undefined,
     locale: "en-GB", //navigator.language
     messages: messages,
@@ -44,6 +47,11 @@ class App extends Component<AppProps, AppState> {
   locationToChanged = (lat: number | null, lng: number | null) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
     this.setState({ locationTo: location });
+  };
+
+  locationStopOversChanged = (coordsArray: StopOverCoords[]) => {
+    const coords: Coords[] = coordsArray.filter((el)=> el.lat !== null && el.lng !== null).map((el)=>{return {lat: el.lat!, lng: el.lng!}});
+    this.setState({locationStopOvers: coords});
   };
 
   localeChanged = (locale: string) => {
@@ -72,6 +80,7 @@ class App extends Component<AppProps, AppState> {
             handleToggleSidebar={this.handleToggleSidebar}
             locationFromChanged={this.locationFromChanged}
             locationToChanged={this.locationToChanged}
+            locationStopOversChanged={this.locationStopOversChanged}
             locales={this.locales}
             localeChanged={this.localeChanged}
           />
@@ -87,6 +96,7 @@ class App extends Component<AppProps, AppState> {
             <GoogleMaps
               locationFrom={this.state.locationFrom}
               locationTo={this.state.locationTo}
+              locationStopOvers={this.state.locationStopOvers}
             />
           </main>
         </div>

@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import GoogleMapReact, {Coords} from "google-map-react";
 import "../scss/Gmap.scss";
 import InfoBubble from "./InfoBubble";
-import {areLocationsEqual} from "../helpers/AreLocationsEqual";
+import {areLocationArraysEqual, areLocationsEqual} from "../helpers/AreLocationsEqual";
 import {removeMarker, removePolygons, removeRoute} from "../helpers/MapInteractions";
 import { Api } from "../api/navigatorApi";
 import {CoordinateDTO, MunicipalityDTO} from "../api";
@@ -19,8 +19,9 @@ const WAYPOINT_DISTANCER_CHUNKER    = 30
 
 // Props interface
 interface GmapProps {
-    locationFrom:   Coords | undefined;
-    locationTo:     Coords | undefined;
+    locationFrom:       Coords | undefined;
+    locationTo:         Coords | undefined;
+    locationStopOvers:  Coords[] | undefined;
 }
 
 // State interface
@@ -45,12 +46,13 @@ interface GmapState {
  * TODO: describe me
  */
 class GoogleMaps extends Component<GmapProps, GmapState> {
-    private readonly directionsService:  any;
-    private readonly directionsRenderer: any;
-    private readonly mapPolygons:        any[];
-    private          locationMarker:     any;
-    private          locationFromBefore: Coords | undefined;
-    private          locationToBefore:   Coords | undefined;
+    private readonly directionsService:         any;
+    private readonly directionsRenderer:        any;
+    private readonly mapPolygons:               any[];
+    private          locationMarker:            any;
+    private          locationFromBefore:        Coords | undefined;
+    private          locationToBefore:          Coords | undefined;
+    private          locationStopOversBefore:   Coords[] | undefined;
 
     // set default state
     state: GmapState = {
@@ -73,12 +75,13 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     constructor(props: GmapProps) {
         super(props);
 
-        this.directionsService  = new google.maps.DirectionsService();
-        this.directionsRenderer = new google.maps.DirectionsRenderer();
-        this.mapPolygons        = [];
-        this.locationMarker     = undefined;
-        this.locationFromBefore = undefined;
-        this.locationToBefore   = undefined;
+        this.directionsService  =       new google.maps.DirectionsService();
+        this.directionsRenderer =       new google.maps.DirectionsRenderer();
+        this.mapPolygons        =       [];
+        this.locationMarker     =       undefined;
+        this.locationFromBefore =       undefined;
+        this.locationToBefore   =       undefined;
+        this.locationStopOversBefore =  undefined;
     }
 
     drawLinepath(waypoints: any[]) {
@@ -106,10 +109,12 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
             // remove all polygons
             removePolygons(this.mapPolygons);
 
+            const stopOverWaypoints = this.props.locationStopOvers ? this.props.locationStopOvers.map((s)=>{return {location: s, stopover: true}}) : undefined;
             // get and print  route
             this.directionsService.route({
                     origin:      this.props.locationFrom,
                     destination: this.props.locationTo,
+                    waypoints:   stopOverWaypoints,
                     travelMode:  google.maps.TravelMode.DRIVING,
                 },
                 (result: any, status: any) => {
@@ -277,10 +282,12 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         if (
             this.state.mapLoaded && (
                 !areLocationsEqual(this.locationFromBefore, this.props.locationFrom) ||
-                !areLocationsEqual(this.locationToBefore, this.props.locationTo)
+                !areLocationsEqual(this.locationToBefore, this.props.locationTo) ||
+                !areLocationArraysEqual(this.locationStopOversBefore, this.props.locationStopOvers)
             )) {
             this.locationFromBefore = this.props.locationFrom;
             this.locationToBefore = this.props.locationTo;
+            this.locationStopOversBefore = this.props.locationStopOvers;
             this.state.mapLoaded && this.handleMap();
         }
     }
