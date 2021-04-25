@@ -1,51 +1,42 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import axios from "axios";
-import { FaGlobe, FaRoute } from "react-icons/fa";
-import {
-  injectIntl,
-  FormattedMessage,
-  WrappedComponentProps,
-} from "react-intl";
-import {
-  ProSidebar,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarContent,
-  Menu,
-  MenuItem,
-  SubMenu,
-} from "react-pro-sidebar";
+import {FaBicycle, FaCar, FaGlobe, FaPlus, FaRoute, FaSubway, FaWalking} from "react-icons/fa";
+import {injectIntl,FormattedMessage,WrappedComponentProps} from "react-intl";
+import {ProSidebar, SidebarHeader, SidebarFooter, SidebarContent, Menu, MenuItem, SubMenu} from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
-import { Helloworldtype } from "../api";
 import "../scss/SideBar.scss";
+import { Helloworldtype } from "../api";
 import SearchBar from "./SearchBar";
+import {Button, ButtonGroup} from "react-bootstrap";
 
 /**
  * TODO: maybe refactor into config file?
  * */
-const baseApiPath = "http://localhost:5001";
+const baseApiPath    = "http://localhost:5001";
 const helloWorldPath = "/helloworld/";
-const headers = {
+const headers        = {
   headers: { "Content-Type": "application/json; charset=utf-8" },
 };
 
 interface SideBarProps {
-  rtl: boolean;
-  collapsed: boolean;
-  toggled: boolean;
-  locales: { [key: string]: string };
-  localeChanged: (locale: string) => void;
+  rtl:                 boolean;
+  collapsed:           boolean;
+  toggled:             boolean;
+  locales:             { [key: string]: string };
+  localeChanged:       (locale: string) => void;
   handleToggleSidebar: (toggle: boolean) => void;
   locationFromChanged: (lat: number | null, lng: number | null) => void;
   locationToChanged: (lat: number | null, lng: number | null) => void;
   locationStopOversChanged: (
     coordsArray: StopOverCoords[]
   ) => void;
+  travelModeChanged: (travelMode: google.maps.TravelMode) => void;
 }
 
 interface SideBarState {
   helloWorldCoordinates: Helloworldtype[] | undefined;
   stopOvers: StopOverCoords[];
+  travelMode:            string;
 }
 
 export interface StopOverCoords {
@@ -57,13 +48,30 @@ class SideBar extends Component<
   SideBarProps & WrappedComponentProps,
   SideBarState
 > {
+  state: SideBarState = {
+    helloWorldCoordinates: [],
+    stopOvers:             [],
+    travelMode:            "DRIVING"
+  }
+
   constructor(props: any) {
     super(props);
-    this.setState({ helloWorldCoordinates: [], stopOvers: [] });
   }
 
   componentDidMount() {
     this.handleHelloWorldChange();
+  }
+
+  changeTravelMode = (ev: any) => {
+    // convert string to TravelMode enum
+    const travelModeString = ev.target.id;
+    const travelMode: google.maps.TravelMode =
+        google.maps.TravelMode[travelModeString as keyof typeof google.maps.TravelMode];
+    this.setState({
+        travelMode: travelModeString
+    });
+
+    this.props.travelModeChanged(travelMode);
   }
 
   handleHelloWorldChange() {
@@ -105,12 +113,12 @@ class SideBar extends Component<
     const { intl } = this.props;
     return (
       <ProSidebar
-        rtl={this.props.rtl}
-        collapsed={this.props.collapsed}
-        toggled={this.props.toggled}
-        breakPoint='md'
-        onToggle={this.props.handleToggleSidebar}
-        width='380px'
+        rtl        = {this.props.rtl}
+        collapsed  = {this.props.collapsed}
+        toggled    = {this.props.toggled}
+        breakPoint = 'md'
+        onToggle   = {this.props.handleToggleSidebar}
+        width      = '380px'
       >
         <SidebarHeader>
           <div className='sidebar-header'>
@@ -119,6 +127,33 @@ class SideBar extends Component<
         </SidebarHeader>
 
         <SidebarContent>
+          <Menu key='menuTravelMode'>
+            <div className='travelMode'>
+              <ButtonGroup aria-label="Basic example">
+                <Button
+                    className={(this.state.travelMode === "DRIVING") ? "active" : ""}
+                    id="DRIVING" variant="secondary"
+                    onClick={this.changeTravelMode}
+                ><FaCar /></Button>
+                <Button
+                    className={(this.state.travelMode === "TRANSIT") ? "active" : ""}
+                    id="TRANSIT" variant="secondary"
+                    onClick={this.changeTravelMode}
+                ><FaSubway /></Button>
+                <Button
+                    className={(this.state.travelMode === "WALKING") ? "active" : ""}
+                    id="WALKING" variant="secondary"
+                    onClick={this.changeTravelMode}
+                ><FaWalking /></Button>
+                <Button
+                    className={(this.state.travelMode === "BICYCLING") ? "active" : ""}
+                    id="BICYCLING" variant="secondary"
+                    onClick={this.changeTravelMode}
+                ><FaBicycle /></Button>
+              </ButtonGroup>
+            </div>
+          </Menu>
+
           <Menu key='menuSearch' iconShape='circle'>
             <MenuItem key='searchBarFrom'>
               <div className='search-bar'>
@@ -135,7 +170,7 @@ class SideBar extends Component<
                 className='btn btn-purple'
                 onClick={this.handleAddSearchbar}
               >
-                +
+                <FaPlus />
               </button>
               {/* </div> */}
               {this.state?.stopOvers?.map((stopOverCoords, index) => {
@@ -167,6 +202,7 @@ class SideBar extends Component<
               </div>
             </MenuItem>
           </Menu>
+
           {this.state?.helloWorldCoordinates?.map((municipality, i) => {
             return (
               <Menu

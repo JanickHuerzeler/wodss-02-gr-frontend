@@ -6,18 +6,19 @@ import SideBar from "./components/SideBar";
 import "./resources/messages";
 import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
-import { FaBars } from "react-icons/fa";
+import {FaBars} from "react-icons/fa";
 import {StopOverCoords} from './components/SideBar';
 interface AppProps {}
 interface AppState {
   locationFrom: Coords | undefined;
-  locationTo: Coords | undefined;
+  locationTo:   Coords | undefined;
   locationStopOvers: Coords[];
-  locale: string;
-  rtl: boolean;
-  toggled: boolean;
-  collapsed: boolean;
-  messages: { [key: string]: any };
+  travelMode:   google.maps.TravelMode;
+  locale:       string;
+  rtl:          boolean;
+  toggled:      boolean;
+  collapsed:    boolean;
+  messages:     { [key: string]: any };
 }
 
 class App extends Component<AppProps, AppState> {
@@ -30,20 +31,22 @@ class App extends Component<AppProps, AppState> {
     super(props);
   }
   state: AppState = {
-    locationFrom: undefined,
-    locationStopOvers: [],
-    locationTo: undefined,
-    locale: "en-GB", //navigator.language
-    messages: messages,
-    rtl: false,
-    toggled: false,
-    collapsed: false,
+    locationFrom:       undefined,
+    locationTo:         undefined,
+    locationStopOvers:  [],
+    travelMode:         google.maps.TravelMode.DRIVING,
+    locale:             "en-GB", //navigator.language
+    messages:           messages,
+    rtl:                false,
+    toggled:            false,
+    collapsed:          false,
   };
 
   locationFromChanged = (lat: number | null, lng: number | null) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
     this.setState({ locationFrom: location });
   };
+
   locationToChanged = (lat: number | null, lng: number | null) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
     this.setState({ locationTo: location });
@@ -57,6 +60,10 @@ class App extends Component<AppProps, AppState> {
   localeChanged = (locale: string) => {
     this.setState({ locale: locale });
   };
+
+  travelModeChanged = (travelMode: any) => {
+    this.setState({ travelMode: travelMode });
+  }
 
   handleToggleSidebar = (toggled: boolean) => {
     this.setState({ toggled: toggled });
@@ -74,17 +81,19 @@ class App extends Component<AppProps, AppState> {
           }`}
         >
           <SideBar
-            collapsed={this.state.collapsed}
-            rtl={this.state.rtl}
-            toggled={this.state.toggled}
-            handleToggleSidebar={this.handleToggleSidebar}
-            locationFromChanged={this.locationFromChanged}
-            locationToChanged={this.locationToChanged}
-            locationStopOversChanged={this.locationStopOversChanged}
-            locales={this.locales}
-            localeChanged={this.localeChanged}
+            collapsed               = {this.state.collapsed}
+            rtl                     = {this.state.rtl}
+            toggled                 = {this.state.toggled}
+            handleToggleSidebar     = {this.handleToggleSidebar}
+            locationFromChanged     = {this.locationFromChanged}
+            locationToChanged       = {this.locationToChanged}
+            locationStopOversChanged= {this.locationStopOversChanged}
+            travelModeChanged       = {this.travelModeChanged}
+            locales                 = {this.locales}
+            localeChanged           = {this.localeChanged}
           />
           <main>
+
             <div
               className='btn-toggle'
               onClick={() => {
@@ -94,9 +103,10 @@ class App extends Component<AppProps, AppState> {
               <FaBars />
             </div>
             <GoogleMaps
-              locationFrom={this.state.locationFrom}
-              locationTo={this.state.locationTo}
-              locationStopOvers={this.state.locationStopOvers}
+              locationFrom      = {this.state.locationFrom}
+              locationTo        = {this.state.locationTo}
+              locationStopOvers = {this.state.locationStopOvers}
+              travelMode        = {this.state.travelMode}
             />
           </main>
         </div>

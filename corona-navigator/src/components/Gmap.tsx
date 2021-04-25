@@ -9,7 +9,7 @@ import { Api } from "../api/navigatorApi";
 import {CoordinateDTO, MunicipalityDTO} from "../api";
 import {ImSpinner2} from "react-icons/all";
 
-const API = new Api({baseUrl:'http://localhost:5001'});
+const API                           = new Api({baseUrl:'http://localhost:5001'});
 const GOOGLE_API_KEY                = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
 const DEFAULT_MAP_CENTER            = { lat: 47.48107, lng: 8.21162 };
 const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
@@ -22,6 +22,7 @@ interface GmapProps {
     locationFrom:       Coords | undefined;
     locationTo:         Coords | undefined;
     locationStopOvers:  Coords[] | undefined;
+    travelMode:         google.maps.TravelMode;
 }
 
 // State interface
@@ -53,6 +54,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     private          locationFromBefore:        Coords | undefined;
     private          locationToBefore:          Coords | undefined;
     private          locationStopOversBefore:   Coords[] | undefined;
+    private          travelModeBefore:          google.maps.TravelMode;
 
     // set default state
     state: GmapState = {
@@ -75,13 +77,14 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     constructor(props: GmapProps) {
         super(props);
 
-        this.directionsService  =       new google.maps.DirectionsService();
-        this.directionsRenderer =       new google.maps.DirectionsRenderer();
-        this.mapPolygons        =       [];
-        this.locationMarker     =       undefined;
-        this.locationFromBefore =       undefined;
-        this.locationToBefore   =       undefined;
-        this.locationStopOversBefore =  undefined;
+        this.directionsService          = new google.maps.DirectionsService();
+        this.directionsRenderer         = new google.maps.DirectionsRenderer();
+        this.mapPolygons                = [];
+        this.locationMarker             = undefined;
+        this.locationFromBefore         = this.props.locationFrom;
+        this.locationToBefore           = this.props.locationTo;
+        this.locationStopOversBefore    = this.props.locationStopOvers;
+        this.travelModeBefore           = this.props.travelMode;
     }
 
     drawLinepath(waypoints: any[]) {
@@ -115,7 +118,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                     origin:      this.props.locationFrom,
                     destination: this.props.locationTo,
                     waypoints:   stopOverWaypoints,
-                    travelMode:  google.maps.TravelMode.DRIVING,
+                    travelMode:  this.props.travelMode
                 },
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
@@ -184,7 +187,6 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                                     strokeColor: m.incidence_color,
                                                     fillColor: m.incidence_color,
                                                     map: this.state.map,
-                                                    draggable: true,
                                                     ...POLY_OPTIONS
                                                 }
                                             );
@@ -226,7 +228,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                     }
                                 });
 
-                                if(index+1 == waypointsChunks.length) {
+                                if(index+1 === waypointsChunks.length) {
                                     this.setState({ isLoading: false });
                                 }
                             });
@@ -278,16 +280,19 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     }
 
     componentDidUpdate() {
-        // handle map only if coords has been changed
+        // handle map only if travelMode or coords has been changed
         if (
-            this.state.mapLoaded && (
+            this.state.mapLoaded && ((
                 !areLocationsEqual(this.locationFromBefore, this.props.locationFrom) ||
                 !areLocationsEqual(this.locationToBefore, this.props.locationTo) ||
                 !areLocationArraysEqual(this.locationStopOversBefore, this.props.locationStopOvers)
-            )) {
-            this.locationFromBefore = this.props.locationFrom;
-            this.locationToBefore = this.props.locationTo;
-            this.locationStopOversBefore = this.props.locationStopOvers;
+            ) || this.props.travelMode !== this.travelModeBefore)
+        ) {
+            this.locationFromBefore         = this.props.locationFrom;
+            this.locationToBefore           = this.props.locationTo;
+            this.locationStopOversBefore    = this.props.locationStopOvers;
+            this.travelModeBefore           = this.props.travelMode;
+            
             this.state.mapLoaded && this.handleMap();
         }
     }
