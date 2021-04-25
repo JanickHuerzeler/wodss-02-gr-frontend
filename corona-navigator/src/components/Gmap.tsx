@@ -170,7 +170,9 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                     data.forEach((m: MunicipalityDTO) => {
                                         if(!currentPolygons.includes(m.name)) {
                                             currentPolygons.push(m.name);
-                                            routeInfo.numMunicipalities++;
+                                            if(m.incidence || m.incidence === 0) {
+                                                routeInfo.numMunicipalities++;
+                                            }
 
                                             if (m.geo_shapes) {
                                                 const bounds = new google.maps.LatLngBounds();
@@ -304,14 +306,15 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     computeRouteIncidenceRollingAVG(routeInfo: any, incidence: number | undefined) {
         let result = 0;
 
-        if(routeInfo.incidence){
-            if(incidence || incidence === 0) {
-                result = (routeInfo.numMunicipalities - 1) * routeInfo.incidence;
-                result += incidence;
-                routeInfo.incidence = result / routeInfo.numMunicipalities;
+        if(incidence || incidence === 0) {
+            if(routeInfo.incidence || routeInfo.incidence === 0){
+                    console.log('add', incidence, routeInfo.numMunicipalities);
+                    result = (routeInfo.numMunicipalities - 1) * routeInfo.incidence;
+                    result += incidence;
+                    routeInfo.incidence = result / routeInfo.numMunicipalities;
+            } else {
+                routeInfo.incidence = incidence;
             }
-        } else {
-            routeInfo.incidence = incidence;
         }
     }
 
