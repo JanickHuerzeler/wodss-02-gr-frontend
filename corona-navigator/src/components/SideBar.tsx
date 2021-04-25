@@ -9,7 +9,7 @@ import { Helloworldtype } from "../api";
 import SearchBar from "./SearchBar";
 import {Button, ButtonGroup} from "react-bootstrap";
 import logo from "../resources/logo.png";
-import {BiTime, GiPathDistance} from "react-icons/all";
+import {BiTime, GiPathDistance, RiVirusLine} from "react-icons/all";
 
 /**
  * TODO: maybe refactor into config file?
@@ -21,18 +21,19 @@ const headers        = {
 };
 
 interface SideBarProps {
-  rtl:                 boolean;
-  collapsed:           boolean;
-  toggled:             boolean;
-  locales:             { [key: string]: string };
-  localeChanged:       (locale: string) => void;
-  handleToggleSidebar: (toggle: boolean) => void;
-  locationFromChanged: (lat: number | null, lng: number | null) => void;
-  locationToChanged:   (lat: number | null, lng: number | null) => void;
+  rtl:                      boolean;
+  collapsed:                boolean;
+  toggled:                  boolean;
+  locales:                  { [key: string]: string };
+  localeChanged:            (locale: string) => void;
+  handleToggleSidebar:      (toggle: boolean) => void;
+  locationFromChanged:      (lat: number | null, lng: number | null) => void;
+  locationToChanged:        (lat: number | null, lng: number | null) => void;
   locationStopOversChanged: (coordsArray: StopOverCoords[]) => void;
-  travelModeChanged:   (travelMode: google.maps.TravelMode) => void;
-  routeDistance:       number;
-  routeDuration:       number;
+  travelModeChanged:        (travelMode: google.maps.TravelMode) => void;
+  routeDistance:            number;
+  routeDuration:            number;
+  routeIncidence:           number | null;
 }
 
 interface SideBarState {
@@ -123,7 +124,7 @@ class SideBar extends Component<
       >
         <SidebarHeader>
           <div className='sidebar-header'>
-            <img src={logo} />
+            <img src={logo} alt="Corona Navigator GR" />
             {intl.formatMessage({ id: "sideBarTitle" })}
           </div>
         </SidebarHeader>
@@ -174,7 +175,6 @@ class SideBar extends Component<
               >
                 <FaPlus />
               </button>
-              {/* </div> */}
               {this.state?.stopOvers?.map((stopOverCoords, index) => {
                 return (<div className="search-bar-stop-over">
                   <SearchBar key={'searchBarStopOver'+index}
@@ -183,17 +183,10 @@ class SideBar extends Component<
                       this.handleStopOverChanged(lat, lng, index);
                     }}
                     focus={false}
-                  ></SearchBar>
+                  />
                   </div>
                 );
               })}
-              {/* <div className='search-bar'>
-                <SearchBar
-                  placeholder={intl.formatMessage({ id: "destinationFrom" })}
-                  onLocationChanged={this.props.locationFromChanged}
-                  focus={true}
-                />
-              </div> */}
             </MenuItem>
             <MenuItem key='searchBarTo'>
               <div className='search-bar'>
@@ -207,13 +200,17 @@ class SideBar extends Component<
               <MenuItem>
                 <div className="route-infos">
                   <span>
-                    <span className='icon'><BiTime /></span>
-                    { (this.props.routeDuration >= 60) && `${Math.floor(this.props.routeDuration / 60)} h ` }
-                    {`${this.props.routeDuration % 60} min` }
+                    <span className='icon average'><RiVirusLine /></span>
+                    { this.props.routeIncidence?.toFixed(1) }
                   </span>
                   <span>
-                    <span className='icon'><GiPathDistance className='icon' /></span>
-                    { this.props.routeDistance.toFixed(1) } Km
+                    <span className='icon'><BiTime /></span>
+                    { (this.props.routeDuration >= 60) && `${Math.floor(this.props.routeDuration / 60)} h ` }
+                    {`${(this.props.routeDuration % 60).toFixed()} min` }
+                  </span>
+                  <span>
+                    <span className='icon'><GiPathDistance /></span>
+                    { this.props.routeDistance.toFixed(1) } km
                   </span>
                 </div>
               </MenuItem>
@@ -280,7 +277,7 @@ class SideBar extends Component<
             className='team-link'
             rel='noopener noreferrer'
           >
-            <FormattedMessage id={"sideBarFooter"}></FormattedMessage>
+            <FormattedMessage id={"sideBarFooter"} />
           </a>
         </SidebarFooter>
       </ProSidebar>

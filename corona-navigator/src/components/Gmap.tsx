@@ -1,5 +1,6 @@
-import React, {Component} from "react";
 // https://github.com/google-map-react/google-map-react
+
+import React, {Component} from "react";
 import GoogleMapReact, {Coords} from "google-map-react";
 import "../scss/Gmap.scss";
 import InfoBubble from "./InfoBubble";
@@ -23,7 +24,7 @@ interface GmapProps {
     locationTo:         Coords | undefined;
     locationStopOvers:  Coords[] | undefined;
     travelMode:         google.maps.TravelMode;
-    routeChanged:       (distance: number, duration: number) => void;
+    routeChanged:       (distance: number, duration: number, incidence: number | null) => void;
 }
 
 // State interface
@@ -123,8 +124,12 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                 },
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
-                        const routeDistance: number = this.computeTotalDistance(result);
-                        const routeDuration: number = this.computeTotalDuration(result);
+                        const routeInfo: {
+                            distance:          number,
+                            duration:          number,
+                            incidence:         number | null,
+                            numMunicipalities: number
+                        } = this.computeRouteInfos(result);
 
                         const waypoints: any[] = [];
                         const waypointsChunks: any[] = [];
@@ -133,7 +138,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         this.directionsRenderer.setDirections(result);
 
                         // set infos (sidebar)
-                        this.props.routeChanged(routeDistance, routeDuration);
+                        this.props.routeChanged(routeInfo.distance, routeInfo.distance, 0);
 
                         // generate linepath for backend
                         result.routes[0].overview_path.forEach(function (wp: any) {
@@ -144,7 +149,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         });
 
                         // set chunk size
-                        chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeDistance / WAYPOINT_DISTANCER_CHUNKER)));
+                        chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
                         console.log("Chunksize:" + chunkSize);
 
                         // draw linepath
@@ -161,75 +166,83 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         waypointsChunks.forEach((wps: any[], index: number) => {
                             this.sendWaypointsToBackend(wps, data => {
                                 // draw municipality polygons
-                                data.forEach((m: MunicipalityDTO) => {
-                                    if(!currentPolygons.includes(m.name)) {
-                                        currentPolygons.push(m.name);
+                                if(data) {
+                                    data.forEach((m: MunicipalityDTO) => {
+                                        if(!currentPolygons.includes(m.name)) {
+                                            currentPolygons.push(m.name);
+                                            routeInfo.numMunicipalities++;
 
-                                        console.log(m.name);
+                                            if (m.geo_shapes) {
+                                                const bounds = new google.maps.LatLngBounds();
 
-                                        if (m.geo_shapes) {
-                                            const bounds = new google.maps.LatLngBounds();
+                                                // TODO: Iterate geo_shapes (can have multiple Polygons)
+                                                const gPolygon = new google.maps.Polygon(
+                                                    {
+                                                        // TODO: Remove this [0] workaround (just here to not break stuff)
+                                                        paths: m.geo_shapes[0].map((coords: CoordinateDTO) => {
+                                                            const pos = {
+                                                                lat: coords.lat || 0,
+                                                                lng: coords.lng || 0
+                                                            };
 
-                                            // TODO: Iterate geo_shapes (can have multiple Polygons)
-                                            const gPolygon = new google.maps.Polygon(
-                                                {
-                                                    // TODO: Remove this [0] workaround (just here to not break stuff)
-                                                    paths: m.geo_shapes[0].map((coords: CoordinateDTO) => {
-                                                        const pos = {
-                                                            lat: coords.lat || 0,
-                                                            lng: coords.lng || 0
-                                                        };
-
-                                                        bounds.extend(pos);
-                                                        return pos;
-                                                    }),
-                                                    strokeWeight: 2,
-                                                    strokeColor: m.incidence_color,
-                                                    fillColor: m.incidence_color,
-                                                    map: this.state.map,
-                                                    ...POLY_OPTIONS
-                                                }
-                                            );
-
-                                            // show info bubble and set values
-                                            gPolygon.addListener("mouseover", () => {
-                                                gPolygon.setOptions(POLY_OPTIONS_HOVER);
-
-                                                this.setState({
-                                                    infoBubble: {
-                                                        show: true,
-                                                        lat: bounds.getCenter().lat().toString(),
-                                                        lng: bounds.getCenter().lng().toString(),
-                                                        name: m.name,
-                                                        zip: m.plz,
-                                                        incidence: m.incidence
+                                                            bounds.extend(pos);
+                                                            return pos;
+                                                        }),
+                                                        strokeWeight: 2,
+                                                        strokeColor: m.incidence_color,
+                                                        fillColor: m.incidence_color,
+                                                        map: this.state.map,
+                                                        ...POLY_OPTIONS
                                                     }
+                                                );
+
+                                                // show info bubble and set values
+                                                gPolygon.addListener("mouseover", () => {
+                                                    gPolygon.setOptions(POLY_OPTIONS_HOVER);
+
+                                                    this.setState({
+                                                        infoBubble: {
+                                                            show: true,
+                                                            lat: bounds.getCenter().lat().toString(),
+                                                            lng: bounds.getCenter().lng().toString(),
+                                                            name: m.name,
+                                                            zip: m.plz,
+                                                            incidence: m.incidence
+                                                        }
+                                                    });
                                                 });
-                                            });
 
-                                            // hide info bubble
-                                            gPolygon.addListener("mouseout", () => {
-                                                gPolygon.setOptions(POLY_OPTIONS);
+                                                // hide info bubble
+                                                gPolygon.addListener("mouseout", () => {
+                                                    gPolygon.setOptions(POLY_OPTIONS);
 
-                                                this.setState({
-                                                    infoBubble: {
-                                                        ...this.state.infoBubble,
-                                                        show: false
-                                                    }
+                                                    this.setState({
+                                                        infoBubble: {
+                                                            ...this.state.infoBubble,
+                                                            show: false
+                                                        }
+                                                    });
                                                 });
-                                            });
 
-                                            this.mapPolygons.push(gPolygon);
+                                                this.mapPolygons.push(gPolygon);
+                                                // compute incidence and set infos (sidebar)
+                                                this.computeRouteIncidenceRollingAVG(routeInfo, m.incidence);
+                                                this.props.routeChanged(
+                                                    routeInfo.distance,
+                                                    routeInfo.distance,
+                                                    routeInfo.incidence
+                                                );
+                                            } else {
+                                                console.warn('ERROR: no geo_shapes found')
+                                            }
                                         } else {
-                                            console.warn('ERROR: no geo_shapes found')
+                                            // console.info('Polygon for ' + m.name + ' already exist on map');
                                         }
-                                    } else {
-                                        console.info('Polygon for ' + m.name + ' already exist on map');
-                                    }
-                                });
+                                    });
 
-                                if(index+1 === waypointsChunks.length) {
-                                    this.setState({ isLoading: false });
+                                    if(index+1 === waypointsChunks.length) {
+                                        this.setState({ isLoading: false });
+                                    }
                                 }
                             });
 
@@ -243,7 +256,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
             );
         } else {
             // remove route, marker and polygons
-            this.props.routeChanged(0, 0);
+            this.props.routeChanged(0, 0, 0);
             removeRoute(this.directionsRenderer);
             removeMarker(this.locationMarker);
             removePolygons(this.mapPolygons);
@@ -265,34 +278,41 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
 
     };
 
-    computeTotalDistance(result: google.maps.DirectionsResult) {
-        let total = 0;
-        const route = result.routes[0];
+    computeRouteInfos(routes: google.maps.DirectionsResult) {
+        const route = routes.routes[0];
 
-        if (!route) {
-            return total;
-        }
+        let result = {
+            distance:          0,
+            duration:          0,
+            incidence:         null,
+            numMunicipalities: 0
+        };
 
-        for (let i = 0; i < route.legs.length; i++) {
-            total += route.legs[i]!.distance!.value;
-        }
+        if (!route || !route.legs) return result;
 
-        return total / 1000;
+        route.legs.forEach((leg: any) => {
+            result.distance  += leg.distance!.value;
+            result.duration  += leg.duration!.value;
+        });
+
+        result.distance /= 1000;
+        result.duration /= 60;
+
+        return result;
     }
 
-    computeTotalDuration(result: google.maps.DirectionsResult) {
-        let total = 0;
-        const route = result.routes[0];
+    computeRouteIncidenceRollingAVG(routeInfo: any, incidence: number | undefined) {
+        let result = 0;
 
-        if (!route) {
-            return total;
+        if(routeInfo.incidence){
+            if(incidence || incidence === 0) {
+                result = (routeInfo.numMunicipalities - 1) * routeInfo.incidence;
+                result += incidence;
+                routeInfo.incidence = result / routeInfo.numMunicipalities;
+            }
+        } else {
+            routeInfo.incidence = incidence;
         }
-
-        for (let i = 0; i < route.legs.length; i++) {
-            total += route.legs[i]!.duration!.value;
-        }
-
-        return Math.round(total / 60);
     }
 
     componentDidUpdate() {

@@ -24,13 +24,21 @@
   color: #eee;
 
   .icon {
-    margin-right: 5px;
+    margin-right: 6px;
     font-size: 18px;
+
+    &.average {
+      border-top: 1px solid #eee;
+    }
   }
 
   & > span {
-    margin-left: 19px;
+    margin-left: 18px;
     margin-right: 4px;
+
+    &:first-child {
+      margin-left: 0;
+    }
   }
 }
 
@@ -75,7 +83,7 @@
   background-color: lighten(#4c5c96,10%);
   margin-left: 0.8em;
   vertical-align: bottom;
-  width: 300px;
+  width: 320px;
   color: #ffffff;
 }
 
@@ -85,7 +93,7 @@
 .btn-purple{
   // background-color: lighten(#4c5c96,10%);
   color: #ffffff;
-  margin-top: 0px !important;
+  margin-top: 0 !important;
   background: #6475b1;
   border-color: #6475b1;
   font-size: 19px;

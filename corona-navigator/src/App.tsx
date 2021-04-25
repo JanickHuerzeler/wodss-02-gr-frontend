@@ -8,18 +8,20 @@ import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
 import {FaBars} from "react-icons/fa";
 import {StopOverCoords} from './components/SideBar';
+
 interface AppProps {}
+
 interface AppState {
-  locationFrom: Coords | undefined;
-  locationTo:   Coords | undefined;
+  locationFrom:      Coords | undefined;
+  locationTo:        Coords | undefined;
   locationStopOvers: Coords[];
-  travelMode:   google.maps.TravelMode;
-  locale:       string;
-  rtl:          boolean;
-  toggled:      boolean;
-  collapsed:    boolean;
-  messages:     { [key: string]: any };
-  route:        { distance: number, duration: number }
+  travelMode:        google.maps.TravelMode;
+  locale:            string;
+  rtl:               boolean;
+  toggled:           boolean;
+  collapsed:         boolean;
+  messages:          { [key: string]: any };
+  route:             { distance: number, duration: number, incidence: number | null }
 }
 
 class App extends Component<AppProps, AppState> {
@@ -32,16 +34,16 @@ class App extends Component<AppProps, AppState> {
     super(props);
   }
   state: AppState = {
-    locationFrom: undefined,
-    locationTo:   undefined,
-    locationStopOvers:  [],
-    travelMode:   google.maps.TravelMode.DRIVING,
-    locale:       "en-GB", //navigator.language
-    messages:     messages,
-    rtl:          false,
-    toggled:      false,
-    collapsed:    false,
-    route:        { distance: 0, duration: 0 }
+    locationFrom:      undefined,
+    locationTo:        undefined,
+    locationStopOvers: [],
+    travelMode:        google.maps.TravelMode.DRIVING,
+    locale:            "en-GB", //navigator.language
+    messages:          messages,
+    rtl:               false,
+    toggled:           false,
+    collapsed:         false,
+    route:             { distance: 0, duration: 0, incidence: 0 }
   };
 
   locationFromChanged = (lat: number | null, lng: number | null) => {
@@ -67,11 +69,12 @@ class App extends Component<AppProps, AppState> {
     this.setState({ travelMode: travelMode });
   }
 
-  routeChanged = (distance: number, duration: number) => {
+  routeChanged = (distance: number, duration: number, incidence: number | null) => {
     this.setState({
       route: {
         distance: distance,
-        duration: duration
+        duration: duration,
+        incidence: incidence
       }
     });
   }
@@ -92,18 +95,19 @@ class App extends Component<AppProps, AppState> {
           }`}
         >
           <SideBar
-            collapsed               = {this.state.collapsed}
-            rtl                     = {this.state.rtl}
-            toggled                 = {this.state.toggled}
-            handleToggleSidebar     = {this.handleToggleSidebar}
-            locationFromChanged     = {this.locationFromChanged}
-            locationToChanged       = {this.locationToChanged}
-            locationStopOversChanged= {this.locationStopOversChanged}
-            travelModeChanged       = {this.travelModeChanged}
-            locales                 = {this.locales}
-            localeChanged           = {this.localeChanged}
-            routeDistance           = {this.state.route.distance}
-            routeDuration           = {this.state.route.duration}
+            collapsed                = { this.state.collapsed }
+            rtl                      = { this.state.rtl }
+            toggled                  = { this.state.toggled }
+            handleToggleSidebar      = { this.handleToggleSidebar }
+            locationFromChanged      = { this.locationFromChanged }
+            locationToChanged        = { this.locationToChanged }
+            locationStopOversChanged = { this.locationStopOversChanged }
+            travelModeChanged        = { this.travelModeChanged }
+            locales                  = { this.locales }
+            localeChanged            = { this.localeChanged }
+            routeDistance            = { this.state.route.distance }
+            routeDuration            = { this.state.route.duration }
+            routeIncidence           = { this.state.route.incidence }
           />
           <main>
 
@@ -116,11 +120,11 @@ class App extends Component<AppProps, AppState> {
               <FaBars />
             </div>
             <GoogleMaps
-              locationFrom      = {this.state.locationFrom}
-              locationTo        = {this.state.locationTo}
-              locationStopOvers = {this.state.locationStopOvers}
-              travelMode        = {this.state.travelMode}
-              routeChanged      = {this.routeChanged}
+              locationFrom      = { this.state.locationFrom }
+              locationTo        = { this.state.locationTo }
+              locationStopOvers = { this.state.locationStopOvers }
+              travelMode        = { this.state.travelMode }
+              routeChanged      = { this.routeChanged }
             />
           </main>
         </div>

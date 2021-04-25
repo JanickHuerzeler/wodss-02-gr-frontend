@@ -31,7 +31,7 @@ class InfoBubble extends Component<InfoBubbleProps & WrappedComponentProps, Info
                 </span>
                 <span className="infoBubble--incidence">
                 {intl.formatMessage({id: 'incidence'})}:
-                    <span>{(data.incidence) ? data.incidence.toFixed(2) : '?'}</span>
+                    <span>{(data.incidence || data.incidence === 0) ? data.incidence.toFixed(1) : '?'}</span>
                 </span>
             </div>
         );

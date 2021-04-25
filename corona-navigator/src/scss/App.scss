@@ -26,7 +26,7 @@ $header-height: 114px;
 
 
 // Sidebar Styling from https://github.com/azouaoui-med/react-pro-sidebar
-$sidebar-width: 380px !important;
+$sidebar-width: 400px !important;
 $sidebar-bg-color: #4c5c96 !important;
 $submenu-bg-color: rgba(84, 86, 147, 0.05) !important;
 $submenu-bg-color-collapsed: rgba(29, 29, 29, 0.95) !important;
@@ -69,8 +69,6 @@ body {
     background: $sidebar-bg-color;
     color: #fff;
     text-align: center;
-    // border-radius: 50%;
-    display: flex;
     align-items: center;
     justify-content: center;
     font-size: 15px;
