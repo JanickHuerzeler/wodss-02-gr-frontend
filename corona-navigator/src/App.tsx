@@ -17,6 +17,7 @@ interface AppState {
   toggled:      boolean;
   collapsed:    boolean;
   messages:     { [key: string]: any };
+  route:        { distance: number, duration: number }
 }
 
 class App extends Component<AppProps, AppState> {
@@ -37,6 +38,7 @@ class App extends Component<AppProps, AppState> {
     rtl:          false,
     toggled:      false,
     collapsed:    false,
+    route:        { distance: 0, duration: 0 }
   };
 
   locationFromChanged = (lat: number | null, lng: number | null) => {
@@ -55,6 +57,15 @@ class App extends Component<AppProps, AppState> {
 
   travelModeChanged = (travelMode: any) => {
     this.setState({ travelMode: travelMode });
+  }
+
+  routeChanged = (distance: number, duration: number) => {
+    this.setState({
+      route: {
+        distance: distance,
+        duration: duration
+      }
+    });
   }
 
   handleToggleSidebar = (toggled: boolean) => {
@@ -82,6 +93,8 @@ class App extends Component<AppProps, AppState> {
             travelModeChanged   = {this.travelModeChanged}
             locales             = {this.locales}
             localeChanged       = {this.localeChanged}
+            routeDistance       = {this.state.route.distance}
+            routeDuration       = {this.state.route.duration}
           />
           <main>
 
@@ -97,6 +110,7 @@ class App extends Component<AppProps, AppState> {
               locationFrom = {this.state.locationFrom}
               locationTo   = {this.state.locationTo}
               travelMode   = {this.state.travelMode}
+              routeChanged = {this.routeChanged}
             />
           </main>
         </div>

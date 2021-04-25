@@ -22,6 +22,7 @@ interface GmapProps {
     locationFrom:   Coords | undefined;
     locationTo:     Coords | undefined;
     travelMode:     google.maps.TravelMode;
+    routeChanged:   (distance: number, duration: number) => void;
 }
 
 // State interface
@@ -117,9 +118,8 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                 },
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
-
-                        let routeTotalDistance: number = this.computeTotalDistance(result);
-                        console.log("Distance: " + routeTotalDistance);
+                        const routeDistance: number = this.computeTotalDistance(result);
+                        const routeDuration: number = this.computeTotalDuration(result);
 
                         const waypoints: any[] = [];
                         const waypointsChunks: any[] = [];
@@ -127,6 +127,8 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         this.setState({ isLoading: true });
                         this.directionsRenderer.setDirections(result);
 
+                        // set infos (sidebar)
+                        this.props.routeChanged(routeDistance, routeDuration);
 
                         // generate linepath for backend
                         result.routes[0].overview_path.forEach(function (wp: any) {
@@ -137,7 +139,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         });
 
                         // set chunk size
-                        chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeTotalDistance / WAYPOINT_DISTANCER_CHUNKER)));
+                        chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeDistance / WAYPOINT_DISTANCER_CHUNKER)));
                         console.log("Chunksize:" + chunkSize);
 
                         // draw linepath
@@ -152,8 +154,6 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         const currentPolygons: (string | undefined)[] = [];
 
                         waypointsChunks.forEach((wps: any[], index: number) => {
-                            console.log('get municipalities', index, wps);
-
                             this.sendWaypointsToBackend(wps, data => {
                                 // draw municipality polygons
                                 data.forEach((m: MunicipalityDTO) => {
@@ -238,6 +238,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
             );
         } else {
             // remove route, marker and polygons
+            this.props.routeChanged(0, 0);
             removeRoute(this.directionsRenderer);
             removeMarker(this.locationMarker);
             removePolygons(this.mapPolygons);
@@ -272,6 +273,21 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         }
 
         return total / 1000;
+    }
+
+    computeTotalDuration(result: google.maps.DirectionsResult) {
+        let total = 0;
+        const route = result.routes[0];
+
+        if (!route) {
+            return total;
+        }
+
+        for (let i = 0; i < route.legs.length; i++) {
+            total += route.legs[i]!.duration!.value;
+        }
+
+        return Math.round(total / 60);
     }
 
     componentDidUpdate() {

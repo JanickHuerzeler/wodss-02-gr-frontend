@@ -8,6 +8,8 @@ import "../scss/SideBar.scss";
 import { Helloworldtype } from "../api";
 import SearchBar from "./SearchBar";
 import {Button, ButtonGroup} from "react-bootstrap";
+import logo from "../resources/logo.png";
+import {BiTime, GiPathDistance} from "react-icons/all";
 
 /**
  * TODO: maybe refactor into config file?
@@ -28,6 +30,8 @@ interface SideBarProps {
   locationFromChanged: (lat: number | null, lng: number | null) => void;
   locationToChanged:   (lat: number | null, lng: number | null) => void;
   travelModeChanged:   (travelMode: google.maps.TravelMode) => void;
+  routeDistance:       number;
+  routeDuration:       number;
 }
 
 interface SideBarState {
@@ -94,6 +98,7 @@ class SideBar extends Component<
       >
         <SidebarHeader>
           <div className='sidebar-header'>
+            <img src={logo} />
             {intl.formatMessage({ id: "sideBarTitle" })}
           </div>
         </SidebarHeader>
@@ -144,9 +149,24 @@ class SideBar extends Component<
                 />
               </div>
             </MenuItem>
+            { (this.props.routeDistance > 0 && this.props.routeDuration > 0) &&
+              <MenuItem>
+                <div className="route-infos">
+                  <span>
+                    <span className='icon'><BiTime /></span>
+                    { (this.props.routeDuration >= 60) && `${Math.floor(this.props.routeDuration / 60)} h ` }
+                    {`${this.props.routeDuration % 60} min` }
+                  </span>
+                  <span>
+                    <span className='icon'><GiPathDistance className='icon' /></span>
+                    { this.props.routeDistance.toFixed(1) } Km
+                  </span>
+                </div>
+              </MenuItem>
+            }
           </Menu>
 
-          {this.state?.helloWorldCoordinates?.map((municipality, i) => {
+          {false && this.state?.helloWorldCoordinates?.map((municipality, i) => {
             return (
               <Menu key='menuWaypoint' iconShape='square' className='route-waypoint'>
                 <SubMenu

@@ -12,6 +12,26 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #ffffff;
+
+  img {
+    margin-right: 16px;
+  }
+}
+
+.route-infos {
+  padding-top: 2px;
+  text-align: right;
+  color: #eee;
+
+  .icon {
+    margin-right: 5px;
+    font-size: 18px;
+  }
+
+  & > span {
+    margin-left: 19px;
+    margin-right: 4px;
+  }
 }
 
 .travelMode {
