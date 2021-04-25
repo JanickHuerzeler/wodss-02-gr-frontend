@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import axios from "axios";
-import {FaBicycle, FaCar, FaGlobe, FaRoute, FaSubway, FaWalking} from "react-icons/fa";
+import {FaBicycle, FaCar, FaGlobe, FaPlus, FaRoute, FaSubway, FaWalking} from "react-icons/fa";
 import {injectIntl,FormattedMessage,WrappedComponentProps} from "react-intl";
 import {ProSidebar, SidebarHeader, SidebarFooter, SidebarContent, Menu, MenuItem, SubMenu} from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -29,6 +29,7 @@ interface SideBarProps {
   handleToggleSidebar: (toggle: boolean) => void;
   locationFromChanged: (lat: number | null, lng: number | null) => void;
   locationToChanged:   (lat: number | null, lng: number | null) => void;
+  locationStopOversChanged: (coordsArray: StopOverCoords[]) => void;
   travelModeChanged:   (travelMode: google.maps.TravelMode) => void;
   routeDistance:       number;
   routeDuration:       number;
@@ -36,7 +37,13 @@ interface SideBarProps {
 
 interface SideBarState {
   helloWorldCoordinates: Helloworldtype[] | undefined;
+  stopOvers: StopOverCoords[];
   travelMode:            string;
+}
+
+export interface StopOverCoords {
+  lat: number | null;
+  lng: number | null;
 }
 
 class SideBar extends Component<
@@ -45,6 +52,7 @@ class SideBar extends Component<
 > {
   state: SideBarState = {
     helloWorldCoordinates: [],
+    stopOvers:             [],
     travelMode:            "DRIVING"
   }
 
@@ -85,6 +93,24 @@ class SideBar extends Component<
       });
   }
 
+  handleStopOverChanged = (
+    lat: number | null,
+    lng: number | null,
+    index: number
+  ) => {
+    const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
+    const currentStopOvers = this.state.stopOvers;
+    currentStopOvers[index] = location ? location : {lat: null, lng: null};
+    this.setState({stopOvers: currentStopOvers});
+    this.props.locationStopOversChanged(currentStopOvers);
+  };
+
+  handleAddSearchbar = () => {
+    const currentStopOvers = this.state?.stopOvers ? this.state.stopOvers : [];
+    this.setState({
+      stopOvers: [...currentStopOvers, { lat: null, lng: null }],
+    });
+  };
   render() {
     const { intl } = this.props;
     return (
@@ -94,7 +120,6 @@ class SideBar extends Component<
         toggled    = {this.props.toggled}
         breakPoint = 'md'
         onToggle   = {this.props.handleToggleSidebar}
-        width      = '380px'
       >
         <SidebarHeader>
           <div className='sidebar-header'>
@@ -141,6 +166,35 @@ class SideBar extends Component<
                 />
               </div>
             </MenuItem>
+            <MenuItem key='searchBarAddStopover' className='searchbar-add-stop-over-wrapper'>
+              {/* <div className="addStopover"> */}
+              <button
+                className='btn btn-purple'
+                onClick={this.handleAddSearchbar}
+              >
+                <FaPlus />
+              </button>
+              {/* </div> */}
+              {this.state?.stopOvers?.map((stopOverCoords, index) => {
+                return (<div className="search-bar-stop-over">
+                  <SearchBar key={'searchBarStopOver'+index}
+                    placeholder={intl.formatMessage({ id: "stopover" })}
+                    onLocationChanged={(lat, lng) => {
+                      this.handleStopOverChanged(lat, lng, index);
+                    }}
+                    focus={false}
+                  ></SearchBar>
+                  </div>
+                );
+              })}
+              {/* <div className='search-bar'>
+                <SearchBar
+                  placeholder={intl.formatMessage({ id: "destinationFrom" })}
+                  onLocationChanged={this.props.locationFromChanged}
+                  focus={true}
+                />
+              </div> */}
+            </MenuItem>
             <MenuItem key='searchBarTo'>
               <div className='search-bar'>
                 <SearchBar
@@ -168,7 +222,11 @@ class SideBar extends Component<
 
           {false && this.state?.helloWorldCoordinates?.map((municipality, i) => {
             return (
-              <Menu key='menuWaypoint' iconShape='square' className='route-waypoint'>
+              <Menu
+                key='menuWaypoint'
+                iconShape='square'
+                className='route-waypoint'
+              >
                 <SubMenu
                   suffix={<span className='badge purple'>{i + 1}</span>}
                   title={municipality.municipality?.bfs_nr?.toString()}

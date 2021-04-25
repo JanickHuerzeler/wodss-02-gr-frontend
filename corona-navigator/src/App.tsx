@@ -7,10 +7,12 @@ import "./resources/messages";
 import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
 import {FaBars} from "react-icons/fa";
+import {StopOverCoords} from './components/SideBar';
 interface AppProps {}
 interface AppState {
   locationFrom: Coords | undefined;
   locationTo:   Coords | undefined;
+  locationStopOvers: Coords[];
   travelMode:   google.maps.TravelMode;
   locale:       string;
   rtl:          boolean;
@@ -32,6 +34,7 @@ class App extends Component<AppProps, AppState> {
   state: AppState = {
     locationFrom: undefined,
     locationTo:   undefined,
+    locationStopOvers:  [],
     travelMode:   google.maps.TravelMode.DRIVING,
     locale:       "en-GB", //navigator.language
     messages:     messages,
@@ -49,6 +52,11 @@ class App extends Component<AppProps, AppState> {
   locationToChanged = (lat: number | null, lng: number | null) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
     this.setState({ locationTo: location });
+  };
+
+  locationStopOversChanged = (coordsArray: StopOverCoords[]) => {
+    const coords: Coords[] = coordsArray.filter((el)=> el.lat !== null && el.lng !== null).map((el)=>{return {lat: el.lat!, lng: el.lng!}});
+    this.setState({locationStopOvers: coords});
   };
 
   localeChanged = (locale: string) => {
@@ -84,17 +92,18 @@ class App extends Component<AppProps, AppState> {
           }`}
         >
           <SideBar
-            collapsed           = {this.state.collapsed}
-            rtl                 = {this.state.rtl}
-            toggled             = {this.state.toggled}
-            handleToggleSidebar = {this.handleToggleSidebar}
-            locationFromChanged = {this.locationFromChanged}
-            locationToChanged   = {this.locationToChanged}
-            travelModeChanged   = {this.travelModeChanged}
-            locales             = {this.locales}
-            localeChanged       = {this.localeChanged}
-            routeDistance       = {this.state.route.distance}
-            routeDuration       = {this.state.route.duration}
+            collapsed               = {this.state.collapsed}
+            rtl                     = {this.state.rtl}
+            toggled                 = {this.state.toggled}
+            handleToggleSidebar     = {this.handleToggleSidebar}
+            locationFromChanged     = {this.locationFromChanged}
+            locationToChanged       = {this.locationToChanged}
+            locationStopOversChanged= {this.locationStopOversChanged}
+            travelModeChanged       = {this.travelModeChanged}
+            locales                 = {this.locales}
+            localeChanged           = {this.localeChanged}
+            routeDistance           = {this.state.route.distance}
+            routeDuration           = {this.state.route.duration}
           />
           <main>
 
@@ -107,10 +116,11 @@ class App extends Component<AppProps, AppState> {
               <FaBars />
             </div>
             <GoogleMaps
-              locationFrom = {this.state.locationFrom}
-              locationTo   = {this.state.locationTo}
-              travelMode   = {this.state.travelMode}
-              routeChanged = {this.routeChanged}
+              locationFrom      = {this.state.locationFrom}
+              locationTo        = {this.state.locationTo}
+              locationStopOvers = {this.state.locationStopOvers}
+              travelMode        = {this.state.travelMode}
+              routeChanged      = {this.routeChanged}
             />
           </main>
         </div>

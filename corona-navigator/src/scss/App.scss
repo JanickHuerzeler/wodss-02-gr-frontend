@@ -26,6 +26,7 @@ $header-height: 114px;
 
 
 // Sidebar Styling from https://github.com/azouaoui-med/react-pro-sidebar
+$sidebar-width: 380px !important;
 $sidebar-bg-color: #4c5c96 !important;
 $submenu-bg-color: rgba(84, 86, 147, 0.05) !important;
 $submenu-bg-color-collapsed: rgba(29, 29, 29, 0.95) !important;
@@ -33,8 +34,13 @@ $sidebar-color: #ffffff;
 $highlight-color: #d8d8d8;
 $icon-bg-color: rgba(255, 255, 255, 0.05);
 $icon-size: 35px;
+$breakpoint-xs: 480px !default;
+$breakpoint-sm: 576px !default;
+$breakpoint-md: 768px !default;
+$breakpoint-lg: 992px !default;
+$breakpoint-xl: 1200px !default;
 
-$map-padding: 0üx;
+$map-padding: 0px;
 $sidebar-toggle-padding: 0.75em;
 
 @import '~react-pro-sidebar/dist/scss/styles.scss';
