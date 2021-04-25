@@ -138,7 +138,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         this.directionsRenderer.setDirections(result);
 
                         // set infos (sidebar)
-                        this.props.routeChanged(routeInfo.distance, routeInfo.distance, 0);
+                        this.props.routeChanged(routeInfo.distance, routeInfo.duration, 0);
 
                         // generate linepath for backend
                         result.routes[0].overview_path.forEach(function (wp: any) {
@@ -308,7 +308,6 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
 
         if(incidence || incidence === 0) {
             if(routeInfo.incidence || routeInfo.incidence === 0){
-                    console.log('add', incidence, routeInfo.numMunicipalities);
                     result = (routeInfo.numMunicipalities - 1) * routeInfo.incidence;
                     result += incidence;
                     routeInfo.incidence = result / routeInfo.numMunicipalities;
