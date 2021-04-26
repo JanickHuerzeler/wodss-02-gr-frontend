@@ -146,6 +146,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         if (this.props.locationFrom && this.props.locationTo) {
             // remove all polygons
             removePolygons(this.mapPolygons);
+            removeMarker(this.locationMarker);
 
             const stopOverWaypoints = this.props.locationStopOvers ? this.props.locationStopOvers.map((s)=>{return {location: s, stopover: true}}) : undefined;
             // get and print  route
