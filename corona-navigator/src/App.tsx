@@ -34,8 +34,8 @@ interface AppState {
 
 class App extends Component<AppProps, AppState> {
   private locales: { [key: string]: string } = {
-    "en-GB": "English",
     "de-DE": "Deutsch",
+    "en-GB": "English",
   };
 
   state: AppState = {
