@@ -97,6 +97,47 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
             });
     }
 
+    insertMunicipalityToRouteInfo(m: MunicipalityDTO, routeInfo: RouteInfos, chunkIndex: number) {
+        let i: number;
+        let insertMunicipality = true;
+
+        // check if municipality already exist
+        for(i = 0; i < routeInfo.municipalities.length; i++) {
+            if(routeInfo.municipalities[i].municipality.name === m.name){
+                if(routeInfo.municipalities[i].index > chunkIndex) {
+                    // delete existing municipality and insert the new one
+                    insertMunicipality = true;
+                    routeInfo.municipalities.splice(i, 1);
+                } else {
+                    // a municipality exist earlier on the route -> do nothing
+                    insertMunicipality = false;
+                }
+
+                break;
+            }
+        }
+
+        if(insertMunicipality) {
+            for(i = 0; i < routeInfo.municipalities.length; i++) {
+                // insert at current position if current index is bigger
+                if(chunkIndex < routeInfo.municipalities[i].index) {
+                    break;
+                }
+
+                // insert at next position if next index is bigger on no next element exist
+                if(chunkIndex < routeInfo.municipalities[i+1]?.index || !routeInfo.municipalities[i+1]) {
+                    i++; break;
+                }
+            }
+
+            // insert municipality
+            routeInfo.municipalities.splice(i, 0, {
+                municipality: m,
+                index: chunkIndex
+            });
+        }
+    }
+
     handleMap = () => {
         this.directionsRenderer.setMap(this.state.map);
 
@@ -145,14 +186,16 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         /** Call backend for municipalities */
                         const currentPolygons: (string | undefined)[] = [];
 
-                        waypointsChunks.forEach((wps: any[], index: number) => {
+                        waypointsChunks.forEach((wps: any[], chunkIndex: number) => {
                             this.sendWaypointsToBackend(wps, data => {
                                 // draw municipality polygons
                                 if(data) {
                                     data.forEach((m: MunicipalityDTO) => {
+                                        // insert municipalities in the right position
+                                        this.insertMunicipalityToRouteInfo(m, routeInfo, chunkIndex);
+
                                         if(!currentPolygons.includes(m.name)) {
                                             currentPolygons.push(m.name);
-                                            routeInfo.municipalities.push(m);
 
                                             if (m.geo_shapes) {
                                                 const bounds = new google.maps.LatLngBounds();
@@ -215,11 +258,11 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                                 console.warn('ERROR: no geo_shapes found')
                                             }
                                         } else {
-                                            // console.info('Polygon for ' + m.name + ' already exist on map');
+                                            // console.info('MW', 'Polygon for ' + m.name + ' already exist on map');
                                         }
                                     });
 
-                                    if(index+1 === waypointsChunks.length) {
+                                    if(chunkIndex+1 === waypointsChunks.length) {
                                         this.setState({ isLoading: false });
                                     }
                                 }
@@ -283,8 +326,8 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     computeRouteIncidenceRollingAVG(routeInfo: RouteInfos, incidence: number | undefined) {
         let result = 0, numMunicipalities = 0
 
-        routeInfo.municipalities.forEach((m: MunicipalityDTO) => {
-            if(m.incidence || m.incidence === 0) numMunicipalities++;
+        routeInfo.municipalities.forEach((m: { municipality: MunicipalityDTO, index: number }) => {
+            if(m.municipality.incidence || m.municipality.incidence === 0) numMunicipalities++;
         });
 
         if(incidence || incidence === 0) {

@@ -14,7 +14,7 @@ export interface RouteInfos {
   distance:       number;
   duration:       number;
   incidence:      number | null;
-  municipalities: MunicipalityDTO[]
+  municipalities: { municipality: MunicipalityDTO, index: number }[]
 }
 
 interface AppProps {}

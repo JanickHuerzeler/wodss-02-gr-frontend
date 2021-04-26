@@ -192,14 +192,16 @@ class SideBar extends Component<
                     return (
                       <li key={`waypoint-${i}`}>
                         <div className="bullet" style={
-                          (m.incidence_color !== "#000000") ? {background: `${m.incidence_color}`}
+                          (m.municipality.incidence_color !== "#000000") ? {background: `${m.municipality.incidence_color}`}
                           : {background: `#6475b1`}
                         }/>
                         <div className="incidence">
-                          { (m.incidence || m.incidence === 0) ? m.incidence?.toFixed(1) : '?' }
+                          { (m.municipality.incidence || m.municipality.incidence === 0)
+                              ? m.municipality.incidence?.toFixed(1) : '?'
+                          }
                         </div>
                         <div className="info">
-                          {m.name}
+                          {m.municipality.name}
                         </div>
                       </li>
                     );
