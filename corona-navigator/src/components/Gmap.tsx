@@ -2,6 +2,7 @@
 
 import React, {Component} from "react";
 import GoogleMapReact, {Coords} from "google-map-react";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 import "../scss/Gmap.scss";
 import InfoBubble from "./InfoBubble";
 import {areLocationArraysEqual, areLocationsEqual} from "../helpers/AreLocationsEqual";
@@ -49,7 +50,7 @@ interface GmapState {
 /**
  * TODO: describe me
  */
-class GoogleMaps extends Component<GmapProps, GmapState> {
+class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState> {
     private readonly directionsService:         any;
     private readonly directionsRenderer:        any;
     private readonly mapPolygons:               any[];
@@ -77,7 +78,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         }
     }
 
-    constructor(props: GmapProps) {
+    constructor(props: (GmapProps & WrappedComponentProps)) {
         super(props);
 
         this.directionsService          = new google.maps.DirectionsService();
@@ -360,14 +361,15 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     }
 
     render() {
-        const {defaultCenter, defaultZoom, center} = this.state;
+        const { defaultCenter, defaultZoom, center } = this.state;
+        const { intl } = this.props;
 
         return (
             <div className={'gmap-wrapper'}>
                 { this.state.isLoading &&
                     <div className='is-loading'>
                         <ImSpinner2 className='icon-spin' />
-                        <span>loading incidence overlay</span>
+                        <span>{intl.formatMessage({ id: "loadingIncidenceOverlay" })}</span>
                     </div>
                 }
                 <GoogleMapReact
@@ -395,4 +397,4 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
     }
 }
 
-export default GoogleMaps;
+export default injectIntl(GoogleMaps);

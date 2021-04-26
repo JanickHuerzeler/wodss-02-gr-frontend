@@ -34,10 +34,7 @@ export interface StopOverCoords {
   lng: number | null;
 }
 
-class SideBar extends Component<
-  SideBarProps & WrappedComponentProps,
-  SideBarState
-> {
+class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarState> {
   state: SideBarState = {
     stopOvers:             [],
     travelMode:            "DRIVING"
@@ -186,7 +183,14 @@ class SideBar extends Component<
           {(this.props.routeInfos.distance > 0) &&
             <Menu key='menuWaypoint' className="menu-waypoints">
               <div className='route-waypoints'>
-                <span className="title">Gemeinden auf der Route ({this.props.routeInfos.municipalities.length})</span>
+                <span className="title">
+                  <div>{intl.formatMessage({ id: "municipalitiesAlongTheRoute" })} ({this.props.routeInfos.municipalities.length})</div>
+                  <div className="waypoints-header">
+                    <span>{intl.formatMessage({ id: "ddincidenced14" })}</span>
+                    <span>{intl.formatMessage({ id: "municipality" })}</span>
+                  </div>
+                </span>
+
                 <ul>
                   {this.props.routeInfos.municipalities.map((m, i) => {
                     return (

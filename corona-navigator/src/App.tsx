@@ -43,7 +43,7 @@ class App extends Component<AppProps, AppState> {
     locationTo:        undefined,
     locationStopOvers: [],
     travelMode:        google.maps.TravelMode.DRIVING,
-    locale:            "en-GB", //navigator.language
+    locale:            "de-DE",
     messages:          messages,
     rtl:               false,
     toggled:           false,
