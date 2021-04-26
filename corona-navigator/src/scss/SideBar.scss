@@ -37,8 +37,8 @@ $light-blue: #6475b1;
 }
 
 .menu-waypoints {
-    overflow-y: auto;
-    margin-top: 30px;
+  overflow-y: auto;
+  margin-top: 30px;
 }
 
 .route-waypoints {
@@ -115,13 +115,11 @@ $light-blue: #6475b1;
     }
   }
 
-  & > span {
+  &>span {
     margin-left: 6px;
     margin-right: 20px;
 
-    &:first-child {
-
-    }
+    &:first-child {}
   }
 }
 
@@ -170,7 +168,7 @@ $light-blue: #6475b1;
   color: #ffffff;
 }
 
-.search-bar-stop-over > div > .SearchBar__search-bar-container {
+.search-bar-stop-over>div>.SearchBar__search-bar-container {
   margin-top: 1em !important;
 }
 
@@ -185,4 +183,19 @@ $light-blue: #6475b1;
 
 .route-waypoint {
   color: #ffffff;
+}
+
+.pro-menu::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: transparent;
+}
+
+.pro-menu::-webkit-scrollbar {
+  width: 12px;
+  background-color: transparent;
+}
+
+.pro-menu::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(0,0,0,0.3);
 }
