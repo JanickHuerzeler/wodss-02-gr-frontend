@@ -8,6 +8,7 @@ interface SearchBoxProps {
     onLocationChanged: (latitude: number | null, longitude: number | null) => void;
     placeholder:       string;
     focus:             boolean;
+    tabIndex:          number;
 }
 
 // State interface
@@ -27,7 +28,8 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
 
     // no autofocus per default
     static defaultProps = {
-        focus: false
+        focus:    false,
+        tabIndex: 1
     }
 
     constructor(props: any) {
@@ -134,7 +136,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                         return (
                             <div className="SearchBar__search-bar-container">
                                 <div className="SearchBar__search-input-container">
-                                    <input
+                                    <input tabIndex={this.props.tabIndex}
                                         ref={(input) => { this.inputFieldRef = input; }}
                                         {...getInputProps({
                                             placeholder: this.props.placeholder,

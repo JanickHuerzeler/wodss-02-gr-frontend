@@ -1,26 +1,108 @@
+$black: #202020;
+$white: #fff;
+$dark-grey: #808080;
+$light-grey: #d9d9d9;
+$purple: #B97CFC;
+$pink: #F93B69;
+$green: #B0E8E2;
+$orange: #EB8B6E;
+
+$blue: #4c5c96;
+$light-blue: #6475b1;
+
 .pro-sidebar-layout {
   overflow: visible !important;
 }
 
-.sidebar-header{
-    padding: 24px 24px;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 12pt;
-    letter-spacing: 1px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #ffffff;
+.sidebar-header {
+  padding: 24px 24px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 12pt;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
 
   img {
     margin-right: 16px;
   }
 }
 
+.pro-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.menu-waypoints {
+    overflow-y: auto;
+    margin-top: 30px;
+}
+
+.route-waypoints {
+  padding: 0 24px 24px 26px;
+  color: #eee;
+  max-height: 100%;
+
+  .title {
+    position: fixed;
+    background: $blue;
+    z-index: 1;
+    padding: 8px 0;
+    margin-top: -42px;
+  }
+
+  ul {
+    padding: .2em 0 0 .4em !important;
+    margin: 0 !important;
+    list-style: none;
+
+    &::before {
+      content: ' ';
+      height: 100%;
+      width: 1px;
+      background-color: rgba(255, 255, 255, .23);
+      position: absolute;
+      top: 0;
+      left: .9em;
+      z-index: -1;
+    }
+  }
+
+  li div {
+    display: inline-block;
+    margin: .26em 0;
+    vertical-align: middle;
+  }
+
+  .bullet {
+    width: 1em;
+    height: 1em;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: $white;
+    z-index: 1;
+    margin-right: 1em;
+    border: 1px solid rgba(0, 0, 0, .3);
+  }
+
+  .incidence {
+    width: 20%;
+    font-size: 0.75em;
+    text-align: right;
+    padding-right: 25px;
+  }
+
+  .info {
+    font-weight: 500;
+    width: 50%;
+  }
+}
+
 .route-infos {
-  padding-top: 2px;
-  text-align: right;
+  padding-top: 9px;
   color: #eee;
 
   .icon {
@@ -33,11 +115,11 @@
   }
 
   & > span {
-    margin-left: 18px;
-    margin-right: 4px;
+    margin-left: 6px;
+    margin-right: 20px;
 
     &:first-child {
-      margin-left: 0;
+
     }
   }
 }
@@ -65,32 +147,33 @@
   }
 }
 
-.team-link{
-    font-size: 8pt;
-    color: #ffffff !important;
-    display: block;
-    margin: 10px 8px 5px;
-    text-align: right;
+.team-link {
+  font-size: 8pt;
+  color: #ffffff !important;
+  display: block;
+  margin: 10px 8px 5px;
+  text-align: right;
 }
 
-.sidebar-footer{
-    font-size:12pt !important;
-    color: #ffffff !important;
-    padding: 20px 24px 5px 20px;
+.sidebar-footer {
+  font-size: 12pt !important;
+  color: #ffffff !important;
+  padding: 20px 24px 5px 20px;
 }
 
-.locales-select{
-  background-color: lighten(#4c5c96,10%);
+.locales-select {
+  background-color: lighten(#4c5c96, 10%);
   margin-left: 0.8em;
   vertical-align: bottom;
   width: 320px;
   color: #ffffff;
 }
 
-.search-bar-stop-over > div > .SearchBar__search-bar-container{
+.search-bar-stop-over > div > .SearchBar__search-bar-container {
   margin-top: 1em !important;
 }
-.btn-purple{
+
+.btn-purple {
   // background-color: lighten(#4c5c96,10%);
   color: #ffffff;
   margin-top: 0 !important;
@@ -99,6 +182,6 @@
   font-size: 19px;
 }
 
-.route-waypoint{
-    color: #ffffff;
+.route-waypoint {
+  color: #ffffff;
 }

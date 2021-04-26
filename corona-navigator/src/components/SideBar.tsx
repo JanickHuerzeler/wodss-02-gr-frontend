@@ -1,24 +1,14 @@
 import React, {Component} from "react";
-import axios from "axios";
-import {FaBicycle, FaCar, FaGlobe, FaPlus, FaRoute, FaSubway, FaWalking} from "react-icons/fa";
+import {FaBicycle, FaCar, FaGlobe, FaPlus, FaSubway, FaWalking} from "react-icons/fa";
 import {injectIntl,FormattedMessage,WrappedComponentProps} from "react-intl";
-import {ProSidebar, SidebarHeader, SidebarFooter, SidebarContent, Menu, MenuItem, SubMenu} from "react-pro-sidebar";
+import {ProSidebar, SidebarHeader, SidebarFooter, SidebarContent, Menu, MenuItem} from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import "../scss/SideBar.scss";
-import { Helloworldtype } from "../api";
 import SearchBar from "./SearchBar";
 import {Button, ButtonGroup} from "react-bootstrap";
 import logo from "../resources/logo.png";
 import {BiTime, GiPathDistance, RiVirusLine} from "react-icons/all";
-
-/**
- * TODO: maybe refactor into config file?
- * */
-const baseApiPath    = "http://localhost:5001";
-const helloWorldPath = "/helloworld/";
-const headers        = {
-  headers: { "Content-Type": "application/json; charset=utf-8" },
-};
+import {RouteInfos} from "../App";
 
 interface SideBarProps {
   rtl:                      boolean;
@@ -31,13 +21,10 @@ interface SideBarProps {
   locationToChanged:        (lat: number | null, lng: number | null) => void;
   locationStopOversChanged: (coordsArray: StopOverCoords[]) => void;
   travelModeChanged:        (travelMode: google.maps.TravelMode) => void;
-  routeDistance:            number;
-  routeDuration:            number;
-  routeIncidence:           number | null;
+  routeInfos:               RouteInfos;
 }
 
 interface SideBarState {
-  helloWorldCoordinates: Helloworldtype[] | undefined;
   stopOvers: StopOverCoords[];
   travelMode:            string;
 }
@@ -52,7 +39,6 @@ class SideBar extends Component<
   SideBarState
 > {
   state: SideBarState = {
-    helloWorldCoordinates: [],
     stopOvers:             [],
     travelMode:            "DRIVING"
   }
@@ -61,9 +47,7 @@ class SideBar extends Component<
     super(props);
   }
 
-  componentDidMount() {
-    this.handleHelloWorldChange();
-  }
+  componentDidMount() { }
 
   changeTravelMode = (ev: any) => {
     // convert string to TravelMode enum
@@ -75,23 +59,6 @@ class SideBar extends Component<
     });
 
     this.props.travelModeChanged(travelMode);
-  }
-
-  handleHelloWorldChange() {
-    axios
-      .get<Helloworldtype[]>(baseApiPath + helloWorldPath, {
-        headers: headers.headers,
-      })
-      .then((response: any) => {
-        this.setState({ helloWorldCoordinates: response.data });
-      })
-      .catch((ex: { response: { status: number } }) => {
-        const error =
-          ex.response.status === 404
-            ? "Resource not found"
-            : "Unexpected Error";
-        console.log(error);
-      });
   }
 
   handleStopOverChanged = (
@@ -160,7 +127,7 @@ class SideBar extends Component<
           <Menu key='menuSearch' iconShape='circle'>
             <MenuItem key='searchBarFrom'>
               <div className='search-bar'>
-                <SearchBar
+                <SearchBar tabIndex={1}
                   placeholder={intl.formatMessage({ id: "destinationFrom" })}
                   onLocationChanged={this.props.locationFromChanged}
                   focus={true}
@@ -177,7 +144,7 @@ class SideBar extends Component<
               </button>
               {this.state?.stopOvers?.map((stopOverCoords, index) => {
                 return (<div className="search-bar-stop-over">
-                  <SearchBar key={'searchBarStopOver'+index}
+                  <SearchBar key={'searchBarStopOver'+index} tabIndex={2}
                     placeholder={intl.formatMessage({ id: "stopover" })}
                     onLocationChanged={(lat, lng) => {
                       this.handleStopOverChanged(lat, lng, index);
@@ -196,61 +163,52 @@ class SideBar extends Component<
                 />
               </div>
             </MenuItem>
-            { (this.props.routeDistance > 0 && this.props.routeDuration > 0) &&
+            { (this.props.routeInfos.distance > 0) &&
               <MenuItem>
                 <div className="route-infos">
                   <span>
                     <span className='icon average'><RiVirusLine /></span>
-                    { this.props.routeIncidence?.toFixed(1) }
+                    { this.props.routeInfos?.incidence?.toFixed(1) || 0 }
                   </span>
                   <span>
                     <span className='icon'><BiTime /></span>
-                    { (this.props.routeDuration >= 60) && `${Math.floor(this.props.routeDuration / 60)} h ` }
-                    {`${(this.props.routeDuration % 60).toFixed()} min` }
+                    {
+                      (this.props.routeInfos.duration >= 60) &&
+                      `${Math.floor(this.props.routeInfos.duration / 60)} h `
+                    }
+                    {`${(this.props.routeInfos.duration % 60).toFixed()} min` }
                   </span>
                   <span>
                     <span className='icon'><GiPathDistance /></span>
-                    { this.props.routeDistance.toFixed(1) } km
+                    { this.props.routeInfos.distance.toFixed(1) } km
                   </span>
                 </div>
               </MenuItem>
             }
           </Menu>
 
-          {false && this.state?.helloWorldCoordinates?.map((municipality, i) => {
-            return (
-              <Menu
-                key='menuWaypoint'
-                iconShape='square'
-                className='route-waypoint'
-              >
-                <SubMenu
-                  suffix={<span className='badge purple'>{i + 1}</span>}
-                  title={municipality.municipality?.bfs_nr?.toString()}
-                  icon={<FaRoute />}
-                >
-                  <MenuItem key='municipalityArea'>
-                    {intl.formatMessage({ id: "area" })}:{" "}
-                    {municipality.municipality?.area}
-                  </MenuItem>
-                  <MenuItem key='municipalityPopulation'>
-                    {intl.formatMessage({ id: "population" })}:{" "}
-                    {municipality.municipality?.population}
-                  </MenuItem>
-                  <MenuItem key='municipalityIncidence'>
-                    {intl.formatMessage({ id: "incidence" })}:{" "}
-                    {municipality.municipality?.incidence}
-                  </MenuItem>
-                  <MenuItem key='municipalityCoords' className='coords'>
-                    {intl.formatMessage({ id: "coordinates" })}:{" "}
-                    {municipality.polygon?.flat().map((polygon, i) => (
-                      <span key={i}>{polygon.toString()}</span>
-                    ))}
-                  </MenuItem>
-                </SubMenu>
-              </Menu>
-            );
-          })}
+          {(this.props.routeInfos.distance > 0) &&
+            <Menu key='menuWaypoint' className="menu-waypoints">
+              <div className='route-waypoints'>
+                <span className="title">Gemeinden auf der Route ({this.props.routeInfos.municipalities.length})</span>
+                <ul>
+                  {this.props.routeInfos.municipalities.map((m, i) => {
+                    return (
+                      <li key={`waypoint-${i}`}>
+                        <div className="bullet" style={{background: `${m.incidence_color}`}}/>
+                        <div className="incidence">
+                          {m.incidence?.toFixed(1)}
+                        </div>
+                        <div className="info">
+                          {m.name}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </Menu>
+          }
         </SidebarContent>
 
         <SidebarFooter className='sidebar-footer'>

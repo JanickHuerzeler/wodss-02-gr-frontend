@@ -8,6 +8,14 @@ import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
 import {FaBars} from "react-icons/fa";
 import {StopOverCoords} from './components/SideBar';
+import {MunicipalityDTO} from "./api";
+
+export interface RouteInfos {
+  distance:       number;
+  duration:       number;
+  incidence:      number | null;
+  municipalities: MunicipalityDTO[]
+}
 
 interface AppProps {}
 
@@ -21,7 +29,7 @@ interface AppState {
   toggled:           boolean;
   collapsed:         boolean;
   messages:          { [key: string]: any };
-  route:             { distance: number, duration: number, incidence: number | null }
+  routeInfos:        RouteInfos
 }
 
 class App extends Component<AppProps, AppState> {
@@ -43,7 +51,12 @@ class App extends Component<AppProps, AppState> {
     rtl:               false,
     toggled:           false,
     collapsed:         false,
-    route:             { distance: 0, duration: 0, incidence: 0 }
+    routeInfos:        {
+      distance:       0,
+      duration:       0,
+      incidence:      null,
+      municipalities: []
+    }
   };
 
   locationFromChanged = (lat: number | null, lng: number | null) => {
@@ -69,15 +82,11 @@ class App extends Component<AppProps, AppState> {
     this.setState({ travelMode: travelMode });
   }
 
-  routeChanged = (distance: number, duration: number, incidence: number | null) => {
+  routeChanged = (routeInfos: RouteInfos) => {
     this.setState({
-      route: {
-        distance: distance,
-        duration: duration,
-        incidence: incidence
-      }
+      routeInfos: routeInfos
     });
-  }
+  };
 
   handleToggleSidebar = (toggled: boolean) => {
     this.setState({ toggled: toggled });
@@ -105,9 +114,7 @@ class App extends Component<AppProps, AppState> {
             travelModeChanged        = { this.travelModeChanged }
             locales                  = { this.locales }
             localeChanged            = { this.localeChanged }
-            routeDistance            = { this.state.route.distance }
-            routeDuration            = { this.state.route.duration }
-            routeIncidence           = { this.state.route.incidence }
+            routeInfos               = { this.state.routeInfos }
           />
           <main>
 

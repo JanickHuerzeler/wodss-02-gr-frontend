@@ -9,6 +9,7 @@ import {removeMarker, removePolygons, removeRoute} from "../helpers/MapInteracti
 import { Api } from "../api/navigatorApi";
 import {CoordinateDTO, MunicipalityDTO} from "../api";
 import {ImSpinner2} from "react-icons/all";
+import {RouteInfos} from "../App";
 
 const API                           = new Api({baseUrl:'http://localhost:5001'});
 const GOOGLE_API_KEY                = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
@@ -16,7 +17,7 @@ const DEFAULT_MAP_CENTER            = { lat: 47.48107, lng: 8.21162 };
 const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
 const POLY_OPTIONS                  = { strokeOpacity: .5,  fillOpacity: .3 };
 const POLY_OPTIONS_HOVER            = { strokeOpacity: .95, fillOpacity: .6 };
-const WAYPOINT_DISTANCER_CHUNKER    = 30
+const WAYPOINT_DISTANCER_CHUNKER    = 20
 
 // Props interface
 interface GmapProps {
@@ -24,7 +25,7 @@ interface GmapProps {
     locationTo:         Coords | undefined;
     locationStopOvers:  Coords[] | undefined;
     travelMode:         google.maps.TravelMode;
-    routeChanged:       (distance: number, duration: number, incidence: number | null) => void;
+    routeChanged:       (routeInfo: RouteInfos) => void;
 }
 
 // State interface
@@ -124,13 +125,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                 },
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
-                        const routeInfo: {
-                            distance:          number,
-                            duration:          number,
-                            incidence:         number | null,
-                            numMunicipalities: number
-                        } = this.computeRouteInfos(result);
-
+                        const routeInfo: RouteInfos = this.computeRouteInfos(result);
                         const waypoints: any[] = [];
                         const waypointsChunks: any[] = [];
                         let chunkSize: number;
@@ -138,7 +133,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         this.directionsRenderer.setDirections(result);
 
                         // set infos (sidebar)
-                        this.props.routeChanged(routeInfo.distance, routeInfo.duration, 0);
+                        this.props.routeChanged(routeInfo);
 
                         // generate linepath for backend
                         result.routes[0].overview_path.forEach(function (wp: any) {
@@ -150,7 +145,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
 
                         // set chunk size
                         chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
-                        console.log("Chunksize:" + chunkSize);
+                        console.log("Chunksize: " + chunkSize);
 
                         // draw linepath
                         // const linePath = this.drawLinepath(waypoints);
@@ -170,9 +165,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                     data.forEach((m: MunicipalityDTO) => {
                                         if(!currentPolygons.includes(m.name)) {
                                             currentPolygons.push(m.name);
-                                            if(m.incidence || m.incidence === 0) {
-                                                routeInfo.numMunicipalities++;
-                                            }
+                                            routeInfo.municipalities.push(m);
 
                                             if (m.geo_shapes) {
                                                 const bounds = new google.maps.LatLngBounds();
@@ -229,11 +222,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                                 this.mapPolygons.push(gPolygon);
                                                 // compute incidence and set infos (sidebar)
                                                 this.computeRouteIncidenceRollingAVG(routeInfo, m.incidence);
-                                                this.props.routeChanged(
-                                                    routeInfo.distance,
-                                                    routeInfo.distance,
-                                                    routeInfo.incidence
-                                                );
+                                                this.props.routeChanged(routeInfo);
                                             } else {
                                                 console.warn('ERROR: no geo_shapes found')
                                             }
@@ -258,7 +247,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
             );
         } else {
             // remove route, marker and polygons
-            this.props.routeChanged(0, 0, 0);
+            this.props.routeChanged({distance: 0, duration: 0, incidence: null, municipalities: []});
             removeRoute(this.directionsRenderer);
             removeMarker(this.locationMarker);
             removePolygons(this.mapPolygons);
@@ -287,7 +276,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
             distance:          0,
             duration:          0,
             incidence:         null,
-            numMunicipalities: 0
+            municipalities:    []
         };
 
         if (!route || !route.legs) return result;
@@ -303,14 +292,18 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         return result;
     }
 
-    computeRouteIncidenceRollingAVG(routeInfo: any, incidence: number | undefined) {
-        let result = 0;
+    computeRouteIncidenceRollingAVG(routeInfo: RouteInfos, incidence: number | undefined) {
+        let result = 0, numMunicipalities = 0
+
+        routeInfo.municipalities.forEach((m: MunicipalityDTO) => {
+            if(m.incidence || m.incidence === 0) numMunicipalities++;
+        });
 
         if(incidence || incidence === 0) {
             if(routeInfo.incidence || routeInfo.incidence === 0){
-                    result = (routeInfo.numMunicipalities - 1) * routeInfo.incidence;
-                    result += incidence;
-                    routeInfo.incidence = result / routeInfo.numMunicipalities;
+                result = (numMunicipalities - 1) * routeInfo.incidence;
+                result += incidence;
+                routeInfo.incidence = result / numMunicipalities;
             } else {
                 routeInfo.incidence = incidence;
             }
