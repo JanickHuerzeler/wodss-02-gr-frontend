@@ -58,6 +58,7 @@ $light-blue: #6475b1;
     padding: .2em 0 0 .4em !important;
     margin: 0 !important;
     list-style: none;
+    position: relative;
 
     &::before {
       content: ' ';
