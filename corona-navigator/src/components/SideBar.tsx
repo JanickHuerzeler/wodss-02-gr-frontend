@@ -96,22 +96,22 @@ class SideBar extends Component<
           <Menu key='menuTravelMode'>
             <div className='travelMode'>
               <ButtonGroup aria-label="Basic example">
-                <Button
+                <Button tabIndex={1}
                     className={(this.state.travelMode === "DRIVING") ? "active" : ""}
                     id="DRIVING" variant="secondary"
                     onClick={this.changeTravelMode}
                 ><FaCar /></Button>
-                <Button
+                <Button tabIndex={2}
                     className={(this.state.travelMode === "TRANSIT") ? "active" : ""}
                     id="TRANSIT" variant="secondary"
                     onClick={this.changeTravelMode}
                 ><FaSubway /></Button>
-                <Button
+                <Button tabIndex={3}
                     className={(this.state.travelMode === "WALKING") ? "active" : ""}
                     id="WALKING" variant="secondary"
                     onClick={this.changeTravelMode}
                 ><FaWalking /></Button>
-                <Button
+                <Button tabIndex={4}
                     className={(this.state.travelMode === "BICYCLING") ? "active" : ""}
                     id="BICYCLING" variant="secondary"
                     onClick={this.changeTravelMode}
@@ -123,7 +123,7 @@ class SideBar extends Component<
           <Menu key='menuSearch' iconShape='circle'>
             <MenuItem key='searchBarFrom'>
               <div className='search-bar'>
-                <SearchBar tabIndex={1}
+                <SearchBar tabIndex={5}
                   placeholder={intl.formatMessage({ id: "destinationFrom" })}
                   onLocationChanged={this.props.locationFromChanged}
                   focus={true}
@@ -140,7 +140,7 @@ class SideBar extends Component<
               </button>
               {this.state?.stopOvers?.map((stopOverCoords, index) => {
                 return (<div className="search-bar-stop-over">
-                  <SearchBar key={'searchBarStopOver'+index} tabIndex={2}
+                  <SearchBar key={'searchBarStopOver'+index}
                     placeholder={intl.formatMessage({ id: "stopover" })}
                     onLocationChanged={(lat, lng) => {
                       this.handleStopOverChanged(lat, lng, index);
@@ -153,7 +153,7 @@ class SideBar extends Component<
             </MenuItem>
             <MenuItem key='searchBarTo'>
               <div className='search-bar'>
-                <SearchBar
+                <SearchBar tabIndex={6}
                   placeholder={intl.formatMessage({ id: "destinationTo" })}
                   onLocationChanged={this.props.locationToChanged}
                 />
