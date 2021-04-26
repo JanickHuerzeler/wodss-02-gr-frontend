@@ -1,22 +1,7 @@
 import React, {Component} from "react";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import "../scss/InfoBubble.scss";
-
-interface InfoBubbleProps {
-    lat:           string;
-    lng:           string;
-    data: {
-        show:      boolean;
-        lat:       string;
-        lng:       string;
-        name:      string | undefined;
-        zip:       number | undefined;
-        incidence: number | undefined;
-    }
-}
-
-interface InfoBubbleState {
-}
+import {InfoBubbleProps, InfoBubbleState} from "../types/InfoBubble";
 
 class InfoBubble extends Component<InfoBubbleProps & WrappedComponentProps, InfoBubbleState> {
 

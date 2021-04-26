@@ -7,30 +7,9 @@ import "./resources/messages";
 import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
 import {FaBars} from "react-icons/fa";
-import {StopOverCoords} from './components/SideBar';
-import {MunicipalityDTO} from "./api";
-
-export interface RouteInfos {
-  distance:       number;
-  duration:       number;
-  incidence:      number | null;
-  municipalities: { municipality: MunicipalityDTO, index: number }[]
-}
-
-interface AppProps {}
-
-interface AppState {
-  locationFrom:      Coords | undefined;
-  locationTo:        Coords | undefined;
-  locationStopOvers: Coords[];
-  travelMode:        google.maps.TravelMode;
-  locale:            string;
-  rtl:               boolean;
-  toggled:           boolean;
-  collapsed:         boolean;
-  messages:          { [key: string]: any };
-  routeInfos:        RouteInfos
-}
+import {StopOverCoords} from './types/StopOverCoords';
+import {RouteInfos} from "./types/RouteInfos";
+import {AppProps, AppState} from "./types/App";
 
 class App extends Component<AppProps, AppState> {
   private locales: { [key: string]: string } = {

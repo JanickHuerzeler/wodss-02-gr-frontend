@@ -7,10 +7,11 @@ import "../scss/Gmap.scss";
 import InfoBubble from "./InfoBubble";
 import {areLocationArraysEqual, areLocationsEqual} from "../helpers/AreLocationsEqual";
 import {removeMarker, removePolygons, removeRoute} from "../helpers/MapInteractions";
-import { Api } from "../api/navigatorApi";
+import {Api} from "../api/navigatorApi";
 import {CoordinateDTO, MunicipalityDTO} from "../api";
 import {ImSpinner2} from "react-icons/all";
-import {RouteInfos} from "../App";
+import {RouteInfos} from "../types/RouteInfos";
+import {GmapProps, GmapState} from "../types/Gmap";
 
 const API                           = new Api({baseUrl:'http://localhost:5001'});
 const GOOGLE_API_KEY                = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
@@ -19,34 +20,6 @@ const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'satu
 const POLY_OPTIONS                  = { strokeOpacity: .5,  fillOpacity: .3 };
 const POLY_OPTIONS_HOVER            = { strokeOpacity: .95, fillOpacity: .6 };
 const WAYPOINT_DISTANCER_CHUNKER    = 20
-
-// Props interface
-interface GmapProps {
-    locationFrom:       Coords | undefined;
-    locationTo:         Coords | undefined;
-    locationStopOvers:  Coords[] | undefined;
-    travelMode:         google.maps.TravelMode;
-    routeChanged:       (routeInfo: RouteInfos) => void;
-}
-
-// State interface
-interface GmapState {
-    defaultCenter:  Coords | undefined;
-    center:         Coords | undefined;
-    defaultZoom:    number;
-    map:            any | null;
-    mapLoaded:      boolean;
-    isLoading:      boolean;
-    uniqueId:       number;
-    infoBubble: {
-        show:       boolean;
-        lat:        string;
-        lng:        string;
-        name:       string | undefined;
-        zip:        number | undefined;
-        incidence:  number | undefined;
-    }
-}
 
 /**
  * TODO: describe me

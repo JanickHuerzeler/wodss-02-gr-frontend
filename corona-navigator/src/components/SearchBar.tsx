@@ -2,23 +2,7 @@ import React from 'react';
 import "../scss/SearchBar.scss";
 import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 import {classnames} from '../helpers/Classnames';
-
-// Props interface
-interface SearchBoxProps {
-    onLocationChanged: (latitude: number | null, longitude: number | null) => void;
-    placeholder:       string;
-    focus:             boolean;
-    tabIndex:          number;
-}
-
-// State interface
-interface SearchBoxState {
-    address:      string;
-    errorMessage: string;
-    latitude:     number | null;
-    longitude:    number | null;
-    isGeocoding:  boolean;
-}
+import {SearchBoxProps, SearchBoxState} from "../types/SearchBar";
 
 /**
  * TODO: describe me
