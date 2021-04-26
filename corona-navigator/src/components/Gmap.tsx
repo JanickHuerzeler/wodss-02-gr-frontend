@@ -90,16 +90,6 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
         this.travelModeBefore           = this.props.travelMode;
     }
 
-    drawLinepath(waypoints: any[]) {
-        return new google.maps.Polyline({
-            path: waypoints,
-            strokeColor: "#f45017",
-            strokeOpacity: 1.0,
-            strokeWeight: 5,
-            map: this.state.map
-        });
-    }
-
     sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: any) => void) {
         API.waypoints.municipalityList(waypoints)
             .then((dt: { data: any; }) => {
@@ -125,10 +115,10 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                 },
                 (result: any, status: any) => {
                     if (result && status === google.maps.DirectionsStatus.OK) {
-                        const routeInfo: RouteInfos = this.computeRouteInfos(result);
-                        const waypoints: any[] = [];
+                        const routeInfo: RouteInfos  = this.computeRouteInfos(result);
+                        const waypoints:       any[] = [];
                         const waypointsChunks: any[] = [];
-                        let chunkSize: number;
+                        let chunkSize:         number;
                         this.setState({ isLoading: true });
                         this.directionsRenderer.setDirections(result);
 
@@ -146,9 +136,6 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         // set chunk size
                         chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
                         console.log("Chunksize: " + chunkSize);
-
-                        // draw linepath
-                        // const linePath = this.drawLinepath(waypoints);
 
                         // split waypoints-array in chunks
                         for (let i = 0, j = waypoints.length; i < j; i += chunkSize) {
