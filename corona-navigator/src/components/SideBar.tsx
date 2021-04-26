@@ -43,10 +43,6 @@ class SideBar extends Component<
     travelMode:            "DRIVING"
   }
 
-  constructor(props: any) {
-    super(props);
-  }
-
   componentDidMount() { }
 
   changeTravelMode = (ev: any) => {

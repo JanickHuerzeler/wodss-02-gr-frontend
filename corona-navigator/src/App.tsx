@@ -38,9 +38,6 @@ class App extends Component<AppProps, AppState> {
     "de-DE": "Deutsch",
   };
 
-  constructor(props: any) {
-    super(props);
-  }
   state: AppState = {
     locationFrom:      undefined,
     locationTo:        undefined,
