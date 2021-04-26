@@ -15,7 +15,8 @@ export default{
         sideBarTitle:                 'Corona Wegweiser',
         sideBarFooter:                'Corona Navigator, Gruppe 02 Kt. Graubünden',
         stopover:                     'Zwischenhalt',
-        loadingIncidenceOverlay:      'Inzidenz Overlay wird geladen'
+        loadingIncidenceOverlay:      'Inzidenz Overlay wird geladen',
+        loadingFinished:              'Inzidenzen erfolgreich geladen'
     },
     'en-GB': {
         area: 'Area',
@@ -31,7 +32,8 @@ export default{
         sideBarTitle:                 'Corona Navigator',
         sideBarFooter:                'Corona Navigator, Group 02 Ct. Graubünden',
         stopover:                     'Stopover',
-        loadingIncidenceOverlay:      'loading incidence overlay'
+        loadingIncidenceOverlay:      'loading incidence overlay',
+        loadingFinished:              'Incidences successfully loaded'
     }
 
 }

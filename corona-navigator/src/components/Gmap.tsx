@@ -9,7 +9,7 @@ import {areLocationArraysEqual, areLocationsEqual} from "../helpers/AreLocations
 import {removeMarker, removePolygons, removeRoute} from "../helpers/MapInteractions";
 import {Api} from "../api/navigatorApi";
 import {CoordinateDTO, MunicipalityDTO} from "../api";
-import {ImSpinner2} from "react-icons/all";
+import {HiCheckCircle, ImSpinner2} from "react-icons/all";
 import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
 
@@ -36,20 +36,21 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
     // set default state
     state: GmapState = {
-        defaultCenter: DEFAULT_MAP_CENTER,
-        center:        DEFAULT_MAP_CENTER,
-        defaultZoom:   12,
-        map:           null,
-        mapLoaded:     false,
-        isLoading:     false,
-        uniqueId:      0,
+        defaultCenter:   DEFAULT_MAP_CENTER,
+        center:          DEFAULT_MAP_CENTER,
+        defaultZoom:     12,
+        map:             null,
+        mapLoaded:       false,
+        isLoading:       false,
+        loaded: false,
+        uniqueId:        0,
         infoBubble: {
-            show:      false,
-            lat:       '',
-            lng:       '',
-            name:      '',
-            zip:       0,
-            incidence: 0
+            show:        false,
+            lat:         '',
+            lng:         '',
+            name:        '',
+            zip:         0,
+            incidence:   0
         }
     }
 
@@ -245,6 +246,11 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
                                     if(chunkIndex+1 === waypointsChunks.length) {
                                         this.setState({ isLoading: false });
+
+                                        // show success message for 6sec
+                                        this.setState({ loaded: true });
+                                        setTimeout(() => this.setState({ loaded: false }), 6000)
+
                                     }
                                 }
                             });
@@ -347,10 +353,16 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         return (
             <div className={'gmap-wrapper'}>
                 { this.state.isLoading &&
-                    <div className='is-loading'>
-                        <ImSpinner2 className='icon-spin' />
-                        <span>{intl.formatMessage({ id: "loadingIncidenceOverlay" })}</span>
-                    </div>
+                <div className='is-loading'>
+                    <ImSpinner2 className='icon-spin' />
+                    <span>{intl.formatMessage({ id: "loadingIncidenceOverlay" })}</span>
+                </div>
+                }
+                { this.state.loaded &&
+                <div className='loading-finished'>
+                    <HiCheckCircle />
+                    <span>{intl.formatMessage({ id: "loadingFinished" })}</span>
+                </div>
                 }
                 <GoogleMapReact
                     bootstrapURLKeys  = { { key: GOOGLE_API_KEY } }

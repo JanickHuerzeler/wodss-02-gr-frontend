@@ -1,7 +1,7 @@
 .gmap-wrapper {
   height: 100%;
 
-  .is-loading {
+  .is-loading, .loading-finished {
     position: absolute;
     z-index: 1;
     top: 10px;
@@ -23,6 +23,10 @@
       padding-left: 12px;
       padding-right: 5px;
     }
+  }
+
+  .loading-finished {
+    background: #51a351;
   }
 
   .icon-spin {

@@ -10,19 +10,20 @@ export interface GmapProps {
 }
 
 export interface GmapState {
-    defaultCenter:  Coords | undefined;
-    center:         Coords | undefined;
-    defaultZoom:    number;
-    map:            any | null;
-    mapLoaded:      boolean;
-    isLoading:      boolean;
-    uniqueId:       number;
+    defaultCenter:   Coords | undefined;
+    center:          Coords | undefined;
+    defaultZoom:     number;
+    map:             any | null;
+    mapLoaded:       boolean;
+    isLoading:       boolean;
+    loaded:          boolean;
+    uniqueId:        number;
     infoBubble: {
-        show:       boolean;
-        lat:        string;
-        lng:        string;
-        name:       string | undefined;
-        zip:        number | undefined;
-        incidence:  number | undefined;
+        show:        boolean;
+        lat:         string;
+        lng:         string;
+        name:        string | undefined;
+        zip:         number | undefined;
+        incidence:   number | undefined;
     }
 }
