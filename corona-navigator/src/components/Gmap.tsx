@@ -135,7 +135,7 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                         // set infos (sidebar)
                         this.props.routeChanged(routeInfo);
 
-                        // generate linepath for backend
+                        // generate linepath for backend from first (best) route
                         result.routes[0].overview_path.forEach(function (wp: any) {
                             waypoints.push({
                                 lat: parseFloat(wp.lat()),
@@ -170,56 +170,57 @@ class GoogleMaps extends Component<GmapProps, GmapState> {
                                             if (m.geo_shapes) {
                                                 const bounds = new google.maps.LatLngBounds();
 
-                                                // TODO: Iterate geo_shapes (can have multiple Polygons)
-                                                const gPolygon = new google.maps.Polygon(
-                                                    {
-                                                        // TODO: Remove this [0] workaround (just here to not break stuff)
-                                                        paths: m.geo_shapes[0].map((coords: CoordinateDTO) => {
-                                                            const pos = {
-                                                                lat: coords.lat || 0,
-                                                                lng: coords.lng || 0
-                                                            };
+                                                m.geo_shapes.forEach((geo_shape: CoordinateDTO[]) => {
+                                                    const gPolygon = new google.maps.Polygon(
+                                                        {
+                                                            paths: geo_shape.map((coords: CoordinateDTO) => {
+                                                                const pos = {
+                                                                    lat: coords.lat || 0,
+                                                                    lng: coords.lng || 0
+                                                                };
 
-                                                            bounds.extend(pos);
-                                                            return pos;
-                                                        }),
-                                                        strokeWeight: 2,
-                                                        strokeColor: m.incidence_color,
-                                                        fillColor: m.incidence_color,
-                                                        map: this.state.map,
-                                                        ...POLY_OPTIONS
-                                                    }
-                                                );
-
-                                                // show info bubble and set values
-                                                gPolygon.addListener("mouseover", () => {
-                                                    gPolygon.setOptions(POLY_OPTIONS_HOVER);
-
-                                                    this.setState({
-                                                        infoBubble: {
-                                                            show: true,
-                                                            lat: bounds.getCenter().lat().toString(),
-                                                            lng: bounds.getCenter().lng().toString(),
-                                                            name: m.name,
-                                                            zip: m.plz,
-                                                            incidence: m.incidence
+                                                                bounds.extend(pos);
+                                                                return pos;
+                                                            }),
+                                                            strokeWeight: 2,
+                                                            strokeColor: m.incidence_color,
+                                                            fillColor: m.incidence_color,
+                                                            map: this.state.map,
+                                                            ...POLY_OPTIONS
                                                         }
+                                                    );
+
+                                                    // show info bubble and set values
+                                                    gPolygon.addListener("mouseover", () => {
+                                                        gPolygon.setOptions(POLY_OPTIONS_HOVER);
+
+                                                        this.setState({
+                                                            infoBubble: {
+                                                                show: true,
+                                                                lat: bounds.getCenter().lat().toString(),
+                                                                lng: bounds.getCenter().lng().toString(),
+                                                                name: m.name,
+                                                                zip: m.plz,
+                                                                incidence: m.incidence
+                                                            }
+                                                        });
                                                     });
+
+                                                    // hide info bubble
+                                                    gPolygon.addListener("mouseout", () => {
+                                                        gPolygon.setOptions(POLY_OPTIONS);
+
+                                                        this.setState({
+                                                            infoBubble: {
+                                                                ...this.state.infoBubble,
+                                                                show: false
+                                                            }
+                                                        });
+                                                    });
+
+                                                    this.mapPolygons.push(gPolygon);
                                                 });
 
-                                                // hide info bubble
-                                                gPolygon.addListener("mouseout", () => {
-                                                    gPolygon.setOptions(POLY_OPTIONS);
-
-                                                    this.setState({
-                                                        infoBubble: {
-                                                            ...this.state.infoBubble,
-                                                            show: false
-                                                        }
-                                                    });
-                                                });
-
-                                                this.mapPolygons.push(gPolygon);
                                                 // compute incidence and set infos (sidebar)
                                                 this.computeRouteIncidenceRollingAVG(routeInfo, m.incidence);
                                                 this.props.routeChanged(routeInfo);
