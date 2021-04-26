@@ -37,6 +37,7 @@ interface GmapState {
     map:            any | null;
     mapLoaded:      boolean;
     isLoading:      boolean;
+    uniqueId:       number;
     infoBubble: {
         show:       boolean;
         lat:        string;
@@ -68,6 +69,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         map:           null,
         mapLoaded:     false,
         isLoading:     false,
+        uniqueId:      0,
         infoBubble: {
             show:      false,
             lat:       '',
@@ -144,11 +146,15 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
         // if location from and to are set, print route
         if (this.props.locationFrom && this.props.locationTo) {
-            // remove all polygons
+            const uniqueId = Date.now();
+            this.setState({ uniqueId: uniqueId });
+            // remove all polygons and markers
             removePolygons(this.mapPolygons);
             removeMarker(this.locationMarker);
 
-            const stopOverWaypoints = this.props.locationStopOvers ? this.props.locationStopOvers.map((s)=>{return {location: s, stopover: true}}) : undefined;
+            const stopOverWaypoints = this.props.locationStopOvers
+                ? this.props.locationStopOvers.map((s) => {return { location: s, stopover: true }})
+                : undefined;
             // get and print  route
             this.directionsService.route({
                     origin:      this.props.locationFrom,
@@ -190,8 +196,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
                         waypointsChunks.forEach((wps: any[], chunkIndex: number) => {
                             this.sendWaypointsToBackend(wps, data => {
-                                // draw municipality polygons
-                                if(data) {
+                                // draw municipality polygons if no new route was calculated
+                                if(data && this.state.uniqueId === uniqueId) {
                                     data.forEach((m: MunicipalityDTO) => {
                                         // insert municipalities in the right position
                                         this.insertMunicipalityToRouteInfo(m, routeInfo, chunkIndex);
