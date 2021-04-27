@@ -22,7 +22,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
 
   /**
    * Convert a string to a real travelMode-enum
-   * @param {any} event - Contains the mouse click event
+   * @param {any} event - Mouse click event
    */
   changeTravelMode = (event: any) => {
     const travelModeString = event.target.id;
@@ -59,7 +59,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
   };
 
   /**
-   * Render HTMl response
+   * Render HTMl output
    */
   render() {
     const { intl } = this.props;

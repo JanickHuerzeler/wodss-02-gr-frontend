@@ -8,7 +8,7 @@ import {InfoBubbleProps, InfoBubbleState} from "../types/InfoBubble";
  */
 class InfoBubble extends Component<InfoBubbleProps & WrappedComponentProps, InfoBubbleState> {
     /**
-     * Render HTMl response
+     * Render HTMl output
      */
     render() {
         const {data,intl} = this.props;

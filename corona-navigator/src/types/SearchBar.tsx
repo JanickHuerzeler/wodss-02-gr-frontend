@@ -16,5 +16,4 @@ export interface SearchBoxState {
     errorMessage: string;
     latitude:     number | null;
     longitude:    number | null;
-    isGeocoding:  boolean;
 }

@@ -14,7 +14,7 @@ import messages from "./resources/messages";
  * Show the entire application with it's main component "SideBar" and "GoogleMaps".
  * It also acts as a data provider for the child components.
  *
- * SideBar    - contains the search fields, travelmode selection, municipality-incident list and the language switcher.
+ * SideBar    - Contains the search fields, travelmode selection, municipality-incident list and the language switcher.
  * GoogleMaps - Contains the Google Maps with all map related functions.
  */
 class App extends Component<AppProps, AppState> {
@@ -64,7 +64,7 @@ class App extends Component<AppProps, AppState> {
 
   /**
    * Set state if an stopover stop has changed.
-   * @param {Coordinates[]} coordsArray - Array that contains all stopover coordinates.
+   * @param {Coordinates[]} coordsArray - Array contains all stopover coordinates.
    */
   locationStopOversChanged = (coordsArray: Coordinates[]) => {
     const coords: Coords[] = coordsArray.filter((el) => {
@@ -78,7 +78,7 @@ class App extends Component<AppProps, AppState> {
 
   /**
    * Set state if the selected language has changed.
-   * @param {string} locale - Contains the country code of the currently selected language.
+   * @param {string} locale - Country code of the currently selected language.
    */
   localeChanged = (locale: string) => {
     this.setState({ locale: locale });
@@ -86,7 +86,7 @@ class App extends Component<AppProps, AppState> {
 
   /**
    * Set state if the travelmode has been changed.
-   * @param {google.maps.TravelMode} travelMode - Enum that contains the currently selected travel mode.
+   * @param {google.maps.TravelMode} travelMode - Enum contains the currently selected travel mode.
    *                                              (Possible value: BICYCLING, DRIVING, TRANSIT, WALKING)
    */
   travelModeChanged = (travelMode: google.maps.TravelMode) => {
@@ -95,7 +95,7 @@ class App extends Component<AppProps, AppState> {
 
   /**
    * Set state if the route infos has been changed.
-   * @param {RouteInfos} routeInfos - Contains all route infos that are needed to display in sidebar.
+   * @param {RouteInfos} routeInfos - All route infos that are needed to display in sidebar.
    */
   routeChanged = (routeInfos: RouteInfos) => {
     this.setState({ routeInfos: routeInfos });
@@ -103,14 +103,14 @@ class App extends Component<AppProps, AppState> {
 
   /**
    * Set state uf the state of sidebar has been changed. This happens when the viewport becomes too small.
-   * @param {boolean} toggled - Contains the currently selected state of sidebar (open or closed).
+   * @param {boolean} toggled - Currently selected state of sidebar (open or closed).
    */
   handleToggleSidebar = (toggled: boolean) => {
     this.setState({ toggled: toggled });
   };
 
   /**
-   * Render HTMl response
+   * Render HTMl output
    */
   render() {
     return (
