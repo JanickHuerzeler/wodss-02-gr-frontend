@@ -1,7 +1,6 @@
 import React from 'react';
 import "../scss/SearchBar.scss";
 import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
-import {classnames} from '../helpers/Classnames';
 import {SearchBoxProps, SearchBoxState} from "../types/SearchBar";
 
 /**
@@ -140,10 +139,8 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                                 {suggestions.length > 0 && (
                                     <div className="SearchBar__autocomplete-container">
                                         {suggestions.map((suggestion: any, index: number) => {
-                                            // @ts-ignore
-                                            const className = classnames('SearchBar__suggestion-item', {
-                                                'SearchBar__suggestion-item--active': suggestion.active,
-                                            });
+                                            let className = 'SearchBar__suggestion-item';
+                                            if(suggestion.active) className += ' SearchBar__suggestion-item--active';
 
                                             return (
                                                 <div

@@ -26,9 +26,9 @@ const WAYPOINT_DISTANCER_CHUNKER    = 20
  */
 class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState> {
     private readonly directionsService:         any;
-    private readonly directionsRenderer:        any;
-    private readonly mapPolygons:               any[];
-    private          locationMarker:            any;
+    private readonly directionsRenderer:        google.maps.DirectionsRenderer;
+    private readonly mapPolygons:               google.maps.Polygon[];
+    private          locationMarker:            google.maps.Marker | undefined;
     private          locationFromBefore:        Coords | undefined;
     private          locationToBefore:          Coords | undefined;
     private          locationStopOversBefore:   Coords[] | undefined;

@@ -1,27 +1,24 @@
 /**
- * TODO: describe me
- *
- * @param directionsRenderer
+ * Removes the route that is currently on the map.
+ * @param {google.maps.DirectionsRenderer} directionsRenderer - Contains the directions renderer from google maps.
  */
-export const removeRoute = (directionsRenderer: any) => {
+export const removeRoute = (directionsRenderer: google.maps.DirectionsRenderer) => {
     directionsRenderer.setMap(null);
 }
 
 /**
- * TODO: describe me
- *
- * @param marker
+ * Removes the marker that is currently on the map.
+ * @param {google.maps.Marker} marker - Contains the marker to remove. Can be undefined!
  */
-export const removeMarker = (marker: any) => {
+export const removeMarker = (marker: google.maps.Marker | undefined) => {
     if (marker) marker.setMap(null);
 }
 
 /**
- * TODO: describe me
- *
- * @param polygons
+ * Removes all polygons that are currently on the map.
+ * @param {google.maps.Polygon[]} polygons - Contains all polygons to be removed.
  */
-export const removePolygons = (polygons: any) => {
+export const removePolygons = (polygons: google.maps.Polygon[]) => {
     polygons.forEach((polygon: any) => polygon.setMap(null));
 }
 
