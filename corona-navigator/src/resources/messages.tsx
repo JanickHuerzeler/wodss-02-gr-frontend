@@ -1,4 +1,4 @@
-export default{
+const messages = {
     'de-DE': {
         area:                         'Fläche',
         coordinates:                  'Koordinaten',
@@ -35,3 +35,5 @@ export default{
     }
 
 }
+
+export default messages
