@@ -20,7 +20,7 @@ const POLY_OPTIONS_HOVER            = { strokeOpacity: .95, fillOpacity: .6 };
 const WAYPOINT_DISTANCER_CHUNKER    = 20
 
 /**
- * TODO: describe me
+ * Display a google map and provide all necessary interactions with the map.
  */
 class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState> {
     private readonly directionsService:         any;
@@ -65,6 +65,11 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         this.travelModeBefore           = this.props.travelMode;
     }
 
+    /**
+     * send a rest call with waypoints to the backend and get a list of municipalities along the route back.
+     * @param {CoordinateDTO[]} waypoints - All or a chunk if waypoints along the route
+     * @param {(data: any)} callback      - Callback to handle the response
+     */
     sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: any) => void) {
         API.waypoints.municipalityList(waypoints)
             .then((dt: { data: any; }) => {
@@ -72,6 +77,15 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             });
     }
 
+    /**
+     * Insert a municipality in the correct position in the list of municipalities.
+     *
+     * This is necessary because there can be several asynchronous requests to the backend
+     * and the order of the responses does not have to match to the order which they have been sent.
+     * @param {MunicipalityDTO} m    - Municipality to add
+     * @param {RouteInfos} routeInfo - Current RouteInfos
+     * @param {number} chunkIndex    - Index of waypoint chunk
+     */
     insertMunicipalityToRouteInfo(m: MunicipalityDTO, routeInfo: RouteInfos, chunkIndex: number) {
         let i: number;
         let insertMunicipality = true;
@@ -87,7 +101,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     // a municipality exist earlier on the route -> do nothing
                     insertMunicipality = false;
                 }
-
                 break;
             }
         }
@@ -113,161 +126,174 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         }
     }
 
+    /**
+     * Either calculate a route and display it or if the origin or destination is not available, set a single marker.
+     *
+     * In addition, a polygon with the boundaries of each municipality along the route is drawn on the map
+     * and coloured according to the incidence.
+     * If the municipality is hovered, an info box appears with the name of the municipality and the incidence.
+     */
     handleMap = () => {
         this.directionsRenderer.setMap(this.state.map);
 
-        // if location from and to are set, print route
+        // if location from and to are set, calculate and display route
         if (this.props.locationFrom && this.props.locationTo) {
             const uniqueId = Date.now();
             this.setState({ uniqueId: uniqueId });
+            const stopOverWaypoints = this.props.locationStopOvers
+                ? this.props.locationStopOvers.map((s) => {return { location: s, stopover: true }})
+                : undefined;
+
             // remove all polygons and markers
             removePolygons(this.mapPolygons);
             removeMarker(this.locationMarker);
 
-            const stopOverWaypoints = this.props.locationStopOvers
-                ? this.props.locationStopOvers.map((s) => {return { location: s, stopover: true }})
-                : undefined;
-            // get and print  route
+            // send the request to google api
             this.directionsService.route({
-                    origin:      this.props.locationFrom,
-                    destination: this.props.locationTo,
-                    waypoints:   stopOverWaypoints,
-                    travelMode:  this.props.travelMode
-                },
-                (result: any, status: any) => {
-                    if (result && status === google.maps.DirectionsStatus.OK) {
-                        const routeInfo: RouteInfos  = this.computeRouteInfos(result);
-                        const waypoints:       any[] = [];
-                        const waypointsChunks: any[] = [];
-                        let chunkSize:         number;
-                        this.setState({ isLoading: true });
-                        this.directionsRenderer.setDirections(result);
 
-                        // set infos (sidebar)
-                        this.props.routeChanged(routeInfo);
+                origin:      this.props.locationFrom,
+                destination: this.props.locationTo,
+                waypoints:   stopOverWaypoints,
+                travelMode:  this.props.travelMode
+            },
+            (result: any, status: any) => {
+                // handle the response (route) only if it's valid
+                if (result && status === google.maps.DirectionsStatus.OK) {
+                    const routeInfo: RouteInfos  = this.computeRouteInfos(result);
+                    const waypoints:       any[] = [];
+                    const waypointsChunks: any[] = [];
+                    const currentPolygons: (string | undefined)[] = [];
+                    let chunkSize:         number;
+                    this.setState({ isLoading: true });
 
-                        // generate linepath for backend from first (best) route
-                        result.routes[0].overview_path.forEach(function (wp: any) {
-                            waypoints.push({
-                                lat: parseFloat(wp.lat()),
-                                lng: parseFloat(wp.lng())
-                            });
+                    // show route on map
+                    this.directionsRenderer.setDirections(result);
+
+                    // set infos (distance and duration) for sidebar
+                    this.props.routeChanged(routeInfo);
+
+                    // prepare waypoints for backend call
+                    result.routes[0].overview_path.forEach(function (wp: any) {
+                        waypoints.push({
+                            lat: parseFloat(wp.lat()),
+                            lng: parseFloat(wp.lng())
                         });
+                    });
 
-                        // set chunk size
-                        chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
+                    // calculate a reasonable chunksize based on the length of the route
+                    chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
 
-                        // split waypoints-array in chunks
-                        for (let i = 0, j = waypoints.length; i < j; i += chunkSize) {
-                            waypointsChunks.push(waypoints.slice(i,i + chunkSize));
-                        }
+                    // split waypoints-array in chunks
+                    for (let i = 0, j = waypoints.length; i < j; i += chunkSize) {
+                        waypointsChunks.push(waypoints.slice(i,i + chunkSize));
+                    }
 
-                        /** Call backend for municipalities */
-                        const currentPolygons: (string | undefined)[] = [];
+                    /* call backend for municipalities along the route for each waypoint-chunk */
+                    waypointsChunks.forEach((wps: any[], chunkIndex: number) => {
+                        this.sendWaypointsToBackend(wps, data => {
+                            // handle municipality polygons only if no new route has been calculated in the meantime
+                            if(data && this.state.uniqueId === uniqueId) {
+                                data.forEach((m: MunicipalityDTO) => {
+                                    // insert municipality in the correct position in the list of municipalities
+                                    this.insertMunicipalityToRouteInfo(m, routeInfo, chunkIndex);
 
-                        waypointsChunks.forEach((wps: any[], chunkIndex: number) => {
-                            this.sendWaypointsToBackend(wps, data => {
-                                // draw municipality polygons if no new route was calculated
-                                if(data && this.state.uniqueId === uniqueId) {
-                                    data.forEach((m: MunicipalityDTO) => {
-                                        // insert municipalities in the right position
-                                        this.insertMunicipalityToRouteInfo(m, routeInfo, chunkIndex);
+                                    // insert municipality polygon only to map if it doesn't already exist
+                                    if(!currentPolygons.includes(m.name)) {
+                                        currentPolygons.push(m.name);
 
-                                        if(!currentPolygons.includes(m.name)) {
-                                            currentPolygons.push(m.name);
+                                        // if geo shapes are present, iterate through all and add it to the map
+                                        if (m.geo_shapes) {
+                                            const bounds = new google.maps.LatLngBounds();
 
-                                            if (m.geo_shapes) {
-                                                const bounds = new google.maps.LatLngBounds();
+                                            m.geo_shapes.forEach((geo_shape: CoordinateDTO[]) => {
+                                                // create new polygon
+                                                const gPolygon = new google.maps.Polygon(
+                                                    {
+                                                        paths: geo_shape.map((coords: CoordinateDTO) => {
+                                                            const pos = {
+                                                                lat: coords.lat || 0,
+                                                                lng: coords.lng || 0
+                                                            };
 
-                                                m.geo_shapes.forEach((geo_shape: CoordinateDTO[]) => {
-                                                    const gPolygon = new google.maps.Polygon(
-                                                        {
-                                                            paths: geo_shape.map((coords: CoordinateDTO) => {
-                                                                const pos = {
-                                                                    lat: coords.lat || 0,
-                                                                    lng: coords.lng || 0
-                                                                };
+                                                            bounds.extend(pos);
+                                                            return pos;
+                                                        }),
+                                                        strokeWeight: 2,
+                                                        strokeColor: m.incidence_color,
+                                                        fillColor: m.incidence_color,
+                                                        map: this.state.map,
+                                                        ...POLY_OPTIONS
+                                                    }
+                                                );
 
-                                                                bounds.extend(pos);
-                                                                return pos;
-                                                            }),
-                                                            strokeWeight: 2,
-                                                            strokeColor: m.incidence_color,
-                                                            fillColor: m.incidence_color,
-                                                            map: this.state.map,
-                                                            ...POLY_OPTIONS
+                                                // mouseover listener to show info bubble
+                                                gPolygon.addListener("mouseover", () => {
+                                                    gPolygon.setOptions(POLY_OPTIONS_HOVER);
+
+                                                    this.setState({
+                                                        infoBubble: {
+                                                            show: true,
+                                                            lat: bounds.getCenter().lat().toString(),
+                                                            lng: bounds.getCenter().lng().toString(),
+                                                            name: m.name,
+                                                            zip: m.plz,
+                                                            incidence: m.incidence
                                                         }
-                                                    );
-
-                                                    // show info bubble and set values
-                                                    gPolygon.addListener("mouseover", () => {
-                                                        gPolygon.setOptions(POLY_OPTIONS_HOVER);
-
-                                                        this.setState({
-                                                            infoBubble: {
-                                                                show: true,
-                                                                lat: bounds.getCenter().lat().toString(),
-                                                                lng: bounds.getCenter().lng().toString(),
-                                                                name: m.name,
-                                                                zip: m.plz,
-                                                                incidence: m.incidence
-                                                            }
-                                                        });
                                                     });
-
-                                                    // hide info bubble
-                                                    gPolygon.addListener("mouseout", () => {
-                                                        gPolygon.setOptions(POLY_OPTIONS);
-
-                                                        this.setState({
-                                                            infoBubble: {
-                                                                ...this.state.infoBubble,
-                                                                show: false
-                                                            }
-                                                        });
-                                                    });
-
-                                                    this.mapPolygons.push(gPolygon);
                                                 });
 
-                                                // compute incidence and set infos (sidebar)
-                                                this.computeRouteIncidenceRollingAVG(routeInfo, m.incidence);
-                                                this.props.routeChanged(routeInfo);
-                                            } else {
-                                                console.warn('ERROR: no geo_shapes found')
-                                            }
+                                                // mouseout listener to hide info bubble
+                                                gPolygon.addListener("mouseout", () => {
+                                                    gPolygon.setOptions(POLY_OPTIONS);
+
+                                                    this.setState({
+                                                        infoBubble: {
+                                                            ...this.state.infoBubble,
+                                                            show: false
+                                                        }
+                                                    });
+                                                });
+
+                                                // add polygon to map
+                                                this.mapPolygons.push(gPolygon);
+                                            });
+
+                                            // compute incidence average, set infos for sidebar and fire a change event
+                                            this.computeRouteIncidenceRollingAVG(routeInfo, m.incidence);
+                                            this.props.routeChanged(routeInfo);
                                         } else {
-                                            // console.info('MW', 'Polygon for ' + m.name + ' already exist on map');
+                                            console.warn('ERROR: no geo_shapes found')
                                         }
-                                    });
-
-                                    if(chunkIndex+1 === waypointsChunks.length) {
-                                        this.setState({ isLoading: false });
-
-                                        // show success message for 6sec
-                                        this.setState({ loaded: true });
-                                        setTimeout(() => this.setState({ loaded: false }), 6000)
-
                                     }
+                                });
+
+                                // if the last chunk is processed show success message
+                                if(chunkIndex+1 === waypointsChunks.length) {
+                                    this.setState({ isLoading: false });
+
+                                    // show success message for 6sec
+                                    this.setState({ loaded: true });
+                                    setTimeout(() => this.setState({ loaded: false }), 6000)
+
                                 }
-                            });
-
-
+                            }
                         });
+                    });
 
-                    } else {
-                        console.error(`error fetching directions ${result}`);
-                    }
+                } else {
+                    console.error(`error fetching directions ${result}`);
                 }
-            );
+            });
         } else {
+            // set a marker if locationFrom or locationTo empty yet
+
             // remove route, marker and polygons
             this.props.routeChanged({distance: 0, duration: 0, incidence: null, municipalities: []});
             removeRoute(this.directionsRenderer);
             removeMarker(this.locationMarker);
             removePolygons(this.mapPolygons);
 
-            // set a marker if locationFrom or locationTo empty yet
+            // set the marker at the desired location
             const pos = this.props.locationFrom || this.props.locationTo;
             if (pos) {
                 this.locationMarker = new google.maps.Marker({
@@ -284,9 +310,14 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
     };
 
+    /**
+     * Calculate the total distance and duration of the first (best) route.
+     * @param {google.maps.DirectionsResult} routes - All routes returned by the google api
+     */
     computeRouteInfos(routes: google.maps.DirectionsResult) {
         const route = routes.routes[0];
 
+        // prepare RouteInfos
         let result = {
             distance:          0,
             duration:          0,
@@ -294,27 +325,39 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             municipalities:    []
         };
 
+        // if no route or route segments are found, calculate nothing and return
         if (!route || !route.legs) return result;
 
+        // loop through all legs (sections) of a route
         route.legs.forEach((leg: any) => {
             result.distance  += leg.distance!.value;
             result.duration  += leg.duration!.value;
         });
 
-        result.distance /= 1000;
-        result.duration /= 60;
+
+        result.distance /= 1000; // distance in km
+        result.duration /= 60;   // duration in minutes
 
         return result;
     }
 
+    /**
+     * Calculate the rolling average of all incidence values of the municipalities along the route.
+     * It must be calculated rolling because many requests can be sent or received in any order (asynchronous).
+     * @param {RouteInfos} routeInfo         - Object with route infos
+     * @param {number | undefined} incidence - Incidence value to add
+     */
     computeRouteIncidenceRollingAVG(routeInfo: RouteInfos, incidence: number | undefined) {
         let result = 0, numMunicipalities = 0
 
-        routeInfo.municipalities.forEach((m: { municipality: MunicipalityDTO, index: number }) => {
+        // calculate the number of municipalities with a valid incidence value (>= 0)
+        routeInfo.municipalities.forEach((m: { municipality: MunicipalityDTO }) => {
             if(m.municipality.incidence || m.municipality.incidence === 0) numMunicipalities++;
         });
 
+        // If it's not the first round, calculate the new average
         if(incidence || incidence === 0) {
+            // this check is for the only first round
             if(routeInfo.incidence || routeInfo.incidence === 0){
                 result = (numMunicipalities - 1) * routeInfo.incidence;
                 result += incidence;
@@ -325,42 +368,53 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         }
     }
 
+    /**
+     * Calculate and display only a new route if the travelmode or a location has really been changed.
+     */
     componentDidUpdate() {
-        // handle map only if travelMode or coords has been changed
-        if (
-            this.state.mapLoaded && ((
+        if ((
                 !areLocationsEqual(this.locationFromBefore, this.props.locationFrom) ||
                 !areLocationsEqual(this.locationToBefore, this.props.locationTo) ||
                 !areLocationArraysEqual(this.locationStopOversBefore, this.props.locationStopOvers)
-            ) || this.props.travelMode !== this.travelModeBefore)
+            ) || this.props.travelMode !== this.travelModeBefore
         ) {
+            // if a location has been changed, backup the current values
             this.locationFromBefore         = this.props.locationFrom;
             this.locationToBefore           = this.props.locationTo;
             this.locationStopOversBefore    = this.props.locationStopOvers;
             this.travelModeBefore           = this.props.travelMode;
 
+            // handle the map only if it's fully loaded
             this.state.mapLoaded && this.handleMap();
         }
     }
 
+    /**
+     * Render HTMl output
+     */
     render() {
         const { defaultCenter, defaultZoom, center } = this.state;
         const { intl } = this.props;
 
         return (
             <div className={'gmap-wrapper'}>
+                {/* Show preloader whole the municipalities are loading */}
                 { this.state.isLoading &&
                 <div className='is-loading'>
                     <ImSpinner2 className='icon-spin' />
                     <span>{intl.formatMessage({ id: "loadingIncidenceOverlay" })}</span>
                 </div>
                 }
+
+                {/* Show success message if the municipalities are loaded */}
                 { this.state.loaded &&
                 <div className='loading-finished'>
                     <HiCheckCircle />
                     <span>{intl.formatMessage({ id: "loadingFinished" })}</span>
                 </div>
                 }
+
+                {/* Goole map component */}
                 <GoogleMapReact
                     bootstrapURLKeys  = { { key: GOOGLE_API_KEY } }
                     defaultCenter     = { defaultCenter }
@@ -375,6 +429,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     }}
                     yesIWantToUseGoogleMapApiInternals
                 >
+                    {/* Only one InfoBubble for all municipalities because only one can be displayed at once. */}
                     <InfoBubble
                         lat  = { this.state.infoBubble.lat }
                         lng  = { this.state.infoBubble.lng }
