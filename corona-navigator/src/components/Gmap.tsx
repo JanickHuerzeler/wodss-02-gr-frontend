@@ -173,12 +173,21 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     this.props.routeChanged(routeInfo);
 
                     // prepare waypoints for backend call
-                    result.routes[0].overview_path.forEach(function (wp: any) {
-                        waypoints.push({
-                            lat: parseFloat(wp.lat()),
-                            lng: parseFloat(wp.lng())
+                    if(this.props.travelMode === google.maps.TravelMode.TRANSIT) {
+                        // if travelmode is transit, get only waypoints from train stops (steps)
+                        result.routes[0].legs.forEach((wps: any) => {
+                            wps.steps.forEach((wp: any) => {
+                                this.pushWaypoint(waypoints, wp.start_location);
+                                this.pushWaypoint(waypoints, wp.end_location);
+                            });
                         });
-                    });
+                    } else {
+                        // get all waypoints from route
+                        result.routes[0].overview_path.forEach((wp: any) => {
+                            this.pushWaypoint(waypoints, wp);
+                        });
+                    }
+
 
                     // calculate a reasonable chunksize based on the length of the route
                     chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
@@ -187,6 +196,9 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     for (let i = 0, j = waypoints.length; i < j; i += chunkSize) {
                         waypointsChunks.push(waypoints.slice(i,i + chunkSize));
                     }
+
+                    // if no waypoints exist show success message directly
+                    if(waypointsChunks.length === 0) this.municipalitiesLoaded();
 
                     /* call backend for municipalities along the route for each waypoint-chunk */
                     waypointsChunks.forEach((wps: any[], chunkIndex: number) => {
@@ -269,12 +281,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
                                 // if the last chunk is processed show success message
                                 if(chunkIndex+1 === waypointsChunks.length) {
-                                    this.setState({ isLoading: false });
-
-                                    // show success message for 6sec
-                                    this.setState({ loaded: true });
-                                    setTimeout(() => this.setState({ loaded: false }), 6000)
-
+                                    // show success message
+                                    this.municipalitiesLoaded();
                                 }
                             }
                         });
@@ -309,6 +317,27 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         }
 
     };
+
+    /**
+     * Add a waypoint to the waypoint-array from route.
+     * @param {(lat: number; lng: number;)[]} waypoints        - Waypoint-array from route
+     * @param {lat: () => string; lng: () => string;} waypoint - Waypoint to add
+     */
+    pushWaypoint(waypoints: { lat: number; lng: number; }[], waypoint: { lat: () => string; lng: () => string; }) {
+        waypoints.push({
+            lat: parseFloat(waypoint.lat()),
+            lng: parseFloat(waypoint.lng())
+        });
+    }
+
+    /**
+     * Hide loading messagre and show success message for 6sec
+     */
+    municipalitiesLoaded() {
+        this.setState({ isLoading: false });
+        this.setState({ loaded: true });
+        setTimeout(() => this.setState({ loaded: false }), 6000);
+    }
 
     /**
      * Calculate the total distance and duration of the first (best) route.
