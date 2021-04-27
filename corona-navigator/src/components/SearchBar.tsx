@@ -1,7 +1,7 @@
 import React from 'react';
 import "../scss/SearchBar.scss";
-import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 import {SearchBoxProps, SearchBoxState} from "../types/SearchBar";
+import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 
 /**
  * TODO: describe me
@@ -18,7 +18,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
     constructor(props: any) {
         super(props);
 
-        // default state
+        // set efault state
         this.state = {
             address: '',
             errorMessage: '',
@@ -63,7 +63,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
             })
             .catch((error: any) => {
                 this.setState({isGeocoding: false});
-                console.log('error', error); // eslint-disable-line no-console
+                console.error('error', error);
             });
     };
 
@@ -80,7 +80,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
 
     // error handling
     handleError = (status: any, clearSuggestions: () => void) => {
-        console.log('Error from Google Maps API', status); // eslint-disable-line no-console
+        console.error('Error from Google Maps API', status); // eslint-disable-line no-console
         this.setState({errorMessage: status}, () => {
             clearSuggestions();
         });

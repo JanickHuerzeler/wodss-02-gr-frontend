@@ -5,7 +5,6 @@ import {InfoBubble} from "./InfoBubble";
 /**
  * Properties and State type definitions for Gmap-Component
  */
-
 export interface GmapProps {
     locationFrom:       Coords | undefined;
     locationTo:         Coords | undefined;

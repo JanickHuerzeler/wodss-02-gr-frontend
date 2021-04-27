@@ -2,17 +2,20 @@ import React, { Component } from "react";
 import "./scss/App.scss";
 import GoogleMaps from "./components/Gmap";
 import { Coords } from "google-map-react";
-import SideBar from "./components/SideBar";
-import "./resources/messages";
 import { IntlProvider } from "react-intl";
-import messages from "./resources/messages";
 import {FaBars} from "react-icons/fa";
 import {Coordinates} from './types/Coordinates';
 import {RouteInfos} from "./types/RouteInfos";
 import {AppProps, AppState} from "./types/App";
+import SideBar from "./components/SideBar";
+import messages from "./resources/messages";
 
 /**
- * The app with all its components is loaded. It also acts as a data provider for the child components.
+ * Show the entire application with it's main component "SideBar" and "GoogleMaps".
+ * It also acts as a data provider for the child components.
+ *
+ * SideBar    - contains the search fields, travelmode selection, municipality-incident list and the language switcher.
+ * GoogleMaps - Contains the Google Maps with all map related functions.
  */
 class App extends Component<AppProps, AppState> {
   private locales: { [key: string]: string } = {
@@ -20,7 +23,7 @@ class App extends Component<AppProps, AppState> {
     "en-GB": "English",
   };
 
-  // default state
+  // set default state
   state: AppState = {
     locationFrom:      undefined,
     locationTo:        undefined,
@@ -31,11 +34,11 @@ class App extends Component<AppProps, AppState> {
     rtl:               false,
     toggled:           false,
     collapsed:         false,
-    routeInfos:        {
-      distance:       0,
-      duration:       0,
-      incidence:      null,
-      municipalities: []
+    routeInfos: {
+      distance:        0,
+      duration:        0,
+      incidence:       null,
+      municipalities:  []
     }
   };
 
@@ -107,10 +110,7 @@ class App extends Component<AppProps, AppState> {
   };
 
   /**
-   * Renders the entire application with it's main component "SideBar" and "GoogleMaps".
-   *
-   * SideBar - contains the search fields, travelmode selection, municipality-incident list and the language switcher.
-   * GoogleMaps - Contains the Google Maps with all map related functions.
+   * Render HTMl response
    */
   render() {
     return (
@@ -118,12 +118,10 @@ class App extends Component<AppProps, AppState> {
         locale={this.state.locale}
         messages={this.state.messages[this.state.locale]}
       >
-        <div
-          className={`App app ${this.state.rtl ? "rtl" : ""} ${
-            this.state.toggled ? "toggled" : ""
-          }`}
-        >
-          {/* SideBar  */}
+
+        {/* Wrapper for sidebar */}
+        <div className={`App app ${this.state.rtl ? "rtl" : ""} ${this.state.toggled ? "toggled" : ""}`}>
+          {/* SideBar with props and callbacks */}
           <SideBar
             collapsed                = { this.state.collapsed }
             rtl                      = { this.state.rtl }
@@ -144,7 +142,7 @@ class App extends Component<AppProps, AppState> {
               <FaBars />
             </div>
 
-            {/* Google Maps */}
+            {/* Google Maps with props and callbacks */}
             <GoogleMaps
               locationFrom      = { this.state.locationFrom }
               locationTo        = { this.state.locationTo }

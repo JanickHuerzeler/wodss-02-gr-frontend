@@ -3,7 +3,6 @@ import {MunicipalityDTO} from "../api";
 /**
  * Type definition for route infos
  */
-
 export interface RouteInfos {
     distance:         number;
     duration:         number;

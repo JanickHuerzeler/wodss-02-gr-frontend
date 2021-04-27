@@ -4,7 +4,6 @@ import {RouteInfos} from "./RouteInfos";
 /**
  * Properties and State type definitions for App-Component
  */
-
 export interface AppProps {
 
 }

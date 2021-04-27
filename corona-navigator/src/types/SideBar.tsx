@@ -4,7 +4,6 @@ import {Coordinates} from "./Coordinates";
 /**
  * Properties and State type definitions for SideBar-Component
  */
-
 export interface SideBarProps {
     rtl:                      boolean;
     collapsed:                boolean;

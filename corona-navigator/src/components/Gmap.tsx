@@ -1,9 +1,6 @@
-// https://github.com/google-map-react/google-map-react
-
 import React, {Component} from "react";
-import GoogleMapReact, {Coords} from "google-map-react";
-import {injectIntl, WrappedComponentProps} from "react-intl";
 import "../scss/Gmap.scss";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 import InfoBubble from "./InfoBubble";
 import {areLocationArraysEqual, areLocationsEqual} from "../helpers/AreLocationsEqual";
 import {removeMarker, removePolygons, removeRoute} from "../helpers/MapInteractions";
@@ -12,6 +9,7 @@ import {CoordinateDTO, MunicipalityDTO} from "../api";
 import {HiCheckCircle, ImSpinner2} from "react-icons/all";
 import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
+import GoogleMapReact, {Coords} from "google-map-react";
 
 const API                           = new Api({baseUrl:'http://localhost:5001'});
 const GOOGLE_API_KEY                = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
@@ -158,7 +156,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
                         // set chunk size
                         chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
-                        console.log("Chunksize: " + chunkSize);
 
                         // split waypoints-array in chunks
                         for (let i = 0, j = waypoints.length; i < j; i += chunkSize) {

@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import './scss/index.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import App from './App';
 
 /**
- * Main loader for app
+ * Main loader for app. Render App as ReactDOM.
  */
 ReactDOM.render(
   <React.StrictMode>

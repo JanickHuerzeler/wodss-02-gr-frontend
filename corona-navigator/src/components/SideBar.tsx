@@ -1,53 +1,66 @@
-import React, {Component} from "react";
+import React, {ChangeEvent, Component} from "react";
+import "react-pro-sidebar/dist/css/styles.css";
+import "../scss/SideBar.scss";
 import {FaBicycle, FaCar, FaGlobe, FaPlus, FaSubway, FaWalking} from "react-icons/fa";
 import {injectIntl,FormattedMessage,WrappedComponentProps} from "react-intl";
 import {ProSidebar, SidebarHeader, SidebarFooter, SidebarContent, Menu, MenuItem} from "react-pro-sidebar";
-import "react-pro-sidebar/dist/css/styles.css";
-import "../scss/SideBar.scss";
-import SearchBar from "./SearchBar";
 import {Button, ButtonGroup} from "react-bootstrap";
-import logo from "../resources/logo.png";
 import {BiTime, GiPathDistance, RiVirusLine} from "react-icons/all";
 import {SideBarProps, SideBarState} from "../types/SideBar";
+import SearchBar from "./SearchBar";
+import logo from "../resources/logo.png";
 
+/**
+ * Show the sidebar which mainly serves as a controller for the map.
+ */
 class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarState> {
+  // set default state
   state: SideBarState = {
-    stopOvers:             [],
-    travelMode:            "DRIVING"
+    stopOvers:  [],
+    travelMode: "DRIVING"
   }
 
-  componentDidMount() { }
+  /**
+   * Convert a string to a real travelMode-enum
+   * @param {any} event - Contains the mouse click event
+   */
+  changeTravelMode = (event: any) => {
+    const travelModeString = event.target.id;
 
-  changeTravelMode = (ev: any) => {
-    // convert string to TravelMode enum
-    const travelModeString = ev.target.id;
-    const travelMode: google.maps.TravelMode =
-        google.maps.TravelMode[travelModeString as keyof typeof google.maps.TravelMode];
-    this.setState({
-        travelMode: travelModeString
-    });
-
-    this.props.travelModeChanged(travelMode);
+    // set state and fire change event
+    this.setState({ travelMode: travelModeString });
+    this.props.travelModeChanged(google.maps.TravelMode[travelModeString as keyof typeof google.maps.TravelMode]);
   }
 
-  handleStopOverChanged = (
-    lat: number | null,
-    lng: number | null,
-    index: number
-  ) => {
+  /**
+   * Handle when an stopover coordiante has been changed
+   * @param {number | null} lat - Latitude of stopover coordinates.
+   * @param {number | null} lng - Longitude of stopover coordinates.
+   * @param { number } index    - Index of stopover in stopOvers-state.
+   */
+  handleStopOverChanged = (lat: number | null, lng: number | null, index: number ) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
-    const currentStopOvers = this.state.stopOvers;
-    currentStopOvers[index] = location ? location : {lat: undefined, lng: undefined};
-    this.setState({stopOvers: currentStopOvers});
+    const currentStopOvers  = this.state.stopOvers;
+    currentStopOvers[index] = location || { lat: undefined, lng: undefined };
+
+    // set state and fire change event
+    this.setState({ stopOvers: currentStopOvers });
     this.props.locationStopOversChanged(currentStopOvers);
   };
 
+  /**
+   * Add a new searchbar (input field) to the search mask
+   */
   handleAddSearchbar = () => {
     const currentStopOvers = this.state?.stopOvers ? this.state.stopOvers : [];
     this.setState({
       stopOvers: [...currentStopOvers, { lat: undefined, lng: undefined }],
     });
   };
+
+  /**
+   * Render HTMl response
+   */
   render() {
     const { intl } = this.props;
     return (
@@ -58,6 +71,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
         breakPoint = 'md'
         onToggle   = {this.props.handleToggleSidebar}
       >
+        {/* Header with logo and app title */}
         <SidebarHeader>
           <div className='sidebar-header'>
             <img src={logo} alt="Corona Navigator GR" />
@@ -65,7 +79,9 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
           </div>
         </SidebarHeader>
 
+        {/* Content with searchfields, stopovers, and route municipalities list */}
         <SidebarContent>
+          {/* Change travelmode */}
           <Menu key='menuTravelMode'>
             <div className='travelMode'>
               <ButtonGroup aria-label="Basic example">
@@ -93,6 +109,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
             </div>
           </Menu>
 
+          {/* Searchfields "from" */}
           <Menu key='menuSearch' iconShape='circle'>
             <MenuItem key='searchBarFrom'>
               <div className='search-bar'>
@@ -104,13 +121,14 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
               </div>
             </MenuItem>
             <MenuItem key='searchBarAddStopover' className='searchbar-add-stop-over-wrapper'>
-              {/* <div className="addStopover"> */}
+              {/* Add stopover */}
               <button
                 className='btn btn-purple'
                 onClick={this.handleAddSearchbar}
               >
                 <FaPlus />
               </button>
+              {/* Show all stopovers */}
               {this.state?.stopOvers?.map((stopOverCoords, index) => {
                 return (<div className="search-bar-stop-over">
                   <SearchBar key={'searchBarStopOver'+index}
@@ -124,6 +142,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
                 );
               })}
             </MenuItem>
+            {/* Searchfield "to" */}
             <MenuItem key='searchBarTo'>
               <div className='search-bar'>
                 <SearchBar tabIndex={6}
@@ -132,6 +151,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
                 />
               </div>
             </MenuItem>
+            {/* Route result short infos (incidence avg, distance, duration) */}
             { (this.props.routeInfos.distance > 0) &&
               <MenuItem>
                 <div className="route-infos">
@@ -156,9 +176,11 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
             }
           </Menu>
 
+          {/* Municipalities list along the with incidence and name */}
           {(this.props.routeInfos.distance > 0) &&
             <Menu key='menuWaypoint' className="menu-waypoints">
               <div className='route-waypoints'>
+                {/* Title and table header */}
                 <span className="title">
                   <div>{intl.formatMessage({ id: "municipalitiesAlongTheRoute" })} ({this.props.routeInfos.municipalities.length})</div>
                   <div className="waypoints-header">
@@ -167,6 +189,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
                   </div>
                 </span>
 
+                {/* Show all municipalities */}
                 <ul>
                   {this.props.routeInfos.municipalities.map((m, i) => {
                     return (
@@ -192,14 +215,14 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
           }
         </SidebarContent>
 
+        {/* Footer with impressum and language chooser */}
         <SidebarFooter className='sidebar-footer'>
+          {/* Language Chooser */}
           <div className='localization-wrapper'>
             <FaGlobe />
             <select
               className='locales-select'
-              onChange={(e) => {
-                this.props.localeChanged(e.target.value);
-              }}
+              onChange = { (e:ChangeEvent<HTMLSelectElement>) => this.props.localeChanged(e.target.value) }
             >
               {Object.keys(this.props.locales).map((key: string) => {
                 return (
@@ -210,6 +233,8 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
               })}
             </select>
           </div>
+
+          {/* Impressum */}
           <a
             href='https://corona-navigator.ch'
             target='_blank'

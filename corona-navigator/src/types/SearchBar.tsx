@@ -1,7 +1,6 @@
 /**
  * Properties and State type definitions for SearchBar-Component
  */
-
 export interface SearchBoxProps {
     onLocationChanged: (
         latitude:  number | null,

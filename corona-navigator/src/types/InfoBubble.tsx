@@ -1,7 +1,6 @@
 /**
  * Properties and State type definitions for InfoBubble-Component
  */
-
 export interface InfoBubble {
     show:      boolean;
     lat:       string;
