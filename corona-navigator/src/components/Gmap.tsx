@@ -42,7 +42,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         map:             null,
         mapLoaded:       false,
         isLoading:       false,
-        loaded: false,
+        loaded:          false,
         uniqueId:        0,
         infoBubble: {
             show:        false,

@@ -61,7 +61,7 @@ class App extends Component<AppProps, AppState> {
 
   /**
    * Set state if an stopover stop has changed.
-   * @param {StopOverCoords[]} coordsArray - Array that contains all stopover coordinates.
+   * @param {Coordinates[]} coordsArray - Array that contains all stopover coordinates.
    */
   locationStopOversChanged = (coordsArray: Coordinates[]) => {
     const coords: Coords[] = coordsArray.filter((el) => {

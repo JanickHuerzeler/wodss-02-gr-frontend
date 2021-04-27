@@ -37,7 +37,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
   ) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
     const currentStopOvers = this.state.stopOvers;
-    currentStopOvers[index] = location ? location : {lat: null, lng: null};
+    currentStopOvers[index] = location ? location : {lat: undefined, lng: undefined};
     this.setState({stopOvers: currentStopOvers});
     this.props.locationStopOversChanged(currentStopOvers);
   };
@@ -45,7 +45,7 @@ class SideBar extends Component<SideBarProps & WrappedComponentProps, SideBarSta
   handleAddSearchbar = () => {
     const currentStopOvers = this.state?.stopOvers ? this.state.stopOvers : [];
     this.setState({
-      stopOvers: [...currentStopOvers, { lat: null, lng: null }],
+      stopOvers: [...currentStopOvers, { lat: undefined, lng: undefined }],
     });
   };
   render() {

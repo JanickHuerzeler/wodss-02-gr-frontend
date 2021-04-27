@@ -1,7 +1,6 @@
 /**
  * Properties and State type definitions for SearchBar-Component
  */
-import {Coordinates} from "./Coordinates";
 
 export interface SearchBoxProps {
     onLocationChanged: (

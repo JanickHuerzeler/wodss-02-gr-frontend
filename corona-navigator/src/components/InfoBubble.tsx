@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import { injectIntl, WrappedComponentProps } from "react-intl";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 import "../scss/InfoBubble.scss";
 import {InfoBubbleProps, InfoBubbleState} from "../types/InfoBubble";
 
