@@ -1,11 +1,16 @@
+/**
+ * Properties and State type definitions for SearchBar-Component
+ */
+import {Coordinates} from "./Coordinates";
+
 export interface SearchBoxProps {
     onLocationChanged: (
-        latitude: number | null,
+        latitude:  number | null,
         longitude: number | null
     ) => void;
-    placeholder:       string;
-    focus:             boolean;
-    tabIndex:          number;
+    placeholder:   string;
+    focus:         boolean;
+    tabIndex:      number;
 }
 
 export interface SearchBoxState {

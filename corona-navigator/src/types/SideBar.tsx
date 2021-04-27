@@ -1,5 +1,9 @@
 import {RouteInfos} from "./RouteInfos";
-import {StopOverCoords} from "./StopOverCoords";
+import {Coordinates} from "./Coordinates";
+
+/**
+ * Properties and State type definitions for SideBar-Component
+ */
 
 export interface SideBarProps {
     rtl:                      boolean;
@@ -10,12 +14,12 @@ export interface SideBarProps {
     handleToggleSidebar:      (toggle: boolean) => void;
     locationFromChanged:      (lat: number | null, lng: number | null) => void;
     locationToChanged:        (lat: number | null, lng: number | null) => void;
-    locationStopOversChanged: (coordsArray: StopOverCoords[]) => void;
+    locationStopOversChanged: (coordsArray: Coordinates[]) => void;
     travelModeChanged:        (travelMode: google.maps.TravelMode) => void;
     routeInfos:               RouteInfos;
 }
 
 export interface SideBarState {
-    stopOvers:  StopOverCoords[];
+    stopOvers:  Coordinates[];
     travelMode: string;
 }

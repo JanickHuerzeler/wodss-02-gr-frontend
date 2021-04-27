@@ -1,3 +1,7 @@
+/**
+ * Properties and State type definitions for InfoBubble-Component
+ */
+
 export interface InfoBubbleProps {
     lat:           string;
     lng:           string;
@@ -5,9 +9,9 @@ export interface InfoBubbleProps {
         show:      boolean;
         lat:       string;
         lng:       string;
-        name:      string | undefined;
-        zip:       number | undefined;
-        incidence: number | undefined;
+        name:      string;
+        zip:       number;
+        incidence: number;
     }
 }
 

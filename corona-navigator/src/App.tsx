@@ -7,16 +7,20 @@ import "./resources/messages";
 import { IntlProvider } from "react-intl";
 import messages from "./resources/messages";
 import {FaBars} from "react-icons/fa";
-import {StopOverCoords} from './types/StopOverCoords';
+import {Coordinates} from './types/Coordinates';
 import {RouteInfos} from "./types/RouteInfos";
 import {AppProps, AppState} from "./types/App";
 
+/**
+ * The app with all its components is loaded. It also acts as a data provider for the child components.
+ */
 class App extends Component<AppProps, AppState> {
   private locales: { [key: string]: string } = {
     "de-DE": "Deutsch",
     "en-GB": "English",
   };
 
+  // default state
   state: AppState = {
     locationFrom:      undefined,
     locationTo:        undefined,
@@ -35,42 +39,82 @@ class App extends Component<AppProps, AppState> {
     }
   };
 
+  /**
+   * Set state if origin coordinates has been changed.
+   * @param {number | null} lat - Latitude of origin coordinates.
+   * @param {number | null} lng - Longitude  of origin coordinates.
+   */
   locationFromChanged = (lat: number | null, lng: number | null) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
     this.setState({ locationFrom: location });
   };
 
+  /**
+   * Set state if destination coordinates has been changed.
+   * @param {number | null} lat - Latitude of destination coordinates.
+   * @param {number | null} lng - Longitude  of destination coordinates.
+   */
   locationToChanged = (lat: number | null, lng: number | null) => {
     const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
     this.setState({ locationTo: location });
   };
 
-  locationStopOversChanged = (coordsArray: StopOverCoords[]) => {
-    const coords: Coords[] = coordsArray.filter((el)=> el.lat !== null && el.lng !== null).map((el)=>{return {lat: el.lat!, lng: el.lng!}});
+  /**
+   * Set state if an stopover stop has changed.
+   * @param {StopOverCoords[]} coordsArray - Array that contains all stopover coordinates.
+   */
+  locationStopOversChanged = (coordsArray: Coordinates[]) => {
+    const coords: Coords[] = coordsArray.filter((el) => {
+      return (el.lat !== null && el.lng !== null)
+    }).map((el) => {
+      return { lat: el.lat!, lng: el.lng! }
+    });
+
     this.setState({locationStopOvers: coords});
   };
 
+  /**
+   * Set state if the selected language has changed.
+   * @param {string} locale - Contains the country code of the currently selected language.
+   */
   localeChanged = (locale: string) => {
     this.setState({ locale: locale });
   };
 
-  travelModeChanged = (travelMode: any) => {
+  /**
+   * Set state if the travelmode has been changed.
+   * @param {google.maps.TravelMode} travelMode - Enum that contains the currently selected travel mode.
+   *                                              (Possible value: BICYCLING, DRIVING, TRANSIT, WALKING)
+   */
+  travelModeChanged = (travelMode: google.maps.TravelMode) => {
     this.setState({ travelMode: travelMode });
   }
 
+  /**
+   * Set state if the route infos has been changed.
+   * @param {RouteInfos} routeInfos - Contains all route infos that are needed to display in sidebar.
+   */
   routeChanged = (routeInfos: RouteInfos) => {
-    this.setState({
-      routeInfos: routeInfos
-    });
+    this.setState({ routeInfos: routeInfos });
   };
 
+  /**
+   * Set state uf the state of sidebar has been changed. This happens when the viewport becomes too small.
+   * @param {boolean} toggled - Contains the currently selected state of sidebar (open or closed).
+   */
   handleToggleSidebar = (toggled: boolean) => {
     this.setState({ toggled: toggled });
   };
 
+  /**
+   * Renders the entire application with it's main component "SideBar" and "GoogleMaps".
+   *
+   * SideBar - contains the search fields, travelmode selection, municipality-incident list and the language switcher.
+   * GoogleMaps - Contains the Google Maps with all map related functions.
+   */
   render() {
     return (
-      <IntlProvider
+    <IntlProvider
         locale={this.state.locale}
         messages={this.state.messages[this.state.locale]}
       >
@@ -79,6 +123,7 @@ class App extends Component<AppProps, AppState> {
             this.state.toggled ? "toggled" : ""
           }`}
         >
+          {/* SideBar  */}
           <SideBar
             collapsed                = { this.state.collapsed }
             rtl                      = { this.state.rtl }
@@ -94,14 +139,12 @@ class App extends Component<AppProps, AppState> {
           />
           <main>
 
-            <div
-              className='btn-toggle'
-              onClick={() => {
-                this.handleToggleSidebar(true);
-              }}
-            >
+            {/* Hamburger menu icon for small screens */}
+            <div className='btn-toggle' onClick={() => { this.handleToggleSidebar(true); }}>
               <FaBars />
             </div>
+
+            {/* Google Maps */}
             <GoogleMaps
               locationFrom      = { this.state.locationFrom }
               locationTo        = { this.state.locationTo }
