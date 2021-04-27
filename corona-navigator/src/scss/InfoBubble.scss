@@ -1,3 +1,6 @@
+/**
+ * InfoBubble styling (InfoMessage shown on the map)
+ */
 .infoBubble {
   width: 200px;
   background: #222222;
@@ -6,7 +9,6 @@
   padding: 12px 14px;
   margin: -32px 0 0 22px;
   box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.4);
-
 
   &--municipality {
     display: block;

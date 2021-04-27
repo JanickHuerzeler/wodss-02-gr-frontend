@@ -1,3 +1,8 @@
+/**
+ * App styling
+ */
+
+
 $header-height: 114px;
 
 .nav-header {
@@ -207,24 +212,5 @@ body {
         margin-left: auto;
       }
     }
-  }
-}
-
-.badge {
-  padding: 3px 6px;
-  font-size: 9px;
-  letter-spacing: 1px;
-  border-radius: 15px;
-  &.red {
-    color: #ffffff;
-    background: #d63030;
-  }
-  &.gray {
-    color: #ffffff;
-    background: #777777;
-  }
-  &.yellow {
-    color: #000000;
-    background: #ffd331;
   }
 }
