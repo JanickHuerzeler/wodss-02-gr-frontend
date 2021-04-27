@@ -1,3 +1,8 @@
+/**
+ * Translation file for corona navigator.
+ * Currently supported languages: de-DE, en-GB
+ */
+
 const messages = {
     'de-DE': {
         area:                         'Fläche',
