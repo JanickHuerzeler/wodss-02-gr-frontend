@@ -28,6 +28,7 @@ $header-height: 114px;
   height: calc(100vh - #{$header-height});
 }
 
+@import '~react-pro-sidebar/dist/scss/variables.scss';
 
 
 // Sidebar Styling from https://github.com/azouaoui-med/react-pro-sidebar
@@ -45,11 +46,26 @@ $breakpoint-md: 768px !default;
 $breakpoint-lg: 992px !default;
 $breakpoint-xl: 1200px !default;
 
+
 $map-padding: 0px;
 $sidebar-toggle-padding: 0.75em;
 
-@import '~react-pro-sidebar/dist/scss/styles.scss';
+@import '~react-pro-sidebar/dist/scss/partials/animation';
+@import '~react-pro-sidebar/dist/scss/partials/sidebar';
+@import '~react-pro-sidebar/dist/scss/partials/menu';
+@import '~react-pro-sidebar/dist/scss/partials/popperArrow';
+@import '~react-pro-sidebar/dist/scss/partials/reactSlidedown';
+// @import '~react-pro-sidebar/dist/scss/styles.scss';
 
+// overwrite css rule, as the scss variable 
+// $sidebar-width is not applied well when changed
+@media (max-width: 768px) {
+  .pro-sidebar.md.toggled {
+    position: fixed;
+    left: 0px !important;
+  }
+
+}
 
 body {
   margin: 0;
@@ -84,6 +100,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+
     .sidebar-btn {
       padding: 1px 15px;
       border-radius: 40px;
@@ -97,10 +114,12 @@ body {
       justify-content: center;
       text-overflow: ellipsis;
       overflow: hidden;
+
       span {
         margin-left: 5px;
         font-size: 13px;
       }
+
       &:hover {
         color: $highlight-color;
       }
@@ -124,9 +143,11 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+
     header {
       margin-bottom: 40px;
       border-bottom: 1px solid #efefef;
+
       h1 {
         display: flex;
         align-items: center;
@@ -138,17 +159,21 @@ body {
       margin-top: auto;
       color: #888;
       text-align: center;
+
       a {
         text-decoration: none;
         color: #888;
+
         &:hover {
           text-decoration: underline;
         }
       }
     }
   }
+
   .social-bagdes {
     margin-top: 10px;
+
     img {
       margin: 5px;
     }
@@ -159,7 +184,8 @@ body {
     margin-bottom: 24px;
     font-size: 14px;
     color: #545454;
-    > span {
+
+    >span {
       margin-left: 10px;
     }
   }
@@ -173,13 +199,16 @@ body {
         transform: translateX(20px);
       }
     }
+
     .block {
       direction: rtl;
-      > span {
+
+      >span {
         margin-left: 0;
         margin-right: 10px;
       }
     }
+
     .sidebar-btn-wrapper {
       .sidebar-btn {
         span {
@@ -192,12 +221,14 @@ body {
 
   @media (max-width: 767.98px) {
     overflow-x: hidden;
+
     header {
       h1 {
         font-size: 24px;
       }
     }
   }
+
   @media (max-width: $breakpoint-md) {
     .btn-toggle {
       display: flex;
