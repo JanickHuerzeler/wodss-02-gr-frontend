@@ -9,7 +9,7 @@ import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-auto
  */
 class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
     private inputFieldRef: any;
-
+    private randomKey: string = Date.now().toString();
     // set default props
     static defaultProps = {
         focus:    false,
@@ -109,6 +109,12 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
         }
     };
 
+    handleRemoveStopover = () => {
+        if(typeof(this.props.onRemoveSearchbar) === 'function' && this.props.stopOverIndex){
+            this.props.onRemoveSearchbar(this.props.stopOverIndex);
+        }
+    }
+
     /**
      * Render HTML output
      */
@@ -119,7 +125,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
         }: any = this.state;
 
         return (
-            <div>
+            <div key={this.randomKey}>
                 <PlacesAutocomplete
                     onChange={this.handleChange}
                     value={address}
@@ -144,6 +150,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                                         })}
                                         onBlur={this.handleBlur}
                                     />
+                                    
                                     {/* Closebutton */}
                                     {this.state.address.length > 0 && (
                                         <button
@@ -151,8 +158,9 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                                             onClick={this.handleCloseClick}
                                         >x</button>
                                     )}
+                                    
                                 </div>
-                                {/* Show suggestions if any are any */}
+                                {/* Show suggestions if there are any */}
                                 {suggestions.length > 0 && (
                                     <div className="SearchBar__autocomplete-container">
                                         {suggestions.map((suggestion: any, index: number) => {

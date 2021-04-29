@@ -69,9 +69,7 @@ $light-blue: #6475b1;
         text-align: right;
       }
 
-      span:last-child {
-
-      }
+      span:last-child {}
     }
   }
 
@@ -146,7 +144,7 @@ $light-blue: #6475b1;
 }
 
 .travelMode {
-  padding: 8px 35px 8px 20px;
+  padding: 8px 35px 0px 20px;
 
   .btn-group {
     width: 100%;
@@ -176,22 +174,43 @@ $light-blue: #6475b1;
   text-align: right;
 }
 
+// .sidebar-header{ 
+//   padding: 1em 1.5em !important;
+// }
+
+// .sidebar-header-icon{
+//   height: 24px !important;
+// }
+// .pro-sidebar .pro-menu {
+//   padding-top: 0px !important;
+// }
+
 .sidebar-footer {
   font-size: 12pt !important;
   color: #ffffff !important;
   padding: 20px 24px 5px 20px;
 }
 
+
+
 .locales-select {
   background-color: lighten(#4c5c96, 10%);
   margin-left: 0.8em;
   vertical-align: bottom;
-  width: 320px;
+  // width: 320px;
+  width: calc(100% - 2em);
   color: #ffffff;
 }
 
-.search-bar-stop-over>div>.SearchBar__search-bar-container {
-  margin-top: 1em !important;
+.search-bar-stop-over:not(:first-child){
+  margin-top: 0.75em !important;
+}
+
+.search-bar-stop-over .removeStopOverButton{
+  margin-top: .125em !important;
+}
+.removeStopOverButton{
+  float:right;
 }
 
 .btn-purple {
@@ -200,6 +219,17 @@ $light-blue: #6475b1;
   margin-top: 0 !important;
   background: #6475b1;
   border-color: #6475b1;
+  font-size: 19px;
+}
+.btn-purple:hover {
+  // background-color: lighten(#4c5c96,10%);
+  color: #ffffff;
+  background: #545b62;
+  border-color: #4e555b;
+  border-top-color: rgb(78, 85, 91);
+  border-right-color: rgb(78, 85, 91);
+  border-bottom-color: rgb(78, 85, 91);
+  border-left-color: rgb(78, 85, 91);
   font-size: 19px;
 }
 
@@ -219,9 +249,35 @@ $light-blue: #6475b1;
 
 .pro-menu::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: rgba(255,255,255,0.3);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .pro-menu::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
 }
+
+nav.pro-menu-searchbar {
+  padding-top: 0px !important;
+}
+
+/* following lines will cause the autocomplete to be hidden,
+   as they will be treated as overflow... TODO: find an appropriate workaround */
+// ul li.pro-menu-searchbar.searchbar-add-stop-over-wrapper{
+//   max-height: 120px;
+//   overflow-y: scroll;
+// }
+
+// .searchbar-add-stop-over-wrapper::-webkit-scrollbar-track {
+//   border-radius: 10px;
+//   background-color: transparent;
+// }
+
+// .searchbar-add-stop-over-wrapper::-webkit-scrollbar {
+//   width: 12px;
+//   background-color: transparent;
+// }
+
+// .searchbar-add-stop-over-wrapper::-webkit-scrollbar-thumb {
+//   border-radius: 10px;
+//   background-color: rgba(255, 255, 255, 0.3);
+// }

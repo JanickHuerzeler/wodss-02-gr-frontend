@@ -140,8 +140,10 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         if (this.props.locationFrom && this.props.locationTo) {
             const uniqueId = Date.now();
             this.setState({ uniqueId: uniqueId });
-            const stopOverWaypoints = this.props.locationStopOvers
-                ? this.props.locationStopOvers.map((s) => {return { location: s, stopover: true }})
+            const stopOverWaypoints = this.props.locationStopOvers && this.props.locationStopOvers.length > 0
+                ? this.props.locationStopOvers
+                    .filter(s => (s.lat && s.lng)) // necessary as stopover might be empty
+                    .map((s) => {return { location: s, stopover: true }})
                 : undefined;
 
             // remove all polygons and markers
@@ -412,7 +414,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             this.locationToBefore           = this.props.locationTo;
             this.locationStopOversBefore    = this.props.locationStopOvers;
             this.travelModeBefore           = this.props.travelMode;
-
+            
             // handle the map only if it's fully loaded
             this.state.mapLoaded && this.handleMap();
         }

@@ -6,9 +6,13 @@ export interface SearchBoxProps {
         latitude:  number | null,
         longitude: number | null
     ) => void;
-    placeholder:   string;
-    focus:         boolean;
-    tabIndex:      number;
+    onRemoveSearchbar?: (
+        index: number
+    ) => void;
+    placeholder:    string;
+    focus:          boolean;
+    tabIndex:       number;
+    stopOverIndex?: number;
 }
 
 export interface SearchBoxState {

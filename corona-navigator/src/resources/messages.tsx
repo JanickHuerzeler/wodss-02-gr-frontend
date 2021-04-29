@@ -18,6 +18,8 @@ const messages = {
         sideBarTitle:                 'Corona Wegweiser',
         sideBarFooter:                'Corona Navigator, Gruppe 02 Kt. Graubünden',
         stopover:                     'Zwischenhalt',
+        addStopOver:                  'Zwischenhalt hinzufügen',
+        removeStopOver:               'Zwischenhalt entfernen',
         loadingIncidenceOverlay:      'Inzidenzen werden geladen',
         loadingFinished:              'Inzidenzen erfolgreich geladen'
     },
@@ -35,6 +37,8 @@ const messages = {
         sideBarTitle:                 'Corona Navigator',
         sideBarFooter:                'Corona Navigator, Group 02 Ct. Graubünden',
         stopover:                     'Stopover',
+        addStopOver:                  'Add stopover',
+        removeStopOver:               'Remove stopover',
         loadingIncidenceOverlay:      'Incidences are loading',
         loadingFinished:              'Incidences successfully loaded'
     }
