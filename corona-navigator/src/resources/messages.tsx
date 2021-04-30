@@ -21,7 +21,10 @@ const messages = {
         addStopOver:                  'Zwischenhalt hinzufügen',
         removeStopOver:               'Zwischenhalt entfernen',
         loadingIncidenceOverlay:      'Inzidenzen werden geladen',
-        loadingFinished:              'Inzidenzen erfolgreich geladen'
+        loadingFinished:              'Inzidenzen erfolgreich geladen',
+        infographicIncidence:         'Durchschnitts-Inzidenz',
+        infographicDuration:          'Reisedauer',
+        infographicDistance:          'Distanz'
     },
     'en-GB': {
         area: 'Area',
@@ -40,7 +43,10 @@ const messages = {
         addStopOver:                  'Add stopover',
         removeStopOver:               'Remove stopover',
         loadingIncidenceOverlay:      'Incidences are loading',
-        loadingFinished:              'Incidences successfully loaded'
+        loadingFinished:              'Incidences successfully loaded',
+        infographicIncidence:         'Mean incidence',
+        infographicDuration:          'Travel duration',
+        infographicDistance:          'Distance'
     }
 
 }

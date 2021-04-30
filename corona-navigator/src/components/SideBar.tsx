@@ -40,8 +40,31 @@ class SideBar extends Component<
   state: SideBarState = {
     stopOvers: [],
     travelMode: "DRIVING",
+    routeListMaxHeight: 300
   };
 
+  // componentDidMount() {
+  //   this.updateDimensions();
+  //   window.addEventListener("resize", this.updateDimensions);
+  // }
+
+  // componentWillUnmount() {
+  //   window.removeEventListener("resize", this.updateDimensions);
+  // }
+
+  // updateDimensions = () => {
+  //   console.log('----------');
+  //   const sideBarContentHeight = document.body.offsetHeight;
+  //   const sideBarHeaderHeight = document.getElementById('sidebarHeaderWrapper')!.offsetHeight;
+  //   const sideBarSearchHeight = document.getElementById('sidebarSearchWrapper')!.offsetHeight;
+  //   const sideBarModeHeight = document.getElementById('sidebarModeWrapper')!.offsetHeight;
+  //   const sideBarFooterHeight = document.getElementById('sidebarFooterWrapper')!.offsetHeight;
+  //   console.log(sideBarContentHeight, sideBarSearchHeight, sideBarModeHeight);
+  //   let sideBarListHeight = sideBarContentHeight - sideBarSearchHeight - sideBarModeHeight - sideBarHeaderHeight - sideBarFooterHeight;
+  //   if(Number.isNaN(sideBarListHeight)){sideBarListHeight = 200};
+  //   console.log(sideBarListHeight);
+  //   this.setState({ routeListMaxHeight : sideBarListHeight});
+  // };
   /**
    * Convert a string to a real travelMode-enum
    * @param {any} event - Mouse click event
@@ -73,12 +96,14 @@ class SideBar extends Component<
     const currentStopOvers = this.state.stopOvers;
     currentStopOvers[index] = location || { lat: undefined, lng: undefined };
     // set state and fire change event
-    this.setState((state: SideBarState, props: SideBarProps) => ({
-      stopOvers: currentStopOvers 
-    }), ()=>{
-      this.props.locationStopOversChanged(this.state.stopOvers);
-    });
-    
+    this.setState(
+      (state: SideBarState, props: SideBarProps) => ({
+        stopOvers: currentStopOvers,
+      }),
+      () => {
+        this.props.locationStopOversChanged(this.state.stopOvers);
+      }
+    );
   };
 
   /**
@@ -87,9 +112,9 @@ class SideBar extends Component<
   handleAddSearchbar = () => {
     const currentStopOvers = this.state.stopOvers ? this.state.stopOvers : [];
 
-    currentStopOvers.push({lat: undefined, lng: undefined });
+    currentStopOvers.push({ lat: undefined, lng: undefined });
     this.setState((state: SideBarState, props: SideBarProps) => ({
-      stopOvers: currentStopOvers
+      stopOvers: currentStopOvers,
       // stopOvers: [...currentStopOvers, { lat: undefined, lng: undefined }],
     }));
   };
@@ -107,13 +132,15 @@ class SideBar extends Component<
     }
 
     // set state and fire change event
-    this.setState((state: SideBarState, props: SideBarProps) => ({
-      stopOvers: currentStopOvers,
-    }), ()=>{
-      this.props.locationStopOversChanged(this.state.stopOvers);
-    });
+    this.setState(
+      (state: SideBarState, props: SideBarProps) => ({
+        stopOvers: currentStopOvers,
+      }),
+      () => {
+        this.props.locationStopOversChanged(this.state.stopOvers);
+      }
+    );
     // this.setState({ stopOvers: currentStopOvers });
-    
   };
 
   /**
@@ -130,7 +157,7 @@ class SideBar extends Component<
         onToggle={this.props.handleToggleSidebar}
       >
         {/* Header with logo and app title */}
-        <SidebarHeader>
+        <SidebarHeader id='sidebarHeaderWrapper'>
           <div className='sidebar-header'>
             <img
               className='sidebar-header-icon'
@@ -144,7 +171,7 @@ class SideBar extends Component<
         {/* Content with searchfields, stopovers, and route municipalities list */}
         <SidebarContent>
           {/* Change travelmode */}
-          <Menu key='menuTravelMode' className='travelModeMenu'>
+          <Menu key='menuTravelMode' className='travelModeMenu' id='sidebarModeWrapper'>
             <div className='travelMode'>
               <ButtonGroup aria-label='Basic example'>
                 <Button
@@ -199,13 +226,14 @@ class SideBar extends Component<
           <Menu
             key='menuSearch'
             iconShape='circle'
-            className='searchbar-add-stop-over-wrapper pro-menu-searchbar'
+            id='sidebarSearchWrapper'
+            className='searchbar-add-stop-over-wrapper pro-menu-searchbar sidebarSearchWrapper'
           >
             <MenuItem key='searchBarFromMenuItem'>
-              <div className='search-bar-stop-over'>
+              <div className='search-bar-stop-over searchBarFrom'>
                 <div className='search-bar removeButtonWrapper removableSearchbar'>
                   <SearchBar
-                    key="searchBarFrom"
+                    key='searchBarFrom'
                     tabIndex={5}
                     placeholder={intl.formatMessage({ id: "destinationFrom" })}
                     onLocationChanged={this.props.locationFromChanged}
@@ -222,15 +250,19 @@ class SideBar extends Component<
                 </button>
               </div>
             </MenuItem>
-            
-              <MenuItem
-                key='searchBarAddStopover'
-                className='searchbar-add-stop-over-wrapper pro-menu-searchbar'
-              >
-                {/* Show all stopovers */}
-                {this.state.travelMode !== "TRANSIT" && this.state?.stopOvers?.map((stopOverCoords, index) => {
+
+            <MenuItem
+              key='searchBarAddStopover'
+              className='searchbar-add-stop-over-wrapper pro-menu-searchbar '
+            >
+              {/* Show all stopovers */}
+              {this.state.travelMode !== "TRANSIT" &&
+                this.state?.stopOvers?.map((stopOverCoords, index) => {
                   return (
-                    <div className='search-bar-stop-over' key={"searchBarStopOver" + index}>
+                    <div
+                      className='search-bar-stop-over'
+                      key={"searchBarStopOver" + index}
+                    >
                       <div className='removeButtonWrapper removableSearchbar'>
                         <SearchBar
                           tabIndex={5 + (this.state?.stopOvers?.length || 0)}
@@ -253,11 +285,11 @@ class SideBar extends Component<
                     </div>
                   );
                 })}
-              </MenuItem>
-            
+            </MenuItem>
+
             {/* Searchfield "to" */}
             <MenuItem key='searchBarTo' className='pro-menu-searchbar'>
-              <div className='search-bar'>
+              <div className='search-bar searchBarTo'>
                 <SearchBar
                   tabIndex={6 + (this.state?.stopOvers?.length || 0)}
                   placeholder={intl.formatMessage({ id: "destinationTo" })}
@@ -269,13 +301,17 @@ class SideBar extends Component<
             {this.props.routeInfos.distance > 0 && (
               <MenuItem key='routeInfos'>
                 <div className='route-infos'>
-                  <span>
+                  <span
+                    title={intl.formatMessage({ id: "infographicIncidence" })}
+                  >
                     <span className='icon average'>
                       <RiVirusLine />
                     </span>
                     {this.props.routeInfos?.incidence?.toFixed(1) || 0}
                   </span>
-                  <span>
+                  <span
+                    title={intl.formatMessage({ id: "infographicDuration" })}
+                  >
                     <span className='icon'>
                       <BiTime />
                     </span>
@@ -283,7 +319,9 @@ class SideBar extends Component<
                       `${Math.floor(this.props.routeInfos.duration / 60)} h `}
                     {`${(this.props.routeInfos.duration % 60).toFixed()} min`}
                   </span>
-                  <span>
+                  <span
+                    title={intl.formatMessage({ id: "infographicDistance" })}
+                  >
                     <span className='icon'>
                       <GiPathDistance />
                     </span>
@@ -311,38 +349,45 @@ class SideBar extends Component<
                 </span>
 
                 {/* Show all municipalities */}
-                <ul>
-                  {this.props.routeInfos.municipalities.map((m, i) => {
-                    return (
-                      <li key={`waypoint-${i}`}>
-                        <div
-                          className='bullet'
-                          style={
-                            m.municipality.incidence_color !== "#000000"
-                              ? {
-                                  background: `${m.municipality.incidence_color}`,
-                                }
-                              : { background: `#6475b1` }
-                          }
-                        />
-                        <div className='incidence'>
-                          {m.municipality.incidence ||
-                          m.municipality.incidence === 0
-                            ? m.municipality.incidence?.toFixed(1)
-                            : "?"}
-                        </div>
-                        <div className='info'>{m.municipality.name}</div>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {/* style={{maxHeight: this.state.routeListMaxHeight, height: this.state.routeListMaxHeight, minHeight:this.state.routeListMaxHeight}} */}
+                <div 
+                  className={
+                    "listWrapper " + ("wrapper-" + this.state.stopOvers.length)
+                  }
+                >
+                  <ul>
+                    {this.props.routeInfos.municipalities.map((m, i) => {
+                      return (
+                        <li key={`waypoint-${i}`}>
+                          <div
+                            className='bullet'
+                            style={
+                              m.municipality.incidence_color !== "#000000"
+                                ? {
+                                    background: `${m.municipality.incidence_color}`,
+                                  }
+                                : { background: `#6475b1` }
+                            }
+                          />
+                          <div className='incidence'>
+                            {m.municipality.incidence ||
+                            m.municipality.incidence === 0
+                              ? m.municipality.incidence?.toFixed(1)
+                              : "?"}
+                          </div>
+                          <div className='info'>{m.municipality.name}</div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               </div>
             </Menu>
           )}
         </SidebarContent>
 
         {/* Footer with impressum and language chooser */}
-        <SidebarFooter className='sidebar-footer'>
+        <SidebarFooter className='sidebar-footer' id="sidebarFooterWrapper">
           {/* Language Chooser */}
           <div className='localization-wrapper'>
             <FaGlobe />

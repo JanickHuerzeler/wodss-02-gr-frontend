@@ -74,6 +74,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         API.waypoints.municipalityList(waypoints)
             .then((dt: { data: any; }) => {
                 callback(dt.data);
+            },(err)=>{
+                console.log(err.message);
             });
     }
 
