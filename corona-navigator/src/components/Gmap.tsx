@@ -11,11 +11,11 @@ import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
 import GoogleMapReact, {Coords} from "google-map-react";
 
-//TODO: extract base url and key to config file!!!
-const DefaultApiConfig              = new Configuration({basePath: 'http://localhost:5001'});
+const DefaultApiConfig              = new Configuration({basePath: process.env.REACT_APP_SERVER_URL});
 const API                           = new DefaultApi(DefaultApiConfig);
-const GOOGLE_API_KEY                = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
-const DEFAULT_MAP_CENTER            = { lat: 47.48107, lng: 8.21162 };
+const GOOGLE_API_KEY                = process.env.REACT_APP_GOOGLE_API_KEY!;
+const DEFAULT_MAP_CENTER            = { lat: Number.parseFloat(process.env.REACT_APP_DEFAULT_MAP_CENTER_LAT!), 
+                                        lng: Number.parseFloat(process.env.REACT_APP_DEFAULT_MAP_CENTER_LNG!) };
 const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
 const POLY_OPTIONS                  = { strokeOpacity: .5,  fillOpacity: .3 };
 const POLY_OPTIONS_HOVER            = { strokeOpacity: .95, fillOpacity: .6 };
