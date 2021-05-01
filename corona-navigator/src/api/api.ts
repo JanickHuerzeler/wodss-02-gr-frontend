@@ -43,52 +43,27 @@ export interface CoordinateDTO {
 /**
  * 
  * @export
- * @interface Helloworldtype
+ * @interface IncidenceDTO
  */
-export interface Helloworldtype {
-    /**
-     * 
-     * @type {HelloworldtypeMunicipality}
-     * @memberof Helloworldtype
-     */
-    municipality?: HelloworldtypeMunicipality;
-    /**
-     * 
-     * @type {Array<Array<Array<number>>>}
-     * @memberof Helloworldtype
-     */
-    polygon?: Array<Array<Array<number>>>;
-}
-/**
- * 
- * @export
- * @interface HelloworldtypeMunicipality
- */
-export interface HelloworldtypeMunicipality {
+export interface IncidenceDTO {
     /**
      * 
      * @type {number}
-     * @memberof HelloworldtypeMunicipality
+     * @memberof IncidenceDTO
      */
-    area?: number;
+    bfsNr?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IncidenceDTO
+     */
+    date?: string;
     /**
      * 
      * @type {number}
-     * @memberof HelloworldtypeMunicipality
-     */
-    bfs_nr?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof HelloworldtypeMunicipality
+     * @memberof IncidenceDTO
      */
     incidence?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof HelloworldtypeMunicipality
-     */
-    population?: number;
 }
 /**
  * 
@@ -145,6 +120,43 @@ export interface MunicipalityDTO {
      */
     plz?: number;
 }
+/**
+ * 
+ * @export
+ * @interface MunicipalityMetadataDTO
+ */
+export interface MunicipalityMetadataDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof MunicipalityMetadataDTO
+     */
+    area?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof MunicipalityMetadataDTO
+     */
+    bfs_nr?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MunicipalityMetadataDTO
+     */
+    canton?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MunicipalityMetadataDTO
+     */
+    name?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof MunicipalityMetadataDTO
+     */
+    population?: number;
+}
 
 /**
  * DefaultApi - axios parameter creator
@@ -153,13 +165,147 @@ export interface MunicipalityDTO {
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * helloworld
-         * @summary A demo route for helloworld.
+         * 
+         * @summary Returns incidences of the given canton with given date filter
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+         * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        helloworldGet: async (options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/helloworld/`;
+        cantonsCantonIncidencesGet: async (canton: string, dateFrom?: string, dateTo?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'canton' is not null or undefined
+            assertParamExists('cantonsCantonIncidencesGet', 'canton', canton)
+            const localVarPath = `/cantons/{canton}/incidences/`
+                .replace(`{${"canton"}}`, encodeURIComponent(String(canton)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (dateFrom !== undefined) {
+                localVarQueryParameter['dateFrom'] = dateFrom;
+            }
+
+            if (dateTo !== undefined) {
+                localVarQueryParameter['dateTo'] = dateTo;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns municipality of the given canton and bfs-nr
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} bfsNr bfsNr
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cantonsCantonMunicipalitiesBfsNrGet: async (canton: string, bfsNr: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'canton' is not null or undefined
+            assertParamExists('cantonsCantonMunicipalitiesBfsNrGet', 'canton', canton)
+            // verify required parameter 'bfsNr' is not null or undefined
+            assertParamExists('cantonsCantonMunicipalitiesBfsNrGet', 'bfsNr', bfsNr)
+            const localVarPath = `/cantons/{canton}/municipalities/{bfsNr}/`
+                .replace(`{${"canton"}}`, encodeURIComponent(String(canton)))
+                .replace(`{${"bfsNr"}}`, encodeURIComponent(String(bfsNr)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns incidences of the given canton and bfs-nr with given date filter
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} bfsNr bfsNr
+         * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+         * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cantonsCantonMunicipalitiesBfsNrIncidencesGet: async (canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'canton' is not null or undefined
+            assertParamExists('cantonsCantonMunicipalitiesBfsNrIncidencesGet', 'canton', canton)
+            // verify required parameter 'bfsNr' is not null or undefined
+            assertParamExists('cantonsCantonMunicipalitiesBfsNrIncidencesGet', 'bfsNr', bfsNr)
+            const localVarPath = `/cantons/{canton}/municipalities/{bfsNr}/incidences/`
+                .replace(`{${"canton"}}`, encodeURIComponent(String(canton)))
+                .replace(`{${"bfsNr"}}`, encodeURIComponent(String(bfsNr)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (dateFrom !== undefined) {
+                localVarQueryParameter['dateFrom'] = dateFrom;
+            }
+
+            if (dateTo !== undefined) {
+                localVarQueryParameter['dateTo'] = dateTo;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns municipalities of the given canton
+         * @param {string} canton two-char canton abbreviation
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cantonsCantonMunicipalitiesGet: async (canton: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'canton' is not null or undefined
+            assertParamExists('cantonsCantonMunicipalitiesGet', 'canton', canton)
+            const localVarPath = `/cantons/{canton}/municipalities/`
+                .replace(`{${"canton"}}`, encodeURIComponent(String(canton)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -184,41 +330,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * Municipalities with corona and geo-information
-         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
-         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        waypointsGet: async (waypoints?: Array<CoordinateDTO>, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/waypoints/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(waypoints, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Municipalities with corona and geo-information
-         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
          * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -261,29 +373,58 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
     return {
         /**
-         * helloworld
-         * @summary A demo route for helloworld.
+         * 
+         * @summary Returns incidences of the given canton with given date filter
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+         * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async helloworldGet(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Helloworldtype>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.helloworldGet(options);
+        async cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<IncidenceDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonIncidencesGet(canton, dateFrom, dateTo, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns municipality of the given canton and bfs-nr
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} bfsNr bfsNr
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MunicipalityMetadataDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns incidences of the given canton and bfs-nr with given date filter
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} bfsNr bfsNr
+         * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+         * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<IncidenceDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns municipalities of the given canton
+         * @param {string} canton two-char canton abbreviation
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async cantonsCantonMunicipalitiesGet(canton: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityMetadataDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesGet(canton, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Municipalities with corona and geo-information
-         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
-         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async waypointsGet(waypoints?: Array<CoordinateDTO>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.waypointsGet(waypoints, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * Municipalities with corona and geo-information
-         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
          * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -303,27 +444,54 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = DefaultApiFp(configuration)
     return {
         /**
-         * helloworld
-         * @summary A demo route for helloworld.
+         * 
+         * @summary Returns incidences of the given canton with given date filter
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+         * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        helloworldGet(options?: any): AxiosPromise<Helloworldtype> {
-            return localVarFp.helloworldGet(options).then((request) => request(axios, basePath));
+        cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, options?: any): AxiosPromise<Array<IncidenceDTO>> {
+            return localVarFp.cantonsCantonIncidencesGet(canton, dateFrom, dateTo, options).then((request) => request(axios, basePath));
         },
         /**
-         * Municipalities with corona and geo-information
-         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
-         * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+         * 
+         * @summary Returns municipality of the given canton and bfs-nr
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} bfsNr bfsNr
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        waypointsGet(waypoints?: Array<CoordinateDTO>, options?: any): AxiosPromise<Array<MunicipalityDTO>> {
-            return localVarFp.waypointsGet(waypoints, options).then((request) => request(axios, basePath));
+        cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, options?: any): AxiosPromise<MunicipalityMetadataDTO> {
+            return localVarFp.cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns incidences of the given canton and bfs-nr with given date filter
+         * @param {string} canton two-char canton abbreviation
+         * @param {string} bfsNr bfsNr
+         * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+         * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options?: any): AxiosPromise<Array<IncidenceDTO>> {
+            return localVarFp.cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns municipalities of the given canton
+         * @param {string} canton two-char canton abbreviation
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cantonsCantonMunicipalitiesGet(canton: string, options?: any): AxiosPromise<Array<MunicipalityMetadataDTO>> {
+            return localVarFp.cantonsCantonMunicipalitiesGet(canton, options).then((request) => request(axios, basePath));
         },
         /**
          * Municipalities with corona and geo-information
-         * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
          * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -342,31 +510,62 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  */
 export class DefaultApi extends BaseAPI {
     /**
-     * helloworld
-     * @summary A demo route for helloworld.
+     * 
+     * @summary Returns incidences of the given canton with given date filter
+     * @param {string} canton two-char canton abbreviation
+     * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+     * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public helloworldGet(options?: any) {
-        return DefaultApiFp(this.configuration).helloworldGet(options).then((request) => request(this.axios, this.basePath));
+    public cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonIncidencesGet(canton, dateFrom, dateTo, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Municipalities with corona and geo-information
-     * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
-     * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
+     * 
+     * @summary Returns municipality of the given canton and bfs-nr
+     * @param {string} canton two-char canton abbreviation
+     * @param {string} bfsNr bfsNr
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public waypointsGet(waypoints?: Array<CoordinateDTO>, options?: any) {
-        return DefaultApiFp(this.configuration).waypointsGet(waypoints, options).then((request) => request(this.axios, this.basePath));
+    public cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns incidences of the given canton and bfs-nr with given date filter
+     * @param {string} canton two-char canton abbreviation
+     * @param {string} bfsNr bfsNr
+     * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
+     * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns municipalities of the given canton
+     * @param {string} canton two-char canton abbreviation
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public cantonsCantonMunicipalitiesGet(canton: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesGet(canton, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Municipalities with corona and geo-information
-     * @summary Gets Municipalities and their corona- and geo-information where the given waypoints lay in.
+     * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
      * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

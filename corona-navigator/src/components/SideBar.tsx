@@ -350,7 +350,7 @@ class SideBar extends Component<
 
                 {/* Show all municipalities */}
                 {/* style={{maxHeight: this.state.routeListMaxHeight, height: this.state.routeListMaxHeight, minHeight:this.state.routeListMaxHeight}} */}
-                <div 
+                <div
                   className={
                     "listWrapper " + ("wrapper-" + this.state.stopOvers.length)
                   }

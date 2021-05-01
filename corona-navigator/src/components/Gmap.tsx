@@ -4,14 +4,16 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import InfoBubble from "./InfoBubble";
 import {areLocationArraysEqual, areLocationsEqual} from "../helpers/AreLocationsEqual";
 import {removeMarker, removePolygons, removeRoute} from "../helpers/MapInteractions";
-import {Api} from "../api/navigatorApi";
-import {CoordinateDTO, MunicipalityDTO} from "../api";
+import {DefaultApi} from "../api/api";
+import {Configuration, CoordinateDTO, MunicipalityDTO} from "../api";
 import {HiCheckCircle, ImSpinner2} from "react-icons/all";
 import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
 import GoogleMapReact, {Coords} from "google-map-react";
 
-const API                           = new Api({baseUrl:'http://localhost:5001'});
+//TODO: extract base url and key to config file!!!
+const DefaultApiConfig              = new Configuration({basePath: 'http://localhost:5001'});
+const API                           = new DefaultApi(DefaultApiConfig);
 const GOOGLE_API_KEY                = "AIzaSyCaORgZFgOduOC08vlydCfxm5jWSmMVnV4";
 const DEFAULT_MAP_CENTER            = { lat: 47.48107, lng: 8.21162 };
 const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
@@ -68,12 +70,13 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
     /**
      * send a rest call with waypoints to the backend and get a list of municipalities along the route back.
      * @param {CoordinateDTO[]} waypoints - All or a chunk if waypoints along the route
-     * @param {(data: any)} callback      - Callback to handle the response
+     * @param {(data: MunicipalityDTO[]) => void } callback - Callback to handle the response
      */
-    sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: any) => void) {
-        API.waypoints.municipalityList(waypoints)
-            .then((dt: { data: any; }) => {
-                callback(dt.data);
+    sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: MunicipalityDTO[]) => void) {
+        API.waypointsPost(waypoints)
+        // API.waypoints.municipalityList(waypoints)
+            .then((response: { data: MunicipalityDTO[] }) => {
+                callback(response.data);
             },(err)=>{
                 console.log(err.message);
             });
@@ -163,11 +166,11 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             (result: any, status: any) => {
                 // handle the response (route) only if it's valid
                 if (result && status === google.maps.DirectionsStatus.OK) {
-                    const routeInfo: RouteInfos  = this.computeRouteInfos(result);
-                    const waypoints:       any[] = [];
-                    const waypointsChunks: any[] = [];
-                    const currentPolygons: (string | undefined)[] = [];
-                    let chunkSize:         number;
+                    const routeInfo: RouteInfos                     = this.computeRouteInfos(result);
+                    const waypoints: Coords[]                       = [];
+                    const waypointsChunks: any[]                    = [];
+                    const currentPolygons: (string | undefined)[]   = [];
+                    let chunkSize: number;
                     this.setState({ isLoading: true });
 
                     // show route on map
@@ -205,7 +208,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     if(waypointsChunks.length === 0) this.municipalitiesLoaded();
 
                     /* call backend for municipalities along the route for each waypoint-chunk */
-                    waypointsChunks.forEach((wps: any[], chunkIndex: number) => {
+                    waypointsChunks.forEach((wps: CoordinateDTO[], chunkIndex: number) => {
                         this.sendWaypointsToBackend(wps, data => {
                             // handle municipality polygons only if no new route has been calculated in the meantime
                             if(data && this.state.uniqueId === uniqueId) {
@@ -245,7 +248,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                                                 // mouseover listener to show info bubble
                                                 gPolygon.addListener("mouseover", () => {
                                                     gPolygon.setOptions(POLY_OPTIONS_HOVER);
-
+                                                    
                                                     this.setState({
                                                         infoBubble: {
                                                             show: true,
