@@ -11,6 +11,8 @@ import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
 import GoogleMapReact, {Coords} from "google-map-react";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const DefaultApiConfig              = new Configuration({basePath: process.env.REACT_APP_SERVER_URL});
 
@@ -90,9 +92,9 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         // API.waypoints.municipalityList(waypoints)
             .then((response: { data: MunicipalityDTO[] }) => {
                 callback(response.data);
-            },(err)=>{
-                console.log(err.message);
-            })
+            },(error)=>{
+               this.handleApiError(error);
+            });
             /*.catch((thrown)=>{
                 if (axios.isCancel(thrown)) {
                     console.log('Request canceled', thrown.message);
@@ -101,6 +103,50 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                   }
             })*/
             ;
+    }
+
+    handleApiError(error: any){
+        let errorMessage = "An error happened.";
+        /**
+         * Error Handling code from https://gist.github.com/fgilio/230ccd514e9381fafa51608fcf137253
+         */
+        if (error.response) {
+            /*
+             * The request was made and the server responded with a
+             * status code that falls out of the range of 2xx
+             */
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            errorMessage = "Error: HTTP Status "+ error.response.status +" received.";
+        } else if (error.request) {
+            /*
+             * The request was made but no response was received, `error.request`
+             * is an instance of XMLHttpRequest in the browser and an instance
+             * of http.ClientRequest in Node.js
+             */
+            console.log(error.request);
+            errorMessage = "Error: No server response.";
+        } else {
+            // Something happened in setting up the request and triggered an Error
+            console.log('Error', error.message);
+            errorMessage = "Error: "+ error.message +".";
+        }
+        console.log(error);
+        this.showToast(errorMessage);
+    }
+
+    showToast(errorMessage: string){
+        toast('😷'+ errorMessage , {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            type: "dark" 
+            });
     }
 
     /**
@@ -462,9 +508,21 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         const { intl } = this.props;
 
         return (
-            <div className={'gmap-wrapper'}>
-                {/* Show preloader whole the municipalities are loading */}
-                { this.state.isLoading &&
+          <div className={"gmap-wrapper"}>
+            <ToastContainer
+                position="bottom-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                className="toast-container"
+            />
+            {/* Show preloader whole the municipalities are loading */}
+            { this.state.isLoading &&
                 <div className='is-loading'>
                     <ImSpinner2 className='icon-spin' />
                     <span>{intl.formatMessage({ id: "loadingIncidenceOverlay" })}</span>
@@ -500,8 +558,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                         lng  = { this.state.infoBubble.lng }
                         data = { this.state.infoBubble     }
                     />
-                </GoogleMapReact>
-            </div>
+            </GoogleMapReact>
+          </div>
         );
     }
 }

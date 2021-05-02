@@ -136,7 +136,6 @@ class App extends Component<AppProps, AppState> {
             routeInfos               = { this.state.routeInfos }
           />
           <main>
-
             {/* Hamburger menu icon for small screens */}
             <div className='btn-toggle' onClick={() => { this.handleToggleSidebar(true); }}>
               <FaBars />
