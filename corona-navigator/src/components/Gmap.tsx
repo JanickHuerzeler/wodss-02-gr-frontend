@@ -73,7 +73,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
      * @param {(data: MunicipalityDTO[]) => void } callback - Callback to handle the response
      */
     sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: MunicipalityDTO[]) => void) {
-        API.waypointsPost(waypoints)
+        API.waypointsPost(this.props.selectedLocale, waypoints)
         // API.waypoints.municipalityList(waypoints)
             .then((response: { data: MunicipalityDTO[] }) => {
                 callback(response.data);

@@ -11,6 +11,7 @@ export interface GmapProps {
     locationStopOvers:  Coords[] | undefined;
     travelMode:         google.maps.TravelMode;
     routeChanged:       (routeInfo: RouteInfos) => void;
+    selectedLocale:     string;
 }
 
 export interface GmapState {

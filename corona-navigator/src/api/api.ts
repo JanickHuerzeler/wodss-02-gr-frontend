@@ -170,10 +170,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {string} canton two-char canton abbreviation
          * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
          * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonIncidencesGet: async (canton: string, dateFrom?: string, dateTo?: string, options: any = {}): Promise<RequestArgs> => {
+        cantonsCantonIncidencesGet: async (canton: string, dateFrom?: string, dateTo?: string, language?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'canton' is not null or undefined
             assertParamExists('cantonsCantonIncidencesGet', 'canton', canton)
             const localVarPath = `/cantons/{canton}/incidences/`
@@ -197,6 +198,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 localVarQueryParameter['dateTo'] = dateTo;
             }
 
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
@@ -213,10 +218,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @summary Returns municipality of the given canton and bfs-nr
          * @param {string} canton two-char canton abbreviation
          * @param {string} bfsNr bfsNr
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonMunicipalitiesBfsNrGet: async (canton: string, bfsNr: string, options: any = {}): Promise<RequestArgs> => {
+        cantonsCantonMunicipalitiesBfsNrGet: async (canton: string, bfsNr: string, language?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'canton' is not null or undefined
             assertParamExists('cantonsCantonMunicipalitiesBfsNrGet', 'canton', canton)
             // verify required parameter 'bfsNr' is not null or undefined
@@ -234,6 +240,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
 
 
     
@@ -253,10 +263,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {string} bfsNr bfsNr
          * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
          * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonMunicipalitiesBfsNrIncidencesGet: async (canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options: any = {}): Promise<RequestArgs> => {
+        cantonsCantonMunicipalitiesBfsNrIncidencesGet: async (canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, language?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'canton' is not null or undefined
             assertParamExists('cantonsCantonMunicipalitiesBfsNrIncidencesGet', 'canton', canton)
             // verify required parameter 'bfsNr' is not null or undefined
@@ -283,6 +294,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 localVarQueryParameter['dateTo'] = dateTo;
             }
 
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
@@ -298,10 +313,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Returns municipalities of the given canton
          * @param {string} canton two-char canton abbreviation
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonMunicipalitiesGet: async (canton: string, options: any = {}): Promise<RequestArgs> => {
+        cantonsCantonMunicipalitiesGet: async (canton: string, language?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'canton' is not null or undefined
             assertParamExists('cantonsCantonMunicipalitiesGet', 'canton', canton)
             const localVarPath = `/cantons/{canton}/municipalities/`
@@ -317,6 +333,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
@@ -331,11 +351,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * Municipalities with corona and geo-information
          * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        waypointsPost: async (waypoints?: Array<CoordinateDTO>, options: any = {}): Promise<RequestArgs> => {
+        waypointsPost: async (language?: string, waypoints?: Array<CoordinateDTO>, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/waypoints/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -347,6 +368,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
 
 
     
@@ -378,11 +403,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {string} canton two-char canton abbreviation
          * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
          * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<IncidenceDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonIncidencesGet(canton, dateFrom, dateTo, options);
+        async cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, language?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<IncidenceDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonIncidencesGet(canton, dateFrom, dateTo, language, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -390,11 +416,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @summary Returns municipality of the given canton and bfs-nr
          * @param {string} canton two-char canton abbreviation
          * @param {string} bfsNr bfsNr
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MunicipalityMetadataDTO>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, options);
+        async cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, language?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MunicipalityMetadataDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, language, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -404,33 +431,36 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {string} bfsNr bfsNr
          * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
          * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<IncidenceDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, options);
+        async cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, language?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<IncidenceDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, language, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Returns municipalities of the given canton
          * @param {string} canton two-char canton abbreviation
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async cantonsCantonMunicipalitiesGet(canton: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityMetadataDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesGet(canton, options);
+        async cantonsCantonMunicipalitiesGet(canton: string, language?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityMetadataDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cantonsCantonMunicipalitiesGet(canton, language, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Municipalities with corona and geo-information
          * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async waypointsPost(waypoints?: Array<CoordinateDTO>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.waypointsPost(waypoints, options);
+        async waypointsPost(language?: string, waypoints?: Array<CoordinateDTO>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MunicipalityDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.waypointsPost(language, waypoints, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -449,22 +479,24 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {string} canton two-char canton abbreviation
          * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
          * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, options?: any): AxiosPromise<Array<IncidenceDTO>> {
-            return localVarFp.cantonsCantonIncidencesGet(canton, dateFrom, dateTo, options).then((request) => request(axios, basePath));
+        cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, language?: string, options?: any): AxiosPromise<Array<IncidenceDTO>> {
+            return localVarFp.cantonsCantonIncidencesGet(canton, dateFrom, dateTo, language, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Returns municipality of the given canton and bfs-nr
          * @param {string} canton two-char canton abbreviation
          * @param {string} bfsNr bfsNr
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, options?: any): AxiosPromise<MunicipalityMetadataDTO> {
-            return localVarFp.cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, options).then((request) => request(axios, basePath));
+        cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, language?: string, options?: any): AxiosPromise<MunicipalityMetadataDTO> {
+            return localVarFp.cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, language, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -473,31 +505,34 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {string} bfsNr bfsNr
          * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
          * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options?: any): AxiosPromise<Array<IncidenceDTO>> {
-            return localVarFp.cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, options).then((request) => request(axios, basePath));
+        cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, language?: string, options?: any): AxiosPromise<Array<IncidenceDTO>> {
+            return localVarFp.cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, language, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Returns municipalities of the given canton
          * @param {string} canton two-char canton abbreviation
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cantonsCantonMunicipalitiesGet(canton: string, options?: any): AxiosPromise<Array<MunicipalityMetadataDTO>> {
-            return localVarFp.cantonsCantonMunicipalitiesGet(canton, options).then((request) => request(axios, basePath));
+        cantonsCantonMunicipalitiesGet(canton: string, language?: string, options?: any): AxiosPromise<Array<MunicipalityMetadataDTO>> {
+            return localVarFp.cantonsCantonMunicipalitiesGet(canton, language, options).then((request) => request(axios, basePath));
         },
         /**
          * Municipalities with corona and geo-information
          * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
+         * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
          * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        waypointsPost(waypoints?: Array<CoordinateDTO>, options?: any): AxiosPromise<Array<MunicipalityDTO>> {
-            return localVarFp.waypointsPost(waypoints, options).then((request) => request(axios, basePath));
+        waypointsPost(language?: string, waypoints?: Array<CoordinateDTO>, options?: any): AxiosPromise<Array<MunicipalityDTO>> {
+            return localVarFp.waypointsPost(language, waypoints, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -515,12 +550,13 @@ export class DefaultApi extends BaseAPI {
      * @param {string} canton two-char canton abbreviation
      * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
      * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+     * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, options?: any) {
-        return DefaultApiFp(this.configuration).cantonsCantonIncidencesGet(canton, dateFrom, dateTo, options).then((request) => request(this.axios, this.basePath));
+    public cantonsCantonIncidencesGet(canton: string, dateFrom?: string, dateTo?: string, language?: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonIncidencesGet(canton, dateFrom, dateTo, language, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -528,12 +564,13 @@ export class DefaultApi extends BaseAPI {
      * @summary Returns municipality of the given canton and bfs-nr
      * @param {string} canton two-char canton abbreviation
      * @param {string} bfsNr bfsNr
+     * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, options?: any) {
-        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, options).then((request) => request(this.axios, this.basePath));
+    public cantonsCantonMunicipalitiesBfsNrGet(canton: string, bfsNr: string, language?: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesBfsNrGet(canton, bfsNr, language, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -543,36 +580,39 @@ export class DefaultApi extends BaseAPI {
      * @param {string} bfsNr bfsNr
      * @param {string} [dateFrom] dateFrom - dateFrom is inclusive. If not given, all datasets since beginning.
      * @param {string} [dateTo] dateTo - dateTo is inclusive. If not given, all datasets till today.
+     * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, options?: any) {
-        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, options).then((request) => request(this.axios, this.basePath));
+    public cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton: string, bfsNr: string, dateFrom?: string, dateTo?: string, language?: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesBfsNrIncidencesGet(canton, bfsNr, dateFrom, dateTo, language, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Returns municipalities of the given canton
      * @param {string} canton two-char canton abbreviation
+     * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public cantonsCantonMunicipalitiesGet(canton: string, options?: any) {
-        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesGet(canton, options).then((request) => request(this.axios, this.basePath));
+    public cantonsCantonMunicipalitiesGet(canton: string, language?: string, options?: any) {
+        return DefaultApiFp(this.configuration).cantonsCantonMunicipalitiesGet(canton, language, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Municipalities with corona and geo-information
      * @summary Returns municipalities and their corona- and geo-information where the given waypoints lay in.
+     * @param {string} [language] language tag (RFC 4646 format language_code-COUNTRY_CODE, e.g. \&quot;en-US\&quot;)
      * @param {Array<CoordinateDTO>} [waypoints] Array of waypoints from route
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public waypointsPost(waypoints?: Array<CoordinateDTO>, options?: any) {
-        return DefaultApiFp(this.configuration).waypointsPost(waypoints, options).then((request) => request(this.axios, this.basePath));
+    public waypointsPost(language?: string, waypoints?: Array<CoordinateDTO>, options?: any) {
+        return DefaultApiFp(this.configuration).waypointsPost(language, waypoints, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

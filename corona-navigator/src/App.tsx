@@ -149,6 +149,7 @@ class App extends Component<AppProps, AppState> {
               locationStopOvers = { this.state.locationStopOvers }
               travelMode        = { this.state.travelMode }
               routeChanged      = { this.routeChanged }
+              selectedLocale    = { this.state.locale }
             />
           </main>
         </div>
