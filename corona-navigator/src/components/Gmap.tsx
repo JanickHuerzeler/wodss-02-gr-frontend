@@ -155,14 +155,18 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             removePolygons(this.mapPolygons);
             removeMarker(this.locationMarker);
 
-            // send the request to google api
-            this.directionsService.route({
-
+            let directionServiceOptions: any = {
                 origin:      this.props.locationFrom,
                 destination: this.props.locationTo,
-                waypoints:   stopOverWaypoints,
                 travelMode:  this.props.travelMode
-            },
+            }
+
+            // travel mode "transit" only accepts two waypoints
+            if(this.props.travelMode !== google.maps.TravelMode.TRANSIT){
+                directionServiceOptions.waypoints = stopOverWaypoints;
+            }
+            // send the request to google api
+            this.directionsService.route(directionServiceOptions,
             (result: any, status: any) => {
                 // handle the response (route) only if it's valid
                 if (result && status === google.maps.DirectionsStatus.OK) {

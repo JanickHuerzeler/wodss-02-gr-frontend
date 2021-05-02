@@ -268,10 +268,11 @@ class SideBar extends Component<
               className='searchbar-add-stop-over-wrapper pro-menu-searchbar '
             >
               {/* Show all stopovers */}
-              {this.state.travelMode !== "TRANSIT" &&
-                this.state?.stopOvers?.map((stopOverCoords, index) => {
+              { this.state?.stopOvers?.map((stopOverCoords, index) => {
                   return (
-                    <div
+                    <div hidden={
+                      this.state.travelMode === google.maps.TravelMode.TRANSIT
+                    }
                       className='search-bar-stop-over'
                       key={"searchBarStopOver" + index}
                     >
