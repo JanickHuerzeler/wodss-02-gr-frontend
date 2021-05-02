@@ -215,7 +215,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     waypointsChunks.forEach((wps: CoordinateDTO[], chunkIndex: number) => {
                         this.sendWaypointsToBackend(wps, data => {
                             // handle municipality polygons only if no new route has been calculated in the meantime
-                            if(data && this.state.uniqueId === uniqueId) {
+                            if(data && data.length > 0 && this.state.uniqueId === uniqueId) {
                                 data.forEach((m: MunicipalityDTO) => {
                                     // insert municipality in the correct position in the list of municipalities
                                     this.insertMunicipalityToRouteInfo(m, routeInfo, chunkIndex);
