@@ -10,8 +10,17 @@ import {HiCheckCircle, ImSpinner2} from "react-icons/all";
 import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
 import GoogleMapReact, {Coords} from "google-map-react";
+import axios from "axios";
 
 const DefaultApiConfig              = new Configuration({basePath: process.env.REACT_APP_SERVER_URL});
+
+// Request Cancelation ideas from: 
+// https://julietonyekaoha.medium.com/react-cancel-all-axios-request-in-componentwillunmount-e5b2c978c071
+// https://medium.com/tribalscale/how-to-automate-api-code-generation-openapi-swagger-and-boost-productivity-1176a0056d8a
+// const source                        = axios.CancelToken.source();
+// const axiosInstance                 = axios.create({cancelToken: source.token});
+// const API                           = new DefaultApi(DefaultApiConfig, DefaultApiConfig.basePath, axiosInstance);
+
 const API                           = new DefaultApi(DefaultApiConfig);
 const GOOGLE_API_KEY                = process.env.REACT_APP_GOOGLE_API_KEY!;
 const DEFAULT_MAP_CENTER            = { lat: Number.parseFloat(process.env.REACT_APP_DEFAULT_MAP_CENTER_LAT!), 
@@ -73,13 +82,25 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
      * @param {(data: MunicipalityDTO[]) => void } callback - Callback to handle the response
      */
     sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: MunicipalityDTO[]) => void) {
-        API.waypointsPost(this.props.selectedLocale, waypoints)
+        API.waypointsPost(
+            this.props.selectedLocale, 
+            waypoints, 
+            //{cancelToken: source.token}
+            )
         // API.waypoints.municipalityList(waypoints)
             .then((response: { data: MunicipalityDTO[] }) => {
                 callback(response.data);
             },(err)=>{
                 console.log(err.message);
-            });
+            })
+            /*.catch((thrown)=>{
+                if (axios.isCancel(thrown)) {
+                    console.log('Request canceled', thrown.message);
+                  } else {
+                    // handle error
+                  }
+            })*/
+            ;
     }
 
     /**
@@ -418,6 +439,10 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                 !areLocationArraysEqual(this.locationStopOversBefore, this.props.locationStopOvers)
             ) || this.props.travelMode !== this.travelModeBefore
         ) {
+
+            // TODO: Discuss this. this should be the right place for cancellation of previous requests?
+            // if(source) source.cancel("Timeout of 30 seconds reached.");
+            
             // if a location has been changed, backup the current values
             this.locationFromBefore         = this.props.locationFrom;
             this.locationToBefore           = this.props.locationTo;
