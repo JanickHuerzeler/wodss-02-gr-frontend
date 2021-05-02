@@ -24,7 +24,11 @@ const messages = {
         loadingFinished:              'Inzidenzen erfolgreich geladen',
         infographicIncidence:         'Durchschnitts-Inzidenz',
         infographicDuration:          'Reisedauer',
-        infographicDistance:          'Distanz'
+        infographicDistance:          'Distanz',
+        tavelModeDriving:             'Fahren',
+        tavelModeTransit:             'ÖV',
+        tavelModeWalking:             'Wandern',
+        tavelModeBicycling:           'Fahrrad'
     },
     'en-GB': {
         area: 'Area',
@@ -46,7 +50,11 @@ const messages = {
         loadingFinished:              'Incidences successfully loaded',
         infographicIncidence:         'Mean incidence',
         infographicDuration:          'Travel duration',
-        infographicDistance:          'Distance'
+        infographicDistance:          'Distance',
+        tavelModeDriving:             'Driving',
+        tavelModeTransit:             'Transit',
+        tavelModeWalking:             'Walking',
+        tavelModeBicycling:           'Bicycling'
     }
 
 }

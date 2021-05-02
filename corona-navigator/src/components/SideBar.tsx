@@ -175,6 +175,7 @@ class SideBar extends Component<
             <div className='travelMode'>
               <ButtonGroup aria-label='Basic example'>
                 <Button
+                  title={intl.formatMessage({id: 'tavelModeDriving'})}
                   tabIndex={1}
                   className={
                     this.state.travelMode === "DRIVING" ? "active" : ""
@@ -186,6 +187,7 @@ class SideBar extends Component<
                   <FaCar />
                 </Button>
                 <Button
+                  title={intl.formatMessage({id: 'tavelModeTransit'})}
                   tabIndex={2}
                   className={
                     this.state.travelMode === "TRANSIT" ? "active" : ""
@@ -197,6 +199,7 @@ class SideBar extends Component<
                   <FaSubway />
                 </Button>
                 <Button
+                  title={intl.formatMessage({id: 'tavelModeWalking'})}
                   tabIndex={3}
                   className={
                     this.state.travelMode === "WALKING" ? "active" : ""
@@ -208,6 +211,7 @@ class SideBar extends Component<
                   <FaWalking />
                 </Button>
                 <Button
+                title={intl.formatMessage({id: 'tavelModeBicycling'})}
                   tabIndex={4}
                   className={
                     this.state.travelMode === "BICYCLING" ? "active" : ""
