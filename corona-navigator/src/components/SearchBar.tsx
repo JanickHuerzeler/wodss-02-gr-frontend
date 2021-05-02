@@ -57,8 +57,9 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
     handleSelect = (selected: string) => {
         this.setState({ address: selected });
 
-        // get geocode from google api
-        geocodeByAddress(selected)
+        if(selected && selected.length > 0){
+            // get geocode from google api
+            geocodeByAddress(selected)
             .then((res: any) => getLatLng(res[0]))
             .then(({lat, lng}: any) => {
                 this.setState({
@@ -72,6 +73,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
             .catch((error: any) => {
                 console.error('error', error);
             });
+        }
     };
 
     /**

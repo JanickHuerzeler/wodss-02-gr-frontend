@@ -63,14 +63,16 @@ $light-blue: #6475b1;
       margin-top: 6px;
 
       span:first-child {
-        padding-left: 1px;
-        padding-right: 28px;
+        // padding-left: 1px;
+        // padding-right: 28px;
         display: inline-block;
-        width: 110px;
+        width: 80px;
         text-align: right;
       }
 
-      span:last-child {}
+      span:last-child {
+        padding-left:1em;
+      }
     }
   }
 
@@ -114,7 +116,7 @@ $light-blue: #6475b1;
     width: 22%;
     font-size: 0.75em;
     text-align: right;
-    padding-right: 30px;
+    padding-right: 15px;
   }
 
   .info {
@@ -223,7 +225,7 @@ $light-blue: #6475b1;
   margin-top: 0 !important;
   background: #6475b1;
   border-color: #6475b1;
-  font-size: 19px;
+  // font-size: 19px;
 }
 
 .btn-purple:hover {
@@ -235,7 +237,17 @@ $light-blue: #6475b1;
   border-right-color: rgb(78, 85, 91);
   border-bottom-color: rgb(78, 85, 91);
   border-left-color: rgb(78, 85, 91);
-  font-size: 19px;
+  // font-size: 19px;
+}
+
+.btn-add-stopover{
+  width: 100%;
+  margin-top: 0.5rem !important;
+}
+
+.addStopOverIcon{
+  float: left;
+  margin-top: 0.25rem;
 }
 
 .route-waypoint {
@@ -453,3 +465,8 @@ $scrollbar-width: 12px;
  }
 
 /*END VARIANTE 4 */
+
+.no-margin-row{
+  margin-left: 0px !important;
+  margin-right: 0px i !important;
+}

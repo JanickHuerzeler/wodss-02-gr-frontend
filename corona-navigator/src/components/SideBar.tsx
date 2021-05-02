@@ -40,7 +40,7 @@ class SideBar extends Component<
   state: SideBarState = {
     stopOvers: [],
     travelMode: "DRIVING",
-    routeListMaxHeight: 300
+    routeListMaxHeight: 300,
   };
 
   // componentDidMount() {
@@ -171,11 +171,15 @@ class SideBar extends Component<
         {/* Content with searchfields, stopovers, and route municipalities list */}
         <SidebarContent>
           {/* Change travelmode */}
-          <Menu key='menuTravelMode' className='travelModeMenu' id='sidebarModeWrapper'>
+          <Menu
+            key='menuTravelMode'
+            className='travelModeMenu'
+            id='sidebarModeWrapper'
+          >
             <div className='travelMode'>
               <ButtonGroup aria-label='Basic example'>
                 <Button
-                  title={intl.formatMessage({id: 'tavelModeDriving'})}
+                  title={intl.formatMessage({ id: "tavelModeDriving" })}
                   tabIndex={1}
                   className={
                     this.state.travelMode === "DRIVING" ? "active" : ""
@@ -187,7 +191,7 @@ class SideBar extends Component<
                   <FaCar />
                 </Button>
                 <Button
-                  title={intl.formatMessage({id: 'tavelModeTransit'})}
+                  title={intl.formatMessage({ id: "tavelModeTransit" })}
                   tabIndex={2}
                   className={
                     this.state.travelMode === "TRANSIT" ? "active" : ""
@@ -199,7 +203,7 @@ class SideBar extends Component<
                   <FaSubway />
                 </Button>
                 <Button
-                  title={intl.formatMessage({id: 'tavelModeWalking'})}
+                  title={intl.formatMessage({ id: "tavelModeWalking" })}
                   tabIndex={3}
                   className={
                     this.state.travelMode === "WALKING" ? "active" : ""
@@ -211,7 +215,7 @@ class SideBar extends Component<
                   <FaWalking />
                 </Button>
                 <Button
-                title={intl.formatMessage({id: 'tavelModeBicycling'})}
+                  title={intl.formatMessage({ id: "tavelModeBicycling" })}
                   tabIndex={4}
                   className={
                     this.state.travelMode === "BICYCLING" ? "active" : ""
@@ -235,7 +239,7 @@ class SideBar extends Component<
           >
             <MenuItem key='searchBarFromMenuItem'>
               <div className='search-bar-stop-over searchBarFrom'>
-                <div className='search-bar removeButtonWrapper removableSearchbar'>
+                <div className='search-bar'>
                   <SearchBar
                     key='searchBarFrom'
                     tabIndex={5}
@@ -245,14 +249,18 @@ class SideBar extends Component<
                   />
                 </div>
                 {/* Add stopover */}
-                <button
-                  className='btn btn-purple removeStopOverButton'
-                  onClick={this.handleAddSearchbar}
-                  title={intl.formatMessage({ id: "addStopOver" })}
-                >
-                  <FaPlus />
-                </button>
               </div>
+              <button
+                hidden={
+                  this.state.travelMode === google.maps.TravelMode.TRANSIT
+                }
+                className='btn btn-purple btn-add-stopover'
+                onClick={this.handleAddSearchbar}
+                title={intl.formatMessage({ id: "addStopOver" })}
+              >
+                <FaPlus className='addStopOverIcon' />{" "}
+                {intl.formatMessage({ id: "addStopOver" })}
+              </button>
             </MenuItem>
 
             <MenuItem
@@ -391,7 +399,7 @@ class SideBar extends Component<
         </SidebarContent>
 
         {/* Footer with impressum and language chooser */}
-        <SidebarFooter className='sidebar-footer' id="sidebarFooterWrapper">
+        <SidebarFooter className='sidebar-footer' id='sidebarFooterWrapper'>
           {/* Language Chooser */}
           <div className='localization-wrapper'>
             <FaGlobe />
