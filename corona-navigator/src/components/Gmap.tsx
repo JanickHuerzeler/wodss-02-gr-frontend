@@ -19,7 +19,7 @@ const DEFAULT_MAP_CENTER            = { lat: Number.parseFloat(process.env.REACT
 const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
 const POLY_OPTIONS                  = { strokeOpacity: .5,  fillOpacity: .3 };
 const POLY_OPTIONS_HOVER            = { strokeOpacity: .95, fillOpacity: .6 };
-const WAYPOINT_DISTANCER_CHUNKER    = 20
+const WAYPOINT_DISTANCER_CHUNKER    = Number.parseInt(process.env.REACT_APP_WAYPOINT_DISTANCE_CHUNKER!);
 
 /**
  * Display a google map and provide all necessary interactions with the map.

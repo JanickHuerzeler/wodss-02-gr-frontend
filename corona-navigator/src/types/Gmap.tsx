@@ -23,5 +23,5 @@ export interface GmapState {
     isLoading:       boolean;
     loaded:          boolean;
     uniqueId:        number;
-    infoBubble:      InfoBubble
+    infoBubble:      InfoBubble;
 }
