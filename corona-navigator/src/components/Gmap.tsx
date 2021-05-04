@@ -48,23 +48,25 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
     // set default state
     state: GmapState = {
-        defaultCenter:   DEFAULT_MAP_CENTER,
-        center:          DEFAULT_MAP_CENTER,
-        defaultZoom:     12,
-        map:             null,
-        mapLoaded:       false,
-        isLoading:       false,
-        loaded:          false,
-        uniqueId:        0,
+        defaultCenter:      DEFAULT_MAP_CENTER,
+        center:             DEFAULT_MAP_CENTER,
+        defaultZoom:        12,
+        map:                null,
+        mapLoaded:          false,
+        isLoading:          false,
+        loaded:             false,
+        uniqueId:           0,
         infoBubble: {
-            show:        false,
-            lat:         '',
-            lng:         '',
-            name:        '',
-            zip:         0,
-            incidence:   0
+            show:           false,
+            lat:            '',
+            lng:            '',
+            name:           '',
+            zip:            0,
+            incidence:      0
         },
-        timeoutCantons:  []
+        timeoutCantons:     [],
+        noServerResponse:   false,
+        chunkSize:          0
     }
 
     constructor(props: (GmapProps & WrappedComponentProps)) {
@@ -122,7 +124,15 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
           (error: Error) => {
             this.handleApiError(error);
           }
-        );
+        ).finally(()=>{
+            this.setState((state: GmapState, props: GmapProps) => ({
+                chunkSize: this.state.chunkSize-1
+              }),()=>{
+                  if(this.state.chunkSize === 0){
+                        this.setState({ isLoading: false });
+                  }
+              });
+        });
     }
 
     handleApiError(error: any){
@@ -145,8 +155,17 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
              * is an instance of XMLHttpRequest in the browser and an instance
              * of http.ClientRequest in Node.js
              */
-            console.log(error.request);
-            errorMessage = "Error: No server response.";
+            if(!this.state.noServerResponse){
+                this.setState((state: GmapState, props: GmapProps) => ({
+                    noServerResponse: true
+                }));
+                console.log(error.request);
+                errorMessage = "Error: No server response.";
+            }else{
+                return;
+            }
+            
+            
         } else {
             // Something happened in setting up the request and triggered an Error
             console.log('Error', error.message);
@@ -298,8 +317,14 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     // if no waypoints exist show success message directly
                     if(waypointsChunks.length === 0) this.municipalitiesLoaded();
 
+                    
+                    
+
                     // reset timeout cantons due to new request chunks
                     this.setState({timeoutCantons: []});
+                    this.setState({noServerResponse: false});
+
+                    this.setState({chunkSize: waypointsChunks.length});
 
                     /* call backend for municipalities along the route for each waypoint-chunk */
                     waypointsChunks.forEach((wps: CoordinateDTO[], chunkIndex: number) => {

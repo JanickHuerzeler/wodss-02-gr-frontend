@@ -15,14 +15,16 @@ export interface GmapProps {
 }
 
 export interface GmapState {
-    defaultCenter:   Coords | undefined;
-    center:          Coords | undefined;
-    defaultZoom:     number;
-    map:             any | null;
-    mapLoaded:       boolean;
-    isLoading:       boolean;
-    loaded:          boolean;
-    uniqueId:        number;
-    infoBubble:      InfoBubble;
-    timeoutCantons:  string[];
+    defaultCenter:      Coords | undefined;
+    center:             Coords | undefined;
+    defaultZoom:        number;
+    map:                any | null;
+    mapLoaded:          boolean;
+    isLoading:          boolean;
+    loaded:             boolean;
+    uniqueId:           number;
+    infoBubble:         InfoBubble;
+    timeoutCantons:     string[];
+    noServerResponse:   boolean;
+    chunkSize:          number;
 }
