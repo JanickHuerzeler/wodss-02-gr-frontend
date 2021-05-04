@@ -60,6 +60,8 @@ $searchbar-padding: 8px;
     color: #999;
 }
 
+$autocomplete-width: 270px;
+
 .SearchBar__autocomplete-container {
     position: absolute;
     z-index: 2;
@@ -69,6 +71,9 @@ $searchbar-padding: 8px;
     border-top: 1px solid #e6e6e6;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border-radius: 0 0 2px 2px;
+    width: $autocomplete-width;
+    max-width: $autocomplete-width;
+    min-width: $autocomplete-width;
 }
 
 .SearchBar__suggestion-item {
@@ -77,6 +82,8 @@ $searchbar-padding: 8px;
     background-color: #fff;
     cursor: pointer;
     color: #444;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .SearchBar__suggestion-item--active {

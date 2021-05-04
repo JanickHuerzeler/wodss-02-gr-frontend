@@ -84,14 +84,16 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
      * @param {(data: MunicipalityDTO[]) => void } callback - Callback to handle the response
      */
     sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: MunicipalityDTO[]) => void) {
+        // TODO: handle errors for all chunks together 
         API.waypointsPost(
             this.props.selectedLocale, 
             waypoints, 
-            //{cancelToken: source.token}
             )
-        // API.waypoints.municipalityList(waypoints)
-            .then((response: { data: MunicipalityDTO[] }) => {
+            .then((response: { data: MunicipalityDTO[], headers: any }) => {
                 callback(response.data);
+                if(response.headers && response.headers['x-cantons-timeout']){
+                    this.showToast('🤕 Timeout occured for '+ JSON.parse(response.headers['x-cantons-timeout']).keys);
+                }
             },(error)=>{
                this.handleApiError(error);
             });
