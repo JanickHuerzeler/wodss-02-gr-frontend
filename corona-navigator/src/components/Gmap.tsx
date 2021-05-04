@@ -13,6 +13,7 @@ import GoogleMapReact, {Coords} from "google-map-react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { IncomingHttpHeaders } from "node:http2";
 
 const DefaultApiConfig              = new Configuration({basePath: process.env.REACT_APP_SERVER_URL});
 
@@ -62,7 +63,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             name:        '',
             zip:         0,
             incidence:   0
-        }
+        },
+        timeoutCantons:  []
     }
 
     constructor(props: (GmapProps & WrappedComponentProps)) {
@@ -83,28 +85,44 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
      * @param {CoordinateDTO[]} waypoints - All or a chunk if waypoints along the route
      * @param {(data: MunicipalityDTO[]) => void } callback - Callback to handle the response
      */
-    sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: MunicipalityDTO[]) => void) {
-        // TODO: handle errors for all chunks together 
-        API.waypointsPost(
-            this.props.selectedLocale, 
-            waypoints, 
-            )
-            .then((response: { data: MunicipalityDTO[], headers: any }) => {
-                callback(response.data);
-                if(response.headers && response.headers['x-cantons-timeout']){
-                    this.showToast('🤕 Timeout occured for '+ JSON.parse(response.headers['x-cantons-timeout']).keys);
-                }
-            },(error)=>{
-               this.handleApiError(error);
-            });
-            /*.catch((thrown)=>{
-                if (axios.isCancel(thrown)) {
-                    console.log('Request canceled', thrown.message);
-                  } else {
-                    // handle error
-                  }
-            })*/
-            ;
+    sendWaypointsToBackend(waypoints: CoordinateDTO[], callback: (data: MunicipalityDTO[]) => void){
+        API.waypointsPost(this.props.selectedLocale, waypoints).then(
+          (response: {
+            data: MunicipalityDTO[];
+            headers: IncomingHttpHeaders;
+          }) => {
+            callback(response.data);
+            if (response.headers && response.headers["x-cantons-timeout"]) {
+              let cantons = response.headers["x-cantons-timeout"]
+                .toString()
+                .replace("{", "")
+                .replace("}", "")
+                .replaceAll("'", "")
+                .split(", ");
+              let distinctCantons = cantons.filter(
+                (v, i, a) => a.indexOf(v) === i
+              );
+
+              distinctCantons = distinctCantons.filter(
+                (s) => this.state.timeoutCantons.indexOf(s) === -1
+              );
+              if (distinctCantons.length > 0) {
+                this.setState((state: GmapState, props: GmapProps) => ({
+                  timeoutCantons: distinctCantons.concat(
+                    this.state.timeoutCantons
+                  ),
+                }));
+                this.showToast(
+                  this.props.intl.formatMessage({ id: "errorMessageTimeout" }) +
+                    distinctCantons.join(", ")
+                );
+              }
+            }
+          },
+          (error: Error) => {
+            this.handleApiError(error);
+          }
+        );
     }
 
     handleApiError(error: any){
@@ -139,7 +157,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
     }
 
     showToast(errorMessage: string){
-        toast('😷'+ errorMessage , {
+        toast(this.props.intl.formatMessage({id: 'errorEmoji'})+ ' ' + errorMessage , {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -236,7 +254,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             }
             // send the request to google api
             this.directionsService.route(directionServiceOptions,
-            (result: any, status: any) => {
+            async (result: any, status: any) => {
                 // handle the response (route) only if it's valid
                 if (result && status === google.maps.DirectionsStatus.OK) {
                     const routeInfo: RouteInfos                     = this.computeRouteInfos(result);
@@ -279,6 +297,9 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
                     // if no waypoints exist show success message directly
                     if(waypointsChunks.length === 0) this.municipalitiesLoaded();
+
+                    // reset timeout cantons due to new request chunks
+                    this.setState({timeoutCantons: []});
 
                     /* call backend for municipalities along the route for each waypoint-chunk */
                     waypointsChunks.forEach((wps: CoordinateDTO[], chunkIndex: number) => {
@@ -367,7 +388,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                             }
                         });
                     });
-
                 } else {
                     console.error(`error fetching directions ${result}`);
                 }

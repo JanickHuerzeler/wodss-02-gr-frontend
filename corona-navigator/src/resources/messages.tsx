@@ -28,7 +28,9 @@ const messages = {
         tavelModeDriving:             'Fahren',
         tavelModeTransit:             'ÖV',
         tavelModeWalking:             'Wandern',
-        tavelModeBicycling:           'Fahrrad'
+        tavelModeBicycling:           'Fahrrad',
+        errorMessageTimeout:          'Timeout aufgetreten für: ',
+        errorEmoji:                   '😷'
     },
     'en-GB': {
         area: 'Area',
@@ -54,7 +56,9 @@ const messages = {
         tavelModeDriving:             'Driving',
         tavelModeTransit:             'Transit',
         tavelModeWalking:             'Walking',
-        tavelModeBicycling:           'Bicycling'
+        tavelModeBicycling:           'Bicycling',
+        errorMessageTimeout:          'Timeout occured for: ',
+        errorEmoji:                   '😷'
     }
 
 }

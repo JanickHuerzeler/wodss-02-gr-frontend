@@ -24,4 +24,5 @@ export interface GmapState {
     loaded:          boolean;
     uniqueId:        number;
     infoBubble:      InfoBubble;
+    timeoutCantons:  string[];
 }
