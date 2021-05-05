@@ -111,7 +111,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
               if (distinctCantons.length > 0) {
                 this.setState((state: GmapState, props: GmapProps) => ({
                   timeoutCantons: distinctCantons.concat(
-                    this.state.timeoutCantons
+                    state.timeoutCantons
                   ),
                 }));
                 this.showToast(
@@ -126,7 +126,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
           }
         ).finally(()=>{
             this.setState((state: GmapState, props: GmapProps) => ({
-                chunkSize: this.state.chunkSize-1
+                chunkSize: state.chunkSize-1
               }),()=>{
                   if(this.state.chunkSize === 0){
                         this.setState({ isLoading: false });
