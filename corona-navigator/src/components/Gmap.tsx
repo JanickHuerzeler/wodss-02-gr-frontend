@@ -148,7 +148,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
-            errorMessage = "Error: HTTP Status "+ error.response.status +" received.";
+            errorMessage = this.props.intl.formatMessage({ id: "errorMessageHttpError" }) + error.response.status;
         } else if (error.request) {
             /*
              * The request was made but no response was received, `error.request`
@@ -160,7 +160,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     noServerResponse: true
                 }));
                 console.log(error.request);
-                errorMessage = "Error: No server response.";
+                errorMessage = this.props.intl.formatMessage({ id: "errorMessageNoResponse" });
             }else{
                 return;
             }
@@ -169,14 +169,15 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         } else {
             // Something happened in setting up the request and triggered an Error
             console.log('Error', error.message);
-            errorMessage = "Error: "+ error.message +".";
+            errorMessage =  this.props.intl.formatMessage({ id: "errorMessageRequestError" }) +error.message;
         }
         console.log(error);
         this.showToast(errorMessage);
     }
 
     showToast(errorMessage: string){
-        toast(this.props.intl.formatMessage({id: 'errorEmoji'})+ ' ' + errorMessage , {
+        toast(<div><span className="errorTitle">{this.props.intl.formatMessage({id: 'errorEmoji'}) +' '+ 
+            this.props.intl.formatMessage({id: 'error'})}</span><br/>{errorMessage}</div> , {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,

@@ -29,8 +29,12 @@ const messages = {
         tavelModeTransit:             'ÖV',
         tavelModeWalking:             'Wandern',
         tavelModeBicycling:           'Fahrrad',
-        errorMessageTimeout:          'Timeout aufgetreten für: ',
-        errorEmoji:                   '😷'
+        errorMessageTimeout:          'Verbindungsprobleme mit Kantonsservice ',
+        errorEmoji:                   '😷',
+        errorMessageHttpError:        'Fehler Inzidenzdienst: ',
+        errorMessageNoResponse:       'Inzidenzdienst nicht erreichbar',
+        errorMessageRequestError:     'Verbindungsaufbau fehlgeschlagen: ',
+        error:                        'Ein Fehler ist aufgetreten: '
     },
     'en-GB': {
         area: 'Area',
@@ -57,8 +61,12 @@ const messages = {
         tavelModeTransit:             'Transit',
         tavelModeWalking:             'Walking',
         tavelModeBicycling:           'Bicycling',
-        errorMessageTimeout:          'Timeout occured for: ',
-        errorEmoji:                   '😷'
+        errorMessageTimeout:          'Timeout occured for canton service ',
+        errorEmoji:                   '😷',
+        errorMessageHttpError:        'Error incidence service: ',
+        errorMessageNoResponse:       'Incidence service not available',
+        errorMessageRequestError:     'Request setup failed: ',
+        error:                        'An error occured: '
     }
 
 }
