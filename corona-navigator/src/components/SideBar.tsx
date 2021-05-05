@@ -155,6 +155,7 @@ class SideBar extends Component<
         toggled={this.props.toggled}
         breakPoint='md'
         onToggle={this.props.handleToggleSidebar}
+        data-testid='sidebar-1'
       >
         {/* Header with logo and app title */}
         <SidebarHeader id='sidebarHeaderWrapper'>
