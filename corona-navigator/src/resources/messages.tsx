@@ -40,7 +40,8 @@ const messages = {
         intervalAll:                  'Seit Beginn',
         chartTitle:                   'Tagesinzidenzen in ',
         chartXTitle:                  'Datum',
-        chartYTitle:                  'Tagesinzidenz'
+        chartYTitle:                  'Tagesinzidenz',
+        chartLoading:                 'Laden'
     },
     'en-GB': {
         area: 'Area',
@@ -78,7 +79,8 @@ const messages = {
         intervalAll:                  'Since beginn',
         chartTitle:                   'Daily Incidences in ',
         chartXTitle:                  'Date',
-        chartYTitle:                  'Daily Incidence'
+        chartYTitle:                  'Daily Incidence',
+        chartLoading:                 'Loading'
     }
 
 }

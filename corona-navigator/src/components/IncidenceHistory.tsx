@@ -214,7 +214,7 @@ class IncidenceHistory extends Component<
         </span>
         </div>
         <span className='loadingIncidences' hidden={this.state.loaded}>
-          Loading
+          {this.props.intl.formatMessage({id: "chartLoading"})}
         </span>
       </div>
     );
