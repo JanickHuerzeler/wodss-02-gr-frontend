@@ -172,6 +172,7 @@ class App extends Component<AppProps, AppState> {
               travelMode        = { this.state.travelMode }
               routeChanged      = { this.routeChanged }
               selectedLocale    = { this.state.locale }
+              selectedMunicipalityChanged = { this.handleSelectedMunicipalityChanged }
             />
             <IncidenceHistory 
               selectedLocale={this.state.locale}

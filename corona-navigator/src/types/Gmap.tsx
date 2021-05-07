@@ -1,6 +1,7 @@
 import {Coords} from "google-map-react";
 import {RouteInfos} from "./RouteInfos";
 import {InfoBubble} from "./InfoBubble";
+import { MunicipalityDTO } from "../api";
 
 /**
  * Properties and State type definitions for Gmap-Component
@@ -12,6 +13,7 @@ export interface GmapProps {
     travelMode:         google.maps.TravelMode;
     routeChanged:       (routeInfo: RouteInfos) => void;
     selectedLocale:     string;
+    selectedMunicipalityChanged:    (selectedMunicipality: MunicipalityDTO) => void;
 }
 
 export interface GmapState {

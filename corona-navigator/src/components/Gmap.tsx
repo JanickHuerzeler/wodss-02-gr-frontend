@@ -393,6 +393,13 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                                                     });
                                                 });
 
+                                                // mouseout listener to hide info bubble
+                                                gPolygon.addListener("click", () => {
+                                                    gPolygon.setOptions(POLY_OPTIONS);
+
+                                                    this.props.selectedMunicipalityChanged(m);
+                                                });
+
                                                 // add polygon to map
                                                 this.mapPolygons.push(gPolygon);
                                             });
