@@ -9,6 +9,8 @@ import {RouteInfos} from "./types/RouteInfos";
 import {AppProps, AppState} from "./types/App";
 import SideBar from "./components/SideBar";
 import messages from "./resources/messages";
+import IncidenceHistory from "./components/IncidenceHistory";
+import { MunicipalityDTO } from "./api";
 
 /**
  * Show the entire application with it's main component "SideBar" and "GoogleMaps".
@@ -25,21 +27,22 @@ class App extends Component<AppProps, AppState> {
 
   // set default state
   state: AppState = {
-    locationFrom:      undefined,
-    locationTo:        undefined,
-    locationStopOvers: [],
-    travelMode:        google.maps.TravelMode.DRIVING,
-    locale:            "de-DE",
-    messages:          messages,
-    rtl:               false,
-    toggled:           false,
-    collapsed:         false,
-    routeInfos: {
-      distance:        0,
-      duration:        0,
-      incidence:       null,
-      municipalities:  []
-    }
+    locationFrom:         undefined,
+    locationTo:           undefined,
+    locationStopOvers:    [],
+    travelMode:           google.maps.TravelMode.DRIVING,
+    locale:               "de-DE",
+    messages:             messages,
+    rtl:                  false,
+    toggled:              false,
+    collapsed:            false,
+    routeInfos: {   
+      distance:           0,
+      duration:           0,
+      incidence:          null,
+      municipalities:     []
+    },
+    selectedMunicipality: undefined
   };
 
   /**
@@ -102,13 +105,32 @@ class App extends Component<AppProps, AppState> {
   };
 
   /**
-   * Set state uf the state of sidebar has been changed. This happens when the viewport becomes too small.
+   * Set state if the state of sidebar has been changed. This happens when the viewport becomes too small.
    * @param {boolean} toggled - Currently selected state of sidebar (open or closed).
    */
   handleToggleSidebar = (toggled: boolean) => {
     this.setState({ toggled: toggled });
   };
 
+  /**
+   * Set state if a municipality was clicked inside the info route section of the sidebar.
+   * @param {MunicipalityDTO} selectedMunicipality - Currently selected municipality
+   */
+  handleSelectedMunicipalityChanged = (selectedMunicipality: MunicipalityDTO | undefined) => {
+    this.setState((state: AppState, props: AppProps) => ({
+      selectedMunicipality: selectedMunicipality
+    }))
+  }
+
+  /**
+   * Reset the selected municipality, called when IncidenceHistory-Component 
+   * close button was clicked.
+   */
+  handleCloseIncidenceChart = () =>{
+    this.setState((state: AppState, props: AppProps) => ({
+      selectedMunicipality: undefined
+    }))
+  }
   /**
    * Render HTMl output
    */
@@ -123,17 +145,18 @@ class App extends Component<AppProps, AppState> {
         <div className={`App app ${this.state.rtl ? "rtl" : ""} ${this.state.toggled ? "toggled" : ""}`}>
           {/* SideBar with props and callbacks */}
           <SideBar
-            collapsed                = { this.state.collapsed }
-            rtl                      = { this.state.rtl }
-            toggled                  = { this.state.toggled }
-            handleToggleSidebar      = { this.handleToggleSidebar }
-            locationFromChanged      = { this.locationFromChanged }
-            locationToChanged        = { this.locationToChanged }
-            locationStopOversChanged = { this.locationStopOversChanged }
-            travelModeChanged        = { this.travelModeChanged }
-            locales                  = { this.locales }
-            localeChanged            = { this.localeChanged }
-            routeInfos               = { this.state.routeInfos }
+            collapsed                   = { this.state.collapsed }
+            rtl                         = { this.state.rtl }
+            toggled                     = { this.state.toggled }
+            handleToggleSidebar         = { this.handleToggleSidebar }
+            locationFromChanged         = { this.locationFromChanged }
+            locationToChanged           = { this.locationToChanged }
+            locationStopOversChanged    = { this.locationStopOversChanged }
+            travelModeChanged           = { this.travelModeChanged }
+            locales                     = { this.locales }
+            localeChanged               = { this.localeChanged }
+            routeInfos                  = { this.state.routeInfos }
+            selectedMunicipalityChanged = { this.handleSelectedMunicipalityChanged }
           />
           <main>
             {/* Hamburger menu icon for small screens */}
@@ -150,6 +173,11 @@ class App extends Component<AppProps, AppState> {
               routeChanged      = { this.routeChanged }
               selectedLocale    = { this.state.locale }
             />
+            <IncidenceHistory 
+              selectedLocale={this.state.locale}
+              selectedMunicipality={this.state.selectedMunicipality}
+              closeIncidenceChart={this.handleCloseIncidenceChart}
+              ></IncidenceHistory>
           </main>
         </div>
       </IntlProvider>

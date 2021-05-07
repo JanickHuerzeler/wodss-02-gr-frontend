@@ -28,6 +28,7 @@ import { BiTime, GiPathDistance, RiVirusLine } from "react-icons/all";
 import { SideBarProps, SideBarState } from "../types/SideBar";
 import SearchBar from "./SearchBar";
 import logo from "../resources/logo.png";
+import { MunicipalityDTO } from "../api";
 
 /**
  * Show the sidebar which mainly serves as a controller for the map.
@@ -140,8 +141,16 @@ class SideBar extends Component<
         this.props.locationStopOversChanged(this.state.stopOvers);
       }
     );
-    // this.setState({ stopOvers: currentStopOvers });
   };
+
+  /**
+   * Set the municipality for the incidence chart component
+   * @param {MunicipalityDTO} municipality - selected municipality to display incidence chart for
+   */
+  handleRouteInfoMunicipalityClick = (municipality: MunicipalityDTO) => {
+    this.props.selectedMunicipalityChanged(municipality);
+  };
+  
 
   /**
    * Render HTMl output
@@ -372,7 +381,9 @@ class SideBar extends Component<
                   <ul>
                     {this.props.routeInfos.municipalities.map((m, i) => {
                       return (
-                        <li key={`waypoint-${i}`}>
+                        <li key={`waypoint-${i}`} 
+                          onClick={() => (this.handleRouteInfoMunicipalityClick(m.municipality))}
+                        >
                           <div
                             className='bullet'
                             style={

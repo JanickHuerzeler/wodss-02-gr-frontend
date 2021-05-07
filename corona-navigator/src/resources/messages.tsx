@@ -34,7 +34,13 @@ const messages = {
         errorMessageHttpError:        'Fehler Inzidenzdienst: ',
         errorMessageNoResponse:       'Inzidenzdienst nicht erreichbar',
         errorMessageRequestError:     'Verbindungsaufbau fehlgeschlagen: ',
-        error:                        'Ein Fehler ist aufgetreten: '
+        error:                        'Ein Fehler ist aufgetreten: ',
+        interval14:                   '14 Tage', 
+        interval7:                    '7 Tage',  
+        intervalAll:                  'Seit Beginn',
+        chartTitle:                   'Tagesinzidenzen in ',
+        chartXTitle:                  'Datum',
+        chartYTitle:                  'Tagesinzidenz'
     },
     'en-GB': {
         area: 'Area',
@@ -66,7 +72,13 @@ const messages = {
         errorMessageHttpError:        'Error incidence service: ',
         errorMessageNoResponse:       'Incidence service not available',
         errorMessageRequestError:     'Request setup failed: ',
-        error:                        'An error occured: '
+        error:                        'An error occured: ',
+        interval14:                   '14 Days', 
+        interval7:                    '7 Days',  
+        intervalAll:                  'Since beginn',
+        chartTitle:                   'Daily Incidences in ',
+        chartXTitle:                  'Date',
+        chartYTitle:                  'Daily Incidence'
     }
 
 }

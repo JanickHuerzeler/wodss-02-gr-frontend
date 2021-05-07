@@ -1,0 +1,69 @@
+.incidencePlotly {
+    position: absolute;
+    bottom: 0;
+}
+
+// .closeIncidencePlotlyWrapper{
+//     width: 800px; 
+//     height: 1.75em;
+//     background-color: rgba(0,0,0,0.5);
+//     position: absolute;
+//     bottom: 200px;
+// }
+.closeIncidencePlotly {
+    position: absolute;
+    top: 0.125em;
+    right: 0;
+    color: white;
+    width: 2em;
+    height: 1.8em;
+    text-align: center;
+    padding-top: 0.25em;
+    font-size: 10pt;
+    background-color: #000000;
+    cursor: pointer;
+    /* iOS Safari */
+    -webkit-touch-callout: none;
+
+    /* Safari */
+    -webkit-user-select: none;
+
+    /* Konqueror HTML */
+    -khtml-user-select: none;
+
+    /* Old versions of Firefox */
+    -moz-user-select: none;
+
+    /* Internet Explorer/Edge */
+    -ms-user-select: none;
+
+    /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+    user-select: none;
+
+}
+.loadingIncidences{
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    left: calc(50% - 25px);
+    top: calc(50% - 10px);
+    color: #ffffff;
+    z-index: 999;
+}
+
+.incidencechart-interval-select{
+    background-color: #6475b1;
+    right: 1.75em !important;
+    // margin-left: 2.6em;
+    vertical-align: bottom;
+    width: 307px !important; // calc(20%);
+    position: absolute;
+    bottom: 148px;
+    color: #ffffff;
+    z-index: 999;
+}
+
+.modebar-container{
+    right: 1.75em !important;
+}
