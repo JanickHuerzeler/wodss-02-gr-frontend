@@ -204,7 +204,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
         // check if municipality already exist
         for(i = 0; i < routeInfo.municipalities.length; i++) {
-            if(routeInfo.municipalities[i].municipality.name === m.name){
+            if(routeInfo.municipalities[i].municipality.plz === m.plz){
                 if(routeInfo.municipalities[i].index > chunkIndex) {
                     // delete existing municipality and insert the new one
                     insertMunicipality = true;
@@ -280,7 +280,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                     const routeInfo: RouteInfos                     = this.computeRouteInfos(result);
                     const waypoints: Coords[]                       = [];
                     const waypointsChunks: any[]                    = [];
-                    const currentPolygons: (string | undefined)[]   = [];
+                    const currentPolygons: (number | undefined)[]   = [];
                     let chunkSize: number;
                     this.setState({ isLoading: true });
 
@@ -337,8 +337,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                                     this.insertMunicipalityToRouteInfo(m, routeInfo, chunkIndex);
 
                                     // insert municipality polygon only to map if it doesn't already exist
-                                    if(!currentPolygons.includes(m.name)) {
-                                        currentPolygons.push(m.name);
+                                    if(!currentPolygons.includes(m.plz)) {
+                                        currentPolygons.push(m.plz);
 
                                         // if geo shapes are present, iterate through all and add it to the map
                                         if (m.geo_shapes) {
