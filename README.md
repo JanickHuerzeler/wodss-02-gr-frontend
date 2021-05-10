@@ -4,20 +4,11 @@ Frontend für den Workshop in der Vertiefung "Distributed Software Systems" (WOD
 
 ---
 
-## Prerequisites (NPM)
+## Setup
 ``` ZSH/CMD
 cd corona-navigator
 npm install
-```
-
-## Start
-``` ZSH/CMD
 npm start
-```
-
-## Build
-``` ZSH/CMD
-npm run build
 ```
 
 ## Swagger Client für Backend
