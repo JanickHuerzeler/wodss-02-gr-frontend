@@ -8,6 +8,7 @@ export interface InfoBubble {
     name:               string | undefined;
     zip:                number | undefined;
     incidence:          number | undefined;
+    date:               string | undefined;
 }
 
 export interface InfoBubbleProps {

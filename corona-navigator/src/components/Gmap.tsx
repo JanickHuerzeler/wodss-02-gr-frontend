@@ -61,7 +61,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             lng:            '',
             name:           '',
             zip:            0,
-            incidence:      0
+            incidence:      0,
+            date:           undefined
         },
         timeoutCantons:     [],
         noServerResponse:   false,
@@ -375,7 +376,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                                                             lng: bounds.getCenter().lng().toString(),
                                                             name: m.name,
                                                             zip: m.plz,
-                                                            incidence: m.incidence
+                                                            incidence: m.incidence,
+                                                            date: m.incidence_date
                                                         }
                                                     });
                                                 });
