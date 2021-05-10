@@ -10,7 +10,6 @@ import {HiCheckCircle, ImSpinner2} from "react-icons/all";
 import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
 import GoogleMapReact, {Coords} from "google-map-react";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { IncomingHttpHeaders } from "node:http2";

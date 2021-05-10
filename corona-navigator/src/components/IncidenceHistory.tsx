@@ -37,10 +37,6 @@ class IncidenceHistory extends Component<
     previousDateFrom: undefined,
   };
 
-  constructor(props: IncidenceHistoryProps & WrappedComponentProps) {
-    super(props);
-  }
-
   //   public handleClick = (evt: any) => alert("click");
   //   public handleHover = (evt: any) => alert("hover");
 
