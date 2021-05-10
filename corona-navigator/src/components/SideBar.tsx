@@ -29,6 +29,7 @@ import { SideBarProps, SideBarState } from "../types/SideBar";
 import SearchBar from "./SearchBar";
 import logo from "../resources/logo.png";
 import { MunicipalityDTO } from "../api";
+import { v4 } from 'uuid';
 
 /**
  * Show the sidebar which mainly serves as a controller for the map.
@@ -44,28 +45,7 @@ class SideBar extends Component<
     routeListMaxHeight: 300,
   };
 
-  // componentDidMount() {
-  //   this.updateDimensions();
-  //   window.addEventListener("resize", this.updateDimensions);
-  // }
 
-  // componentWillUnmount() {
-  //   window.removeEventListener("resize", this.updateDimensions);
-  // }
-
-  // updateDimensions = () => {
-  //   console.log('----------');
-  //   const sideBarContentHeight = document.body.offsetHeight;
-  //   const sideBarHeaderHeight = document.getElementById('sidebarHeaderWrapper')!.offsetHeight;
-  //   const sideBarSearchHeight = document.getElementById('sidebarSearchWrapper')!.offsetHeight;
-  //   const sideBarModeHeight = document.getElementById('sidebarModeWrapper')!.offsetHeight;
-  //   const sideBarFooterHeight = document.getElementById('sidebarFooterWrapper')!.offsetHeight;
-  //   console.log(sideBarContentHeight, sideBarSearchHeight, sideBarModeHeight);
-  //   let sideBarListHeight = sideBarContentHeight - sideBarSearchHeight - sideBarModeHeight - sideBarHeaderHeight - sideBarFooterHeight;
-  //   if(Number.isNaN(sideBarListHeight)){sideBarListHeight = 200};
-  //   console.log(sideBarListHeight);
-  //   this.setState({ routeListMaxHeight : sideBarListHeight});
-  // };
   /**
    * Convert a string to a real travelMode-enum
    * @param {any} event - Mouse click event
@@ -89,17 +69,22 @@ class SideBar extends Component<
    * @param { number } index    - Index of stopover in stopOvers-state.
    */
   handleStopOverChanged = (
-    lat: number | null,
-    lng: number | null,
-    index: number
+    lat:  number | null,
+    lng:  number | null,
+    uuid: string
   ) => {
-    const location = !lat || !lng ? undefined : { lat: lat, lng: lng };
+
+    const location =
+      !lat || !lng ? undefined : { lat: lat, lng: lng, uuid: uuid };
     const currentStopOvers = this.state.stopOvers;
-    currentStopOvers[index] = location || { lat: undefined, lng: undefined };
     // set state and fire change event
     this.setState(
       (state: SideBarState, props: SideBarProps) => ({
-        stopOvers: currentStopOvers,
+        stopOvers: currentStopOvers.map((stopOver) =>
+          stopOver.uuid === uuid
+            ? location || { lat: undefined, lng: undefined, uuid: uuid }
+            : stopOver
+        ),
       }),
       () => {
         this.props.locationStopOversChanged(this.state.stopOvers);
@@ -113,10 +98,9 @@ class SideBar extends Component<
   handleAddSearchbar = () => {
     const currentStopOvers = this.state.stopOvers ? this.state.stopOvers : [];
 
-    currentStopOvers.push({ lat: undefined, lng: undefined });
+    currentStopOvers.push({ lat: undefined, lng: undefined, uuid: v4() });
     this.setState((state: SideBarState, props: SideBarProps) => ({
       stopOvers: currentStopOvers,
-      // stopOvers: [...currentStopOvers, { lat: undefined, lng: undefined }],
     }));
   };
 
@@ -124,10 +108,12 @@ class SideBar extends Component<
    * Remove the selected searchbar (input field) from the search mask
    * @param {number }index - index of dynamicaly added searchbar
    */
-  handleRemoveSearchbar = (index: number): void => {
+  handleRemoveSearchbar = (uuid: string): void => {
     let currentStopOvers = this.state.stopOvers;
+    
     if (currentStopOvers.length > 1) {
-      currentStopOvers.splice(index, 1);
+      // currentStopOvers.splice(index, 1);
+      currentStopOvers = currentStopOvers.filter(s => s.uuid !== uuid);
     } else {
       currentStopOvers = [];
     }
@@ -266,21 +252,21 @@ class SideBar extends Component<
               className='searchbar-add-stop-over-wrapper pro-menu-searchbar '
             >
               {/* Show all stopovers */}
-              {this.state?.stopOvers?.map((stopOverCoords, index) => {
+              {this.state?.stopOvers?.map((stopOverCoords) => {
                 return (
                   <div
                     hidden={
                       this.state.travelMode === google.maps.TravelMode.TRANSIT
                     }
                     className='search-bar-stop-over'
-                    key={"searchBarStopOver" + index}
+                    key={"searchBarStopOver" + stopOverCoords.uuid!}
                   >
                     <div className='removeButtonWrapper removableSearchbar'>
                       <SearchBar
                         tabIndex={5 + (this.state?.stopOvers?.length || 0)}
                         placeholder={intl.formatMessage({ id: "stopover" })}
                         onLocationChanged={(lat, lng) => {
-                          this.handleStopOverChanged(lat, lng, index);
+                          this.handleStopOverChanged(lat, lng, stopOverCoords.uuid!);
                         }}
                         focus={false}
                       />
@@ -288,7 +274,7 @@ class SideBar extends Component<
                     <button
                       className='btn btn-purple removeStopOverButton'
                       onClick={() => {
-                        this.handleRemoveSearchbar(index);
+                        this.handleRemoveSearchbar(stopOverCoords.uuid!);
                       }}
                       title={intl.formatMessage({ id: "removeStopOver" })}
                     >
