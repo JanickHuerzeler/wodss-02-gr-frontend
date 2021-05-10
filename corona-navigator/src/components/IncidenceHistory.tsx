@@ -157,7 +157,7 @@ class IncidenceHistory extends Component<
           this.props.intl.formatMessage({ id: "chartTitle" }) +
           this.props.selectedMunicipality?.name,
         font: {
-          size: 20,
+          size: this.state.currentWindowWidth <= 768 ? 12 : 20,
         },
         x: 0.04,
         y: 0.9,
@@ -176,7 +176,7 @@ class IncidenceHistory extends Component<
         automargin: false,
       },
       autosize: true,
-      width: this.state.currentWindowWidth <= 800 ? window.innerWidth-150 : (window.innerWidth-400 > 800 ? 800 : window.innerWidth-400),
+      width: this.state.currentWindowWidth <= 768 ? window.innerWidth-150 : (window.innerWidth-400 > 768 ? 768 : window.innerWidth-400),
       height: 200,
       yaxis: {
         title: this.props.intl.formatMessage({ id: "chartYTitle" }),
@@ -201,7 +201,7 @@ class IncidenceHistory extends Component<
           data={data}
           layout={layout}
           onRedraw={()=>this.setWindowWidth}
-          config={{displayModeBar: true,responsive: true, modeBarButtonsToRemove: ['lasso2d','toggleSpikelines']}}
+          config={{displayModeBar: (this.state.currentWindowWidth >= 1000),responsive: true, modeBarButtonsToRemove: ['lasso2d','toggleSpikelines']}}
           // onClick={this.handleClick}
           // onHover={this.handleHover}
         />
