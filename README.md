@@ -17,7 +17,7 @@ npm start
 ```
 
 ## Swagger Client für Backend
-Da das [Backend](https://github.com/JanickHuerzeler/wodss-02-gr-backend) mit Swagger dokumentiert ist, kann der dazugehörige Client einfach genriert werden.
+Da das [Backend](https://github.com/JanickHuerzeler/wodss-02-gr-backend) mit Swagger dokumentiert ist, kann der dazugehörige Client einfach generiert werden.
 
 Mit folgendem Befehl werden die Model-Klassen und API-Aufrufe bei gestartetem Backend (localhost) automatisch generiert:
 
