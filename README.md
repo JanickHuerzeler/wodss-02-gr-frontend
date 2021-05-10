@@ -38,3 +38,10 @@ Mit der folgenden Konfiguration konnte die Applikation schlussendlich auf einem 
 ```ZSH
 env FAST_REFRESH=false npm start
 ```
+
+## Deploy on Live-Server
+```ZSH
+npm run build
+Commit & Push
+Connect to server and run "~/deploy_frontend.sh"
+```
