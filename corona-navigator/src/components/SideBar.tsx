@@ -258,8 +258,46 @@ class SideBar extends Component<
                     focus={true}
                   />
                 </div>
-                {/* Add stopover */}
               </div>
+            </MenuItem>
+
+            <MenuItem
+              key='searchBarAddStopover'
+              className='searchbar-add-stop-over-wrapper pro-menu-searchbar '
+            >
+              {/* Show all stopovers */}
+              {this.state?.stopOvers?.map((stopOverCoords, index) => {
+                return (
+                  <div
+                    hidden={
+                      this.state.travelMode === google.maps.TravelMode.TRANSIT
+                    }
+                    className='search-bar-stop-over'
+                    key={"searchBarStopOver" + index}
+                  >
+                    <div className='removeButtonWrapper removableSearchbar'>
+                      <SearchBar
+                        tabIndex={5 + (this.state?.stopOvers?.length || 0)}
+                        placeholder={intl.formatMessage({ id: "stopover" })}
+                        onLocationChanged={(lat, lng) => {
+                          this.handleStopOverChanged(lat, lng, index);
+                        }}
+                        focus={false}
+                      />
+                    </div>
+                    <button
+                      className='btn btn-purple removeStopOverButton'
+                      onClick={() => {
+                        this.handleRemoveSearchbar(index);
+                      }}
+                      title={intl.formatMessage({ id: "removeStopOver" })}
+                    >
+                      <FaMinus />
+                    </button>
+                  </div>
+                );
+              })}
+              {/* Add stopover */}
               <button
                 hidden={
                   this.state.travelMode === google.maps.TravelMode.TRANSIT
@@ -271,43 +309,6 @@ class SideBar extends Component<
                 <FaPlus className='addStopOverIcon' />{" "}
                 {intl.formatMessage({ id: "addStopOver" })}
               </button>
-            </MenuItem>
-
-            <MenuItem
-              key='searchBarAddStopover'
-              className='searchbar-add-stop-over-wrapper pro-menu-searchbar '
-            >
-              {/* Show all stopovers */}
-              { this.state?.stopOvers?.map((stopOverCoords, index) => {
-                  return (
-                    <div hidden={
-                      this.state.travelMode === google.maps.TravelMode.TRANSIT
-                    }
-                      className='search-bar-stop-over'
-                      key={"searchBarStopOver" + index}
-                    >
-                      <div className='removeButtonWrapper removableSearchbar'>
-                        <SearchBar
-                          tabIndex={5 + (this.state?.stopOvers?.length || 0)}
-                          placeholder={intl.formatMessage({ id: "stopover" })}
-                          onLocationChanged={(lat, lng) => {
-                            this.handleStopOverChanged(lat, lng, index);
-                          }}
-                          focus={false}
-                        />
-                      </div>
-                      <button
-                        className='btn btn-purple removeStopOverButton'
-                        onClick={() => {
-                          this.handleRemoveSearchbar(index);
-                        }}
-                        title={intl.formatMessage({ id: "removeStopOver" })}
-                      >
-                        <FaMinus />
-                      </button>
-                    </div>
-                  );
-                })}
             </MenuItem>
 
             {/* Searchfield "to" */}
@@ -326,7 +327,7 @@ class SideBar extends Component<
                 <div className='route-infos'>
                   <span
                     title={intl.formatMessage({ id: "infographicIncidence" })}
-                    className="routeInfosHighLights"
+                    className='routeInfosHighLights'
                   >
                     <span className='icon average'>
                       <RiVirusLine />
@@ -335,7 +336,7 @@ class SideBar extends Component<
                   </span>
                   <span
                     title={intl.formatMessage({ id: "infographicDuration" })}
-                    className="routeInfosLowLights"
+                    className='routeInfosLowLights'
                   >
                     <span className='icon'>
                       <BiTime />
@@ -346,7 +347,7 @@ class SideBar extends Component<
                   </span>
                   <span
                     title={intl.formatMessage({ id: "infographicDistance" })}
-                    className="routeInfosLowLights"
+                    className='routeInfosLowLights'
                   >
                     <span className='icon'>
                       <GiPathDistance />
@@ -376,16 +377,17 @@ class SideBar extends Component<
 
                 {/* Show all municipalities */}
                 {/* style={{maxHeight: this.state.routeListMaxHeight, height: this.state.routeListMaxHeight, minHeight:this.state.routeListMaxHeight}} */}
-                <div
-                  className={
-                    "listWrapper "
-                  }
-                >
+                <div className={"listWrapper "}>
                   <ul>
                     {this.props.routeInfos.municipalities.map((m, i) => {
                       return (
-                        <li key={`waypoint-${i}`} 
-                          onClick={() => (this.handleRouteInfoMunicipalityClick(m.municipality))}
+                        <li
+                          key={`waypoint-${i}`}
+                          onClick={() =>
+                            this.handleRouteInfoMunicipalityClick(
+                              m.municipality
+                            )
+                          }
                         >
                           <div
                             className='bullet'
