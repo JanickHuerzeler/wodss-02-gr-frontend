@@ -54,7 +54,7 @@ jobs:
           # Remote port
           # REMOTE_PORT: # optional, default is 22
           # Source directory
-          SOURCE: 'build/'
+          SOURCE: 'corona-navigator/build/'
           # Target directory
           TARGET: '/var/www/html/corona-navigator/' # optional, default is /home/REMOTE_USER/
           # Arguments to pass to rsync
