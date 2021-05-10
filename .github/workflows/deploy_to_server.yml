@@ -35,7 +35,7 @@ jobs:
         run: npm install
         
       - name: build react app
-        run: npm run build
+        run: node --max-old-space-size=8000 $(which npm) run build
       
       
       - name: ssh deploy
