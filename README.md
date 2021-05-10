@@ -44,4 +44,4 @@ env FAST_REFRESH=false npm start
 ```
 
 ## Continuous Integration
-- Done with GitHub Actions
+- Gemacht mit "GitHub Actions"
