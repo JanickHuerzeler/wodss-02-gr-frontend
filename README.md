@@ -4,15 +4,10 @@ Frontend für den Workshop in der Vertiefung "Distributed Software Systems" (WOD
 
 ---
 
-## Prerequisites (NPM)
+## Setup
 ``` ZSH/CMD
 cd corona-navigator
 npm install
-```
-
-## Start
-
-``` ZSH/CMD
 npm start
 ```
 
@@ -39,9 +34,5 @@ Mit der folgenden Konfiguration konnte die Applikation schlussendlich auf einem 
 env FAST_REFRESH=false npm start
 ```
 
-## Deploy on Live-Server
-```ZSH
-npm run build
-Commit & Push
-Connect to server and run "~/deploy_frontend.sh"
-```
+## Continuous Integration
+- Gemacht mit "GitHub Actions"
