@@ -375,7 +375,7 @@ class SideBar extends Component<
                 {/* style={{maxHeight: this.state.routeListMaxHeight, height: this.state.routeListMaxHeight, minHeight:this.state.routeListMaxHeight}} */}
                 <div
                   className={
-                    "listWrapper " + ("wrapper-" + this.state.stopOvers.length)
+                    "listWrapper "
                   }
                 >
                   <ul>
