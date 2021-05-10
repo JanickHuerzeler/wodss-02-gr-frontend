@@ -326,6 +326,7 @@ class SideBar extends Component<
                 <div className='route-infos'>
                   <span
                     title={intl.formatMessage({ id: "infographicIncidence" })}
+                    className="routeInfosHighLights"
                   >
                     <span className='icon average'>
                       <RiVirusLine />
@@ -334,6 +335,7 @@ class SideBar extends Component<
                   </span>
                   <span
                     title={intl.formatMessage({ id: "infographicDuration" })}
+                    className="routeInfosLowLights"
                   >
                     <span className='icon'>
                       <BiTime />
@@ -344,6 +346,7 @@ class SideBar extends Component<
                   </span>
                   <span
                     title={intl.formatMessage({ id: "infographicDistance" })}
+                    className="routeInfosLowLights"
                   >
                     <span className='icon'>
                       <GiPathDistance />

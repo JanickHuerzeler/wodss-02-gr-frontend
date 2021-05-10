@@ -35,6 +35,7 @@ class IncidenceHistory extends Component<
     loaded: false,
     selectedMunicipality: undefined,
     previousDateFrom: undefined,
+    currentWindowWidth: window.innerWidth
   };
 
   //   public handleClick = (evt: any) => alert("click");
@@ -121,6 +122,22 @@ class IncidenceHistory extends Component<
     }
   }
 
+  componentDidMount() {
+    window.addEventListener("resize", this.setWindowWidth);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.setWindowWidth);
+  }
+
+  setWindowWidth = () => {
+    this.setState(
+      (state: IncidenceHistoryState, props: IncidenceHistoryProps) => ({
+        currentWindowWidth: window.innerWidth,
+      })
+    );
+  }
+
   /**
    * Separate render method for the plotly.js chart, which can be called within a condition
    * @returns {JSX.Element}
@@ -158,8 +175,8 @@ class IncidenceHistory extends Component<
         },
         automargin: false,
       },
-      autosize: false,
-      width: 800,
+      autosize: true,
+      width: this.state.currentWindowWidth <= 800 ? window.innerWidth-150 : (window.innerWidth-400 > 800 ? 800 : window.innerWidth-400),
       height: 200,
       yaxis: {
         title: this.props.intl.formatMessage({ id: "chartYTitle" }),
@@ -176,14 +193,15 @@ class IncidenceHistory extends Component<
       plot_bgcolor: "rgba(0,0,0,0.5)",
       bgcolor: "#4c5c96",
       bordercolor: "#4c5c96",
-      font: { size: 10, color: "#fff" },
+      font: { size: 10, color: "#fff" }
     };
     return (
       <div className='incidencePlotly'>
         <PlotlyChart
           data={data}
           layout={layout}
-          config={{displayModeBar: true, modeBarButtonsToRemove: ['lasso2d','toggleSpikelines']}}
+          onRedraw={()=>this.setWindowWidth}
+          config={{displayModeBar: true,responsive: true, modeBarButtonsToRemove: ['lasso2d','toggleSpikelines']}}
           // onClick={this.handleClick}
           // onHover={this.handleHover}
         />

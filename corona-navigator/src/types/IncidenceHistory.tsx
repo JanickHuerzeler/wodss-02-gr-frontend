@@ -20,6 +20,7 @@ export interface IncidenceHistoryState {
     loaded:                 boolean;
     selectedMunicipality:   MunicipalityDTO | undefined;
     previousDateFrom:       Moment | undefined;
+    currentWindowWidth:      number;
 }
 
 /**
