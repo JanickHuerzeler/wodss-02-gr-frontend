@@ -23,5 +23,5 @@ export interface SideBarProps {
 export interface SideBarState {
     stopOvers:                  Coordinates[];
     travelMode:                 string;
-    routeListMaxHeight:         number;
+    routeListHeight:            number;
 }

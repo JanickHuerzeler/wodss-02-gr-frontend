@@ -42,8 +42,6 @@ $light-blue: #6475b1;
 
 .menu-waypoints {
   font-size: 10pt;
-  // overflow-y: auto;
-  // margin-top: 48px;
 }
 
 .route-waypoints {
@@ -52,26 +50,19 @@ $light-blue: #6475b1;
   max-height: 100%;
 
   .title {
-    // position: fixed;
     background: $blue;
     z-index: 1;
     padding: 8px 0;
-    // margin-top: -60px;
 
     .waypoints-header {
       font-size: 10px;
       margin-top: 6px;
 
       span:first-child {
-        // padding-left: 1px;
-        // padding-right: 28px;
         display: inline-block;
-        width: 80px;
-        text-align: right;
-      }
-
-      span:last-child {
-        padding-left:1em;
+        width: 87px;
+        text-align: left;
+        padding-left: 5px;
       }
     }
   }
@@ -113,16 +104,20 @@ $light-blue: #6475b1;
   }
 
   .incidence {
-    width: 22%;
+    width: 55px;
     font-size: 0.75em;
     text-align: right;
-    padding-right: 15px;
+    padding-right: 16px;
   }
 
   .info {
     font-weight: 500;
-    width: 50%;
+    width: 60%;
   }
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .route-infos {
@@ -139,16 +134,17 @@ $light-blue: #6475b1;
     }
   }
 
-  &>span {
-    margin-left: 6px;
-    margin-right: 20px;
+  & > span {
+    margin-left: 2px;
+    margin-right: 14px;
 
-    &:first-child {}
+    &:first-child {
+    }
   }
 }
 
 .travelMode {
-  padding: 0px 35px 0px 20px;
+  padding: 0 35px 0 20px;
 
   .btn-group {
     width: 100%;
@@ -178,40 +174,22 @@ $light-blue: #6475b1;
   text-align: right;
 }
 
-// .sidebar-header{ 
-//   padding: 1em 1.5em !important;
-// }
-
-// .sidebar-header-icon{
-//   height: 24px !important;
-// }
-// .pro-sidebar .pro-menu {
-//   padding-top: 0px !important;
-// }
-
 .sidebar-footer {
   font-size: 12pt !important;
   color: #ffffff !important;
   padding: 20px 24px 5px 20px;
 }
 
-
-
 .locales-select {
   background-color: lighten(#4c5c96, 10%);
   margin-left: 0.8em;
   vertical-align: bottom;
-  // width: 320px;
   width: calc(100% - 2em);
   color: #ffffff;
 }
 
-.search-bar-stop-over:not(:first-child) {
-  margin-top: 0.75em !important;
-}
-
-.search-bar-stop-over .removeStopOverButton {
-  // margin-top: .125em !important;
+.stop-overs-wrapper .search-bar-stop-over {
+  margin-bottom: 0.5em;
 }
 
 .removeStopOverButton {
@@ -220,16 +198,13 @@ $light-blue: #6475b1;
 }
 
 .btn-purple {
-  // background-color: lighten(#4c5c96,10%);
   color: #ffffff;
   margin-top: 0 !important;
   background: #6475b1;
   border-color: #6475b1;
-  // font-size: 19px;
 }
 
 .btn-purple:hover {
-  // background-color: lighten(#4c5c96,10%);
   color: #ffffff;
   background: #545b62;
   border-color: #4e555b;
@@ -237,15 +212,13 @@ $light-blue: #6475b1;
   border-right-color: rgb(78, 85, 91);
   border-bottom-color: rgb(78, 85, 91);
   border-left-color: rgb(78, 85, 91);
-  // font-size: 19px;
 }
 
-.btn-add-stopover{
+.btn-add-stopover {
   width: 100%;
-  margin-top: 0.5rem !important;
 }
 
-.addStopOverIcon{
+.addStopOverIcon {
   float: left;
   margin-top: 0.25rem;
 }
@@ -274,212 +247,54 @@ $light-blue: #6475b1;
 }
 
 nav.pro-menu-searchbar {
-  padding-top: 0px !important;
+  padding-top: 0 !important;
 }
 
 
-.pro-sidebar .pro-menu .pro-menu-item>.pro-inner-item {
-  padding: 0px 35px 8px 20px !important;
+.pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item {
+  padding: 0 35px 8px 20px !important;
 }
 
 $scrollbar-width: 12px;
 
-
-
-/*ALTERNATIVE 1, Menu & List separately scrollable*/
-
-
-// /* following lines will cause the autocomplete to be hidden,
-//    as they will be treated as overflow... TODO: find an appropriate workaround */
-
-//  ul li.pro-menu-searchbar.searchbar-add-stop-over-wrapper{
-//    max-height: 120px;
-//    overflow-y: scroll;
-//  }
-
-//  .searchbar-add-stop-over-wrapper::-webkit-scrollbar-track {
-//    border-radius: 10px;
-//    background-color: transparent;
-//  }
-
-//  .searchbar-add-stop-over-wrapper::-webkit-scrollbar {
-//    width: $scrollbar-width;
-//    background-color: transparent;
-//  }
-
-//  .searchbar-add-stop-over-wrapper::-webkit-scrollbar-thumb {
-//    border-radius: 10px;
-//    background-color: rgba(255, 255, 255, 0.3);
-//  }
-
-// .searchBarTo{
-//   margin-top:0.25em;
-//   margin-right: $scrollbar-width !important;  
-// }
-
-// .searchBarFrom{
-//   margin-right: $scrollbar-width !important;
-// }
-
-// .pro-sidebar-content {
-
-//   .menu-waypoints{
-//     overflow-y: scroll;
-//     height: calc(100vh - 50%);
-//     min-height: calc(100vh - 50%);
-//     max-height: calc(100vh - 50%);
-
-//   }
-//   .route-waypoints ul:last-child(){
-//     position: relative;
-//     margin-bottom: 200px;
-//   }
-// }
-
-
-// .pro-sidebar-content::-webkit-scrollbar-track {
-//   border-radius: 5px;
-//   background-color: transparent;
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar {
-//   width: 12px;
-//   background-color: transparent;
-//   border-radius: 0px;
-//   background-color: rgba(0,0,0,0.1);
-// }
-// .pro-sidebar-content::-webkit-scrollbar:hover {
-//   width: 12px;
-//   border-radius: 0px;
-//   background-color: rgba(0,0,0,0.1);
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar-thumb {
-//   border-radius: 0px;
-//   background-color: rgba(255, 255, 255, 0.3);
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar-thumb:hover {
-//   background-color: rgba(255, 255, 255, 0.5);
-// }
-// /*END ALTERNATIVE 1*/
-
-
-
-// /*ALTERNATIVE 2: menu & list scrollable as one*/
-
-// .pro-sidebar-content {
-//   height: calc(100vh - 171px); // 90px sidebar header, 81 px sidebar footer
-//   max-height: calc(100vh - 171px); // 90px sidebar header, 81 px sidebar footer
-//   min-height: calc(100vh - 171px); // 90px sidebar header, 81 px sidebar footer
-//   overflow-y: scroll;
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar-track {
-//   border-radius: 5px;
-//   background-color: transparent;
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar {
-//   width: 12px;
-//   background-color: transparent;
-//   border-radius: 0px;
-//   background-color: rgba(0, 0, 0, 0.1);
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar:hover {
-//   width: 12px;
-//   border-radius: 0px;
-//   background-color: rgba(0, 0, 0, 0.1);
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar-thumb {
-//   border-radius: 0px;
-//   background-color: rgba(255, 255, 255, 0.3);
-// }
-
-// .pro-sidebar-content::-webkit-scrollbar-thumb:hover {
-//   background-color: rgba(255, 255, 255, 0.5);
-// }
-
-// /*END ALTERNATIVE 2*/
-
-// /*ALTERNATIVE 3, Menu not scrollable & List separately scrollable*/
-
-//  .listWrapper::-webkit-scrollbar-track {
-//    border-radius: 10px;
-//    background-color: transparent;
-//  }
-
-//  .listWrapper::-webkit-scrollbar{
-//    width: $scrollbar-width;
-//    background-color: transparent;
-//  }
-
-//  .listWrapper::-webkit-scrollbar-thumb {
-//    border-radius: 10px;
-//    background-color: rgba(255, 255, 255, 0.3);
-//  }
-
-//  .listWrapper{
-//   width: 100%;
-//   max-height: 200px;
-//   overflow-y: scroll;
-//   flex-grow: 1;
-// }
-// .menu-waypoints{
-//   width: 100%;
-//   margin-top: auto; //push to bottom
-//   bottom: 71px !important;
-//   position: absolute !important;
-// }
-// /*END ALTERNATIVE 3*/
-
-
-/*Variante 4 */
-.listWrapper{
+.listWrapper {
   overflow-y: scroll;
-  flex-grow: 1;
-  min-height: 300px;
-  max-height: 500px;
-  height: 600px;
 }
-.menu-waypoints{
 
+.menu-waypoints {
   width: 100%;
   bottom: 71px !important;
 }
- .listWrapper::-webkit-scrollbar-track {
-   border-radius: 10px;
-   background-color: transparent;
- }
 
- .listWrapper::-webkit-scrollbar{
-   width: $scrollbar-width;
-   background-color: transparent;
- }
+.listWrapper::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: transparent;
+}
 
- .listWrapper::-webkit-scrollbar-thumb {
-   border-radius: 10px;
-   background-color: rgba(255, 255, 255, 0.3);
- }
+.listWrapper::-webkit-scrollbar {
+  width: $scrollbar-width;
+  background-color: transparent;
+}
 
-/*END VARIANTE 4 */
+.listWrapper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.3);
+}
 
-.no-margin-row{
-  margin-left: 0px !important;
-  margin-right: 0px i !important;
+.no-margin-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .listWrapper li {
   cursor: pointer;
 }
 
-.routeInfosHighLights{
+.routeInfosHighLights {
   font-weight: bolder !important;
   font-size: 10pt !important;
 }
 
-.routeInfosLowLights{
+.routeInfosLowLights {
   color: #dddddd !important;
 }

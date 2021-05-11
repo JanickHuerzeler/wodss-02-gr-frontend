@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component } from "react";
+import React, {ChangeEvent, Component} from "react";
 import "react-pro-sidebar/dist/css/styles.css";
 import "../scss/SideBar.scss";
 import {
@@ -23,13 +23,13 @@ import {
   Menu,
   MenuItem,
 } from "react-pro-sidebar";
-import { Button, ButtonGroup } from "react-bootstrap";
-import { BiTime, GiPathDistance, RiVirusLine } from "react-icons/all";
-import { SideBarProps, SideBarState } from "../types/SideBar";
+import {Button, ButtonGroup} from "react-bootstrap";
+import {BiTime, GiPathDistance, RiVirusLine} from "react-icons/all";
+import {SideBarProps, SideBarState} from "../types/SideBar";
 import SearchBar from "./SearchBar";
 import logo from "../resources/logo.png";
-import { MunicipalityDTO } from "../api";
-import { v4 } from 'uuid';
+import {MunicipalityDTO} from "../api";
+import {v4} from 'uuid';
 
 /**
  * Show the sidebar which mainly serves as a controller for the map.
@@ -38,13 +38,43 @@ class SideBar extends Component<
   SideBarProps & WrappedComponentProps,
   SideBarState
 > {
+  private sidebarElement: any;
+
   // set default state
   state: SideBarState = {
     stopOvers: [],
     travelMode: "DRIVING",
-    routeListMaxHeight: 300,
+    routeListHeight: 0
   };
 
+  /**
+   * Calculate height for routeList
+   */
+  updateRouteListHeight = () => {
+    const content  = this.sidebarElement.querySelector('.pro-sidebar-content').offsetHeight;
+    const mode     = this.sidebarElement.querySelector('#sidebarModeWrapper').offsetHeight;
+    const search   = this.sidebarElement.querySelector('#sidebarSearchWrapper').offsetHeight;
+    const rlHeader = 60;
+
+    this.setState({
+      routeListHeight: content - mode - search - rlHeader
+    });
+  };
+
+  /**
+   * Remove eventlistener for windows resize
+   */
+  componentDidMount = () => {
+    window.addEventListener("resize", this.updateRouteListHeight);
+    setTimeout(() => this.updateRouteListHeight(), 0);
+  };
+
+  /**
+   * Remove eventlistener for windows resize2
+   */
+  componentWillUnmount = () => {
+    window.removeEventListener("resize", this.updateRouteListHeight);
+  };
 
   /**
    * Convert a string to a real travelMode-enum
@@ -54,7 +84,8 @@ class SideBar extends Component<
     const travelModeString = event.target.id;
 
     // set state and fire change event
-    this.setState({ travelMode: travelModeString });
+    this.setState({ travelMode: travelModeString }, () => this.updateRouteListHeight());
+
     this.props.travelModeChanged(
       google.maps.TravelMode[
         travelModeString as keyof typeof google.maps.TravelMode
@@ -99,9 +130,7 @@ class SideBar extends Component<
     const currentStopOvers = this.state.stopOvers ? this.state.stopOvers : [];
 
     currentStopOvers.push({ lat: undefined, lng: undefined, uuid: v4() });
-    this.setState((state: SideBarState, props: SideBarProps) => ({
-      stopOvers: currentStopOvers,
-    }));
+    this.setState({ stopOvers: currentStopOvers }, () => this.updateRouteListHeight());
   };
 
   /**
@@ -110,7 +139,7 @@ class SideBar extends Component<
    */
   handleRemoveSearchbar = (uuid: string): void => {
     let currentStopOvers = this.state.stopOvers;
-    
+
     if (currentStopOvers.length > 1) {
       // currentStopOvers.splice(index, 1);
       currentStopOvers = currentStopOvers.filter(s => s.uuid !== uuid);
@@ -125,6 +154,7 @@ class SideBar extends Component<
       }),
       () => {
         this.props.locationStopOversChanged(this.state.stopOvers);
+        this.updateRouteListHeight();
       }
     );
   };
@@ -136,7 +166,7 @@ class SideBar extends Component<
   handleRouteInfoMunicipalityClick = (municipality: MunicipalityDTO) => {
     this.props.selectedMunicipalityChanged(municipality);
   };
-  
+
 
   /**
    * Render HTMl output
@@ -151,6 +181,8 @@ class SideBar extends Component<
         breakPoint='md'
         onToggle={this.props.handleToggleSidebar}
         data-testid='sidebar-1'
+        ref={ sidebarElement => { this.sidebarElement = sidebarElement } }
+        id="pro-sidebar"
       >
         {/* Header with logo and app title */}
         <SidebarHeader id='sidebarHeaderWrapper'>
@@ -249,7 +281,7 @@ class SideBar extends Component<
 
             <MenuItem
               key='searchBarAddStopover'
-              className='searchbar-add-stop-over-wrapper pro-menu-searchbar '
+              className='searchbar-add-stop-over-wrapper pro-menu-searchbar stop-overs-wrapper'
             >
               {/* Show all stopovers */}
               {this.state?.stopOvers?.map((stopOverCoords) => {
@@ -308,41 +340,39 @@ class SideBar extends Component<
               </div>
             </MenuItem>
             {/* Route result short infos (incidence avg, distance, duration) */}
-            {this.props.routeInfos.distance > 0 && (
-              <MenuItem key='routeInfos'>
-                <div className='route-infos'>
-                  <span
-                    title={intl.formatMessage({ id: "infographicIncidence" })}
-                    className='routeInfosHighLights'
-                  >
-                    <span className='icon average'>
-                      <RiVirusLine />
-                    </span>
-                    {this.props.routeInfos?.incidence?.toFixed(1) || 0}
+            <MenuItem key='routeInfos' className={this.props.routeInfos.distance > 0 ? '' : 'hidden'}>
+              <div className='route-infos'>
+                <span
+                  title={intl.formatMessage({ id: "infographicIncidence" })}
+                  className='routeInfosHighLights'
+                >
+                  <span className='icon average'>
+                    <RiVirusLine />
                   </span>
-                  <span
-                    title={intl.formatMessage({ id: "infographicDuration" })}
-                    className='routeInfosLowLights'
-                  >
-                    <span className='icon'>
-                      <BiTime />
-                    </span>
-                    {this.props.routeInfos.duration >= 60 &&
-                      `${Math.floor(this.props.routeInfos.duration / 60)} h `}
-                    {`${(this.props.routeInfos.duration % 60).toFixed()} min`}
+                  {this.props.routeInfos?.incidence?.toFixed(1) || 0}
+                </span>
+                <span
+                  title={intl.formatMessage({ id: "infographicDuration" })}
+                  className='routeInfosLowLights'
+                >
+                  <span className='icon'>
+                    <BiTime />
                   </span>
-                  <span
-                    title={intl.formatMessage({ id: "infographicDistance" })}
-                    className='routeInfosLowLights'
-                  >
-                    <span className='icon'>
-                      <GiPathDistance />
-                    </span>
-                    {this.props.routeInfos.distance.toFixed(1)} km
+                  {this.props.routeInfos.duration >= 60 &&
+                    `${Math.floor(this.props.routeInfos.duration / 60)} h `}
+                  {`${(this.props.routeInfos.duration % 60).toFixed()} min`}
+                </span>
+                <span
+                  title={intl.formatMessage({ id: "infographicDistance" })}
+                  className='routeInfosLowLights'
+                >
+                  <span className='icon'>
+                    <GiPathDistance />
                   </span>
-                </div>
-              </MenuItem>
-            )}
+                  {this.props.routeInfos.distance.toFixed(1)} km
+                </span>
+              </div>
+            </MenuItem>
           </Menu>
 
           {/* Municipalities list along the with incidence and name */}
@@ -362,8 +392,9 @@ class SideBar extends Component<
                 </span>
 
                 {/* Show all municipalities */}
-                {/* style={{maxHeight: this.state.routeListMaxHeight, height: this.state.routeListMaxHeight, minHeight:this.state.routeListMaxHeight}} */}
-                <div className={"listWrapper "}>
+                {/*  */}
+                <div className={"listWrapper"}
+                     style={{maxHeight: this.state.routeListHeight, minHeight:this.state.routeListHeight}}>
                   <ul>
                     {this.props.routeInfos.municipalities.map((m, i) => {
                       return (
@@ -391,7 +422,7 @@ class SideBar extends Component<
                               ? m.municipality.incidence?.toFixed(1)
                               : "?"}
                           </div>
-                          <div className='info'>{m.municipality.name}</div>
+                          <div className='info'>{m.municipality.plz} {m.municipality.name}</div>
                         </li>
                       );
                     })}
