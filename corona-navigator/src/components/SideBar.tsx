@@ -62,7 +62,7 @@ class SideBar extends Component<
   };
 
   /**
-   * Remove eventlistener for windows resize
+   * Add eventlistener for windows resize
    */
   componentDidMount = () => {
     window.addEventListener("resize", this.updateRouteListHeight);
@@ -70,7 +70,7 @@ class SideBar extends Component<
   };
 
   /**
-   * Remove eventlistener for windows resize2
+   * Remove eventlistener for windows resize
    */
   componentWillUnmount = () => {
     window.removeEventListener("resize", this.updateRouteListHeight);
@@ -135,7 +135,7 @@ class SideBar extends Component<
 
   /**
    * Remove the selected searchbar (input field) from the search mask
-   * @param {number }index - index of dynamicaly added searchbar
+   * @param {number} index - index of dynamicaly added searchbar
    */
   handleRemoveSearchbar = (uuid: string): void => {
     let currentStopOvers = this.state.stopOvers;
@@ -392,7 +392,6 @@ class SideBar extends Component<
                 </span>
 
                 {/* Show all municipalities */}
-                {/*  */}
                 <div className={"listWrapper"}
                      style={{maxHeight: this.state.routeListHeight, minHeight:this.state.routeListHeight}}>
                   <ul>

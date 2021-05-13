@@ -9,13 +9,14 @@ import {
 import { Configuration, DefaultApi, IncidenceDTO } from "../api";
 import moment from "moment";
 import "../scss/IncidenceHistory.scss";
+import chartConfig from "../resources/chart.config";
 const DefaultApiConfig = new Configuration({
   basePath: process.env.REACT_APP_SERVER_URL,
 });
 const API = new DefaultApi(DefaultApiConfig);
 
 /**
- * Render the TODO:
+ * Render the incidence chart for the given municipality
  */
 class IncidenceHistory extends Component<
   IncidenceHistoryProps & WrappedComponentProps,
@@ -63,16 +64,18 @@ class IncidenceHistory extends Component<
         );
       },
       (error: Error) => {
-        
         console.error(error.message);
 
         this.showToast(
-          this.props.intl.formatMessage({id: 'error'}), 
-          this.props.intl.formatMessage({id: 'chartDataNotAvailable'}).replaceAll('{CT}', this.props.selectedMunicipality!.canton!)
+          this.props.intl.formatMessage({ id: "error" }),
+          this.props.intl
+            .formatMessage({ id: "chartDataNotAvailable" })
+            .replaceAll("{CT}", this.props.selectedMunicipality!.canton!)
         );
 
         this.setState(
           (state: IncidenceHistoryState, props: IncidenceHistoryProps) => ({
+            data: [],
             loaded: true,
           })
         );
@@ -126,14 +129,24 @@ class IncidenceHistory extends Component<
     }
   }
 
+  /**
+   * Add eventlistener for windows resize
+   */
   componentDidMount() {
     window.addEventListener("resize", this.setWindowWidth);
   }
 
+  /**
+   * Remove eventlistener for windows resize
+   */
   componentWillUnmount() {
     window.removeEventListener("resize", this.setWindowWidth);
   }
 
+  /**
+   * Window size handler for redraw event of the plotly chart.
+   * Needed for resizing the chart, if the windows resizes.
+   */
   setWindowWidth = () => {
     this.setState(
       (state: IncidenceHistoryState, props: IncidenceHistoryProps) => ({
@@ -144,8 +157,8 @@ class IncidenceHistory extends Component<
 
   /**
    * Show toast in parent component
-   * @param toastTitle {string}   - title to display
-   * @param toastMessage {string} - message to display
+   * @param {string} toastTitle   - title to display
+   * @param {string} toastMessage - message to display
    */
   showToast(toastTitle: string, toastMessage: string) {
     this.props.errorOccured(toastTitle, toastMessage);
@@ -156,77 +169,96 @@ class IncidenceHistory extends Component<
    * @returns {JSX.Element}
    */
   renderIncidences = () => {
+    // prepare the data structure
     const data = [
       {
         type: "bar",
         x: this.state.data.map((dt) => dt.timestamp),
         y: this.state.data.map((dt) => dt.value),
-        marker: { color: "#6475b1" },
+        marker: {
+          color: chartConfig.CHART_BAR_MARKER_COLOR,
+        },
       },
     ];
+
+    // configure the chart layout
     const layout = {
       title: {
         text:
           this.props.intl.formatMessage({ id: "chartTitle" }) +
           this.props.selectedMunicipality?.name,
         font: {
-          size: this.state.currentWindowWidth <= 768 ? 12 : 20,
+          family: chartConfig.CHART_FONT_FAMILY,
+          size:
+            this.state.currentWindowWidth <=
+            chartConfig.CHART_SMALL_WINDOW_THRESHOLD
+              ? chartConfig.CHART_FONT_TITLE_SIZE_SMALL
+              : chartConfig.CHART_FONT_TITLE_SIZE_LARGE,
         },
-        x: 0.04,
-        y: 0.9,
+        x: chartConfig.CHART_TITLE_OFFSET_X,
+        y: chartConfig.CHART_TITLE_OFFSET_Y,
         xanchor: "left",
         yanchor: "bottom",
       },
       xaxis: {
         title: this.props.intl.formatMessage({ id: "chartXTitle" }),
         margin: {
-          t: 50,
-          b: 10,
-          l: 0,
-          r: 0,
-          pad: 5,
+          t: chartConfig.CHART_XAXIS_MARGIN_TOP,
+          b: chartConfig.CHART_XAXIS_MARGIN_BOTTOM,
+          l: chartConfig.CHART_XAXIS_MARGIN_LEFT,
+          r: chartConfig.CHART_XAXIS_MARGIN_RIGHT,
+          pad: chartConfig.CHART_XAXIS_PADDING,
         },
         automargin: false,
       },
       autosize: true,
       width:
-        this.state.currentWindowWidth <= 768
-          ? window.innerWidth - 150
-          : window.innerWidth - 400 > 768
-          ? 768
+        this.state.currentWindowWidth <=
+        chartConfig.CHART_SMALL_WINDOW_THRESHOLD
+          ? window.innerWidth - chartConfig.CHART_WINDOW_OFFSET_SMALL
+          : window.innerWidth - chartConfig.CHART_WINDOW_OFFSET_LARGE >
+            chartConfig.CHART_SMALL_WINDOW_THRESHOLD
+          ? chartConfig.CHART_SMALL_WINDOW_THRESHOLD
           : window.innerWidth - 400,
-      height: 200,
+      height: chartConfig.CHART_HEIGHT,
       yaxis: {
         title: this.props.intl.formatMessage({ id: "chartYTitle" }),
         automargin: true,
       },
       margin: {
-        l: 20,
-        r: 20,
-        b: 60,
-        t: 60,
-        pad: 4,
+        l: chartConfig.CHART_MARGIN_LEFT,
+        r: chartConfig.CHART_MARGIN_RIGHT,
+        b: chartConfig.CHART_MARGIN_BOTTOM,
+        t: chartConfig.CHART_MARGIN_TOP,
+        pad: chartConfig.CHART_PADDING,
       },
-      paper_bgcolor: "rgba(0,0,0,0.5)",
-      plot_bgcolor: "rgba(0,0,0,0.5)",
-      bgcolor: "#4c5c96",
-      bordercolor: "#4c5c96",
-      font: { size: 10, color: "#fff" },
+      paper_bgcolor: chartConfig.CHART_BG_COLOR,
+      plot_bgcolor: chartConfig.CHART_BG_COLOR,
+      bgcolor: chartConfig.CHART_BAR_COLOR,
+      bordercolor: chartConfig.CHART_BAR_COLOR,
+      font: {
+        family: chartConfig.CHART_FONT_FAMILY,
+        size: chartConfig.CHART_FONT_SIZE,
+        color: chartConfig.CHART_FONT_COLOR,
+      },
     };
+
     return (
       <div className='incidencePlotly'>
+        {/* Plotly chart component for incidence bar chart of municipality */}
         <PlotlyChart
           data={data}
           layout={layout}
           onRedraw={() => this.setWindowWidth}
           config={{
-            displayModeBar: this.state.currentWindowWidth >= 1000,
+            displayModeBar:
+              this.state.currentWindowWidth >=
+              chartConfig.CHART_LARGE_WINDOW_THRESHOLD,
             responsive: true,
             modeBarButtonsToRemove: ["lasso2d", "toggleSpikelines"],
           }}
-          // onClick={this.handleClick}
-          // onHover={this.handleHover}
         />
+        {/* Chart interval selection */}
         <select
           className='incidencechart-interval-select'
           onChange={(e: ChangeEvent<HTMLSelectElement>) =>
@@ -241,6 +273,7 @@ class IncidenceHistory extends Component<
             );
           })}
         </select>
+        {/* Close button */}
         <div className='closeIncidencePlotlyWrapper'>
           <span
             className='closeIncidencePlotly'
@@ -249,6 +282,7 @@ class IncidenceHistory extends Component<
             X
           </span>
         </div>
+        {/* Loading indicator */}
         <span className='loadingIncidences' hidden={this.state.loaded}>
           {this.props.intl.formatMessage({ id: "chartLoading" })}
         </span>

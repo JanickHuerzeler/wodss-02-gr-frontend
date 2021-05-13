@@ -10,19 +10,10 @@ import {HiCheckCircle, ImSpinner2} from "react-icons/all";
 import {RouteInfos} from "../types/RouteInfos";
 import {GmapProps, GmapState} from "../types/Gmap";
 import GoogleMapReact, {Coords} from "google-map-react";
-import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { IncomingHttpHeaders } from "node:http2";
 
 const DefaultApiConfig              = new Configuration({basePath: process.env.REACT_APP_SERVER_URL});
-
-// Request Cancelation ideas from: 
-// https://julietonyekaoha.medium.com/react-cancel-all-axios-request-in-componentwillunmount-e5b2c978c071
-// https://medium.com/tribalscale/how-to-automate-api-code-generation-openapi-swagger-and-boost-productivity-1176a0056d8a
-// const source                        = axios.CancelToken.source();
-// const axiosInstance                 = axios.create({cancelToken: source.token});
-// const API                           = new DefaultApi(DefaultApiConfig, DefaultApiConfig.basePath, axiosInstance);
-
 const API                           = new DefaultApi(DefaultApiConfig);
 const GOOGLE_API_KEY                = process.env.REACT_APP_GOOGLE_API_KEY!;
 const DEFAULT_MAP_CENTER            = { lat: Number.parseFloat(process.env.REACT_APP_DEFAULT_MAP_CENTER_LAT!), 
@@ -131,7 +122,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         });
     }
 
-
     /**
      * Handles the request/response error type and shows 
      * a toast containing the error message. 
@@ -163,8 +153,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             }else{
                 return;
             }
-            
-            
         } else {
             // Something happened in setting up the request and triggered an Error
             errorMessage =  this.props.intl.formatMessage({ id: "errorMessageRequestError" }) +error.message;
@@ -299,7 +287,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                         });
                     }
 
-
                     // calculate a reasonable chunksize based on the length of the route
                     chunkSize = Math.ceil(waypoints.length / (Math.ceil(routeInfo.distance / WAYPOINT_DISTANCER_CHUNKER)));
 
@@ -310,9 +297,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
                     // if no waypoints exist show success message directly
                     if(waypointsChunks.length === 0) this.municipalitiesLoaded();
-
-                    
-                    
 
                     // reset timeout cantons due to new request chunks
                     this.setState({timeoutCantons: []});
@@ -535,9 +519,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             ) || this.props.travelMode !== this.travelModeBefore
         ) {
 
-            // TODO: Discuss this. this should be the right place for cancellation of previous requests?
-            // if(source) source.cancel("Timeout of 30 seconds reached.");
-            
             // if a location has been changed, backup the current values
             this.locationFromBefore         = this.props.locationFrom;
             this.locationToBefore           = this.props.locationTo;
