@@ -95,12 +95,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
           }) => {
             callback(response.data);
             if (response.headers && response.headers["x-cantons-timeout"]) {
-              let cantons = response.headers["x-cantons-timeout"]
-                .toString()
-                .replace("{", "")
-                .replace("}", "")
-                .replaceAll("'", "")
-                .split(", ");
+              let cantons = response.headers["x-cantons-timeout"].toString().split(", ");
+              
               let distinctCantons = cantons.filter(
                 (v, i, a) => a.indexOf(v) === i
               );
@@ -115,8 +111,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                   ),
                 }));
                 this.showToast(
-                  this.props.intl.formatMessage({ id: "errorMessageTimeout" }) +
-                    distinctCantons.join(", ")
+                    this.props.intl.formatMessage({id: "error"}),
+                  this.props.intl.formatMessage({ id: "errorMessageTimeout" }).replaceAll('{CT}', distinctCantons.join(", "))                    
                 );
               }
             }
@@ -135,8 +131,15 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
         });
     }
 
-    handleApiError(error: any){
+
+    /**
+     * Handles the request/response error type and shows 
+     * a toast containing the error message. 
+     * @param {Error} error - Error Object
+     */
+    handleApiError(error: any): void{
         let errorMessage = "An error happened.";
+        let errorTitle = this.props.intl.formatMessage({id: 'error'});
         /**
          * Error Handling code from https://gist.github.com/fgilio/230ccd514e9381fafa51608fcf137253
          */
@@ -145,9 +148,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
              * The request was made and the server responded with a
              * status code that falls out of the range of 2xx
              */
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
             errorMessage = this.props.intl.formatMessage({ id: "errorMessageHttpError" }) + error.response.status;
         } else if (error.request) {
             /*
@@ -159,7 +159,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                 this.setState((state: GmapState, props: GmapProps) => ({
                     noServerResponse: true
                 }));
-                console.log(error.request);
                 errorMessage = this.props.intl.formatMessage({ id: "errorMessageNoResponse" });
             }else{
                 return;
@@ -168,25 +167,19 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             
         } else {
             // Something happened in setting up the request and triggered an Error
-            console.log('Error', error.message);
             errorMessage =  this.props.intl.formatMessage({ id: "errorMessageRequestError" }) +error.message;
         }
-        console.log(error);
-        this.showToast(errorMessage);
+        console.error(error);
+        this.showToast(errorTitle, errorMessage);
     }
 
-    showToast(errorMessage: string){
-        toast(<div><span className="errorTitle">{this.props.intl.formatMessage({id: 'errorEmoji'}) +' '+ 
-            this.props.intl.formatMessage({id: 'error'})}</span><br/>{errorMessage}</div> , {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            type: "dark" 
-            });
+    /**
+     * Show toast in parent component
+     * @param {string} toastTitle   - title to display
+     * @param {string} toastMessage - message to display
+     */
+    showToast(toastTitle: string, toastMessage: string){
+        this.props.errorOccured(toastTitle, toastMessage);
     }
 
     /**
@@ -565,18 +558,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
         return (
           <div className={"gmap-wrapper"}>
-            <ToastContainer
-                position="bottom-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                className="toast-container"
-            />
             {/* Show preloader whole the municipalities are loading */}
             { this.state.isLoading &&
                 <div className='is-loading'>

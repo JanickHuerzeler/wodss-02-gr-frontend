@@ -7,7 +7,8 @@ import { MunicipalityDTO } from "../api";
 export interface IncidenceHistoryProps {
     selectedLocale:         string;
     selectedMunicipality:   MunicipalityDTO | undefined;
-    closeIncidenceChart:    ()=> void;
+    closeIncidenceChart:    () => void;
+    errorOccured:           (toastTitle: string, toastMessage: string) => void;
 }
 
 export interface IncidenceHistoryState {

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./scss/App.scss";
 import GoogleMaps from "./components/Gmap";
 import { Coords } from "google-map-react";
-import { IntlProvider } from "react-intl";
+import { IntlProvider} from "react-intl";
 import {FaBars} from "react-icons/fa";
 import {Coordinates} from './types/Coordinates';
 import {RouteInfos} from "./types/RouteInfos";
@@ -11,6 +11,7 @@ import SideBar from "./components/SideBar";
 import messages from "./resources/messages";
 import IncidenceHistory from "./components/IncidenceHistory";
 import { MunicipalityDTO } from "./api";
+import { toast, ToastContainer } from "react-toastify";
 
 /**
  * Show the entire application with it's main component "SideBar" and "GoogleMaps".
@@ -131,16 +132,41 @@ class App extends Component<AppProps, AppState> {
       selectedMunicipality: undefined
     }))
   }
+
+  /**
+   * Handler method for showing toast messages
+   * @param {string} toastTitle - title to display
+   * @param {string} toastMessage - message to display
+   */
+  handleErrorToast = (toastTitle: string, toastMessage: string) => {
+    toast(
+      <div>
+        <span className="toastTitle">
+          {toastTitle}
+        </span>
+        <br/>
+        {toastMessage}
+      </div> , {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      type: "dark" 
+    });
+  }
+
   /**
    * Render HTMl output
    */
   render() {
     return (
-    <IntlProvider
+      <IntlProvider
         locale={this.state.locale}
         messages={this.state.messages[this.state.locale]}
       >
-
         {/* Wrapper for sidebar */}
         <div className={`App app ${this.state.rtl ? "rtl" : ""} ${this.state.toggled ? "toggled" : ""}`}>
           {/* SideBar with props and callbacks */}
@@ -166,19 +192,33 @@ class App extends Component<AppProps, AppState> {
 
             {/* Google Maps with props and callbacks */}
             <GoogleMaps
-              locationFrom      = { this.state.locationFrom }
-              locationTo        = { this.state.locationTo }
-              locationStopOvers = { this.state.locationStopOvers }
-              travelMode        = { this.state.travelMode }
-              routeChanged      = { this.routeChanged }
-              selectedLocale    = { this.state.locale }
-              selectedMunicipalityChanged = { this.handleSelectedMunicipalityChanged }
+               locationFrom      = { this.state.locationFrom }
+               locationTo        = { this.state.locationTo }
+               locationStopOvers = { this.state.locationStopOvers }
+               travelMode        = { this.state.travelMode }
+               routeChanged      = { this.routeChanged }
+               selectedLocale    = { this.state.locale }
+               selectedMunicipalityChanged = { this.handleSelectedMunicipalityChanged }
+              errorOccured={this.handleErrorToast}
             />
-            <IncidenceHistory 
-              selectedLocale={this.state.locale}
-              selectedMunicipality={this.state.selectedMunicipality}
-              closeIncidenceChart={this.handleCloseIncidenceChart}
-              ></IncidenceHistory>
+            <IncidenceHistory
+              selectedLocale        ={this.state.locale}
+              selectedMunicipality  ={this.state.selectedMunicipality}
+              closeIncidenceChart   ={this.handleCloseIncidenceChart}
+              errorOccured          ={this.handleErrorToast}
+            ></IncidenceHistory>
+            <ToastContainer
+              position='bottom-center'
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              className='toast-container'
+            />
           </main>
         </div>
       </IntlProvider>

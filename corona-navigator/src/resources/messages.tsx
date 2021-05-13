@@ -30,19 +30,19 @@ const messages = {
         tavelModeTransit:             'ÖV',
         tavelModeWalking:             'Wandern',
         tavelModeBicycling:           'Fahrrad',
-        errorMessageTimeout:          'Verbindungsprobleme mit Kantonsservice ',
-        errorEmoji:                   '😷',
+        errorMessageTimeout:          'Verbindungsprobleme mit Kantonsservice {CT}',
+        error:                        '😷 Ein Fehler ist aufgetreten: ',
         errorMessageHttpError:        'Fehler Inzidenzdienst: ',
         errorMessageNoResponse:       'Inzidenzdienst nicht erreichbar',
         errorMessageRequestError:     'Verbindungsaufbau fehlgeschlagen: ',
-        error:                        'Ein Fehler ist aufgetreten: ',
         interval14:                   '14 Tage',
         interval7:                    '7 Tage',
         intervalAll:                  'Seit Beginn',
         chartTitle:                   'Tagesinzidenzen in ',
         chartXTitle:                  'Datum',
         chartYTitle:                  'Tagesinzidenz',
-        chartLoading:                 'Laden'
+        chartLoading:                 'Laden',
+        chartDataNotAvailable:        'Grafikdaten konnten vom Kantonsservice {CT} nicht geladen werden'
     },
     'en-GB': {
         area: 'Area',
@@ -70,19 +70,19 @@ const messages = {
         tavelModeTransit:             'Transit',
         tavelModeWalking:             'Walking',
         tavelModeBicycling:           'Bicycling',
-        errorMessageTimeout:          'Timeout occured for canton service ',
-        errorEmoji:                   '😷',
+        errorMessageTimeout:          'Timeout occured for canton service {CT}',
+        error:                        '😷 An error occured: ',
         errorMessageHttpError:        'Error incidence service: ',
         errorMessageNoResponse:       'Incidence service not available',
         errorMessageRequestError:     'Request setup failed: ',
-        error:                        'An error occured: ',
         interval14:                   '14 Days',
         interval7:                    '7 Days',
         intervalAll:                  'Since beginn',
         chartTitle:                   'Daily Incidences in ',
         chartXTitle:                  'Date',
         chartYTitle:                  'Daily Incidence',
-        chartLoading:                 'Loading'
+        chartLoading:                 'Loading',
+        chartDataNotAvailable:        'Chart data could not be loaded from canton service {CT}'
     }
 
 }

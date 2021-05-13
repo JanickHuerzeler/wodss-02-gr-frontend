@@ -35,11 +35,8 @@ class IncidenceHistory extends Component<
     loaded: false,
     selectedMunicipality: undefined,
     previousDateFrom: undefined,
-    currentWindowWidth: window.innerWidth
+    currentWindowWidth: window.innerWidth,
   };
-
-  //   public handleClick = (evt: any) => alert("click");
-  //   public handleHover = (evt: any) => alert("hover");
 
   /**
    * load the incidences for the current selected municipality
@@ -66,7 +63,14 @@ class IncidenceHistory extends Component<
         );
       },
       (error: Error) => {
-        console.log(error.message);
+        
+        console.error(error.message);
+
+        this.showToast(
+          this.props.intl.formatMessage({id: 'error'}), 
+          this.props.intl.formatMessage({id: 'chartDataNotAvailable'}).replaceAll('{CT}', this.props.selectedMunicipality!.canton!)
+        );
+
         this.setState(
           (state: IncidenceHistoryState, props: IncidenceHistoryProps) => ({
             loaded: true,
@@ -101,7 +105,7 @@ class IncidenceHistory extends Component<
           selectedMunicipality: this.props.selectedMunicipality,
           dateFrom: this.intervalOptions[0].date,
           data: [],
-          loaded: false
+          loaded: false,
         })
       );
     }
@@ -115,7 +119,7 @@ class IncidenceHistory extends Component<
           selectedMunicipality: this.props.selectedMunicipality,
           previousDateFrom: this.state.dateFrom,
           data: [],
-          loaded: false
+          loaded: false,
         })
       );
       this.loadData();
@@ -136,6 +140,15 @@ class IncidenceHistory extends Component<
         currentWindowWidth: window.innerWidth,
       })
     );
+  };
+
+  /**
+   * Show toast in parent component
+   * @param toastTitle {string}   - title to display
+   * @param toastMessage {string} - message to display
+   */
+  showToast(toastTitle: string, toastMessage: string) {
+    this.props.errorOccured(toastTitle, toastMessage);
   }
 
   /**
@@ -176,7 +189,12 @@ class IncidenceHistory extends Component<
         automargin: false,
       },
       autosize: true,
-      width: this.state.currentWindowWidth <= 768 ? window.innerWidth-150 : (window.innerWidth-400 > 768 ? 768 : window.innerWidth-400),
+      width:
+        this.state.currentWindowWidth <= 768
+          ? window.innerWidth - 150
+          : window.innerWidth - 400 > 768
+          ? 768
+          : window.innerWidth - 400,
       height: 200,
       yaxis: {
         title: this.props.intl.formatMessage({ id: "chartYTitle" }),
@@ -193,15 +211,19 @@ class IncidenceHistory extends Component<
       plot_bgcolor: "rgba(0,0,0,0.5)",
       bgcolor: "#4c5c96",
       bordercolor: "#4c5c96",
-      font: { size: 10, color: "#fff" }
+      font: { size: 10, color: "#fff" },
     };
     return (
       <div className='incidencePlotly'>
         <PlotlyChart
           data={data}
           layout={layout}
-          onRedraw={()=>this.setWindowWidth}
-          config={{displayModeBar: (this.state.currentWindowWidth >= 1000),responsive: true, modeBarButtonsToRemove: ['lasso2d','toggleSpikelines']}}
+          onRedraw={() => this.setWindowWidth}
+          config={{
+            displayModeBar: this.state.currentWindowWidth >= 1000,
+            responsive: true,
+            modeBarButtonsToRemove: ["lasso2d", "toggleSpikelines"],
+          }}
           // onClick={this.handleClick}
           // onHover={this.handleHover}
         />
@@ -219,16 +241,16 @@ class IncidenceHistory extends Component<
             );
           })}
         </select>
-        <div className="closeIncidencePlotlyWrapper">
-        <span
-          className='closeIncidencePlotly'
-          onClick={this.props.closeIncidenceChart}
-        >
-          X
-        </span>
+        <div className='closeIncidencePlotlyWrapper'>
+          <span
+            className='closeIncidencePlotly'
+            onClick={this.props.closeIncidenceChart}
+          >
+            X
+          </span>
         </div>
         <span className='loadingIncidences' hidden={this.state.loaded}>
-          {this.props.intl.formatMessage({id: "chartLoading"})}
+          {this.props.intl.formatMessage({ id: "chartLoading" })}
         </span>
       </div>
     );
@@ -240,9 +262,7 @@ class IncidenceHistory extends Component<
   public render() {
     return (
       <div>
-        {this.props.selectedMunicipality 
-          ? this.renderIncidences()
-          : null}
+        {this.props.selectedMunicipality ? this.renderIncidences() : null}
       </div>
     );
   }
