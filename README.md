@@ -6,9 +6,18 @@ Frontend für den Workshop in der Vertiefung "Distributed Software Systems" (WOD
 
 ## Prerequisites
 
-TODO
+Dieses Frontend Projekt (React) wurde mit [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) erstellt. 
 
-- Node 14
+Benötigte Prerequisiten:
+- [Node 14](https://nodejs.org/de/download/)
+- Backend
+  - [Lokal laufendes Backend](https://github.com/JanickHuerzeler/wodss-02-gr-backend#readme)
+    - Laufende Kantonsservices 
+- Google Maps JavaScript API
+  - [Valider API Key für Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/get-api-key)
+- Hinterlegte Konfigurationswerte in Env-Dateien (`.env.development` für lokale Entwicklung und `.env.production` für die Produktive Umgebung):
+  - `REACT_APP_GOOGLE_API_KEY`
+  - `REACT_APP_SERVER_URL`
 
 ## Setup
 
@@ -30,7 +39,20 @@ Beim Start über `npm start` wird die Konfigurationsdatei `.env.development` ang
 
 ## Tests
 
-TODO
+```ZSH/CMD
+cd corona-navigator
+npm run test
+```
+
+Für's Testing wird [Jest](https://jestjs.io/) verwendet. 
+`npm run test` führt dabei folgenden Script aus: 
+
+```ZSH/CMD
+react-scripts test --env=jsdom --silent --no-cache --setupFiles ./src/setupFiles.js
+```
+
+Da das Projekt mit `create-react-app` erstellt wurde, können nur [bestimmte Jest-Konfigurationen](https://create-react-app.dev/docs/running-tests/#configuration) vorgenommen werden, ohne die App (im Einwegverfahren!) zu `"ejecten"` ([siehe Doku](https://create-react-app.dev/docs/available-scripts/#npm-run-eject)). Damit der verwendete Google Maps API Namespace in den Tests verfügbar ist, wird mittels `./src/setupFiles.js` das Globale Google Objekt "gemockt". 
+
 
 ---
 
