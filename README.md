@@ -24,6 +24,8 @@ cd corona-navigator
 npm start
 ```
 
+Beim Start über `npm start` wird die Konfigurationsdatei `.env.development` angezogen.
+
 ---
 
 ## Tests
@@ -41,6 +43,31 @@ Mit folgendem Befehl werden die Model-Klassen und API-Aufrufe bei gestartetem Ba
 ```CMD/ZSH
 cd corona-navigator
 npm run openapigen
+```
+
+---
+
+## Konfigurationsdateien
+
+Im Hauptverzeichnis sind zwei Konfigurationsdateien vorhanden:
+
+- `.env.development`
+- `.env.production`
+
+In diesen Konfigurationsdateien können folgende Parameter eingestellt werden:
+
+```yaml
+# URL für den Backend-Service
+REACT_APP_SERVER_URL=
+# API Key für die Google Maps Schnittstelle
+REACT_APP_GOOGLE_API_KEY=
+# Latitude Koordinate welche beim Start als Zentrum geladen werden soll
+REACT_APP_DEFAULT_MAP_CENTER_LAT=
+# Longitude Koordinate welche beim Start als Zentrum geladen werden soll
+REACT_APP_DEFAULT_MAP_CENTER_LNG=
+# Anahnd dieser Angabe wird berechnet, in wie viele Requests ans Backend die Route aufgteilt werden soll.
+# Berechnung: Anzahl_Wayoints / (Route_Distanz_km / WAYPOINT_DISTANCER_CHUNKER)
+REACT_APP_WAYPOINT_DISTANCE_CHUNKER=
 ```
 
 ---
@@ -128,6 +155,8 @@ Das automatisierte Build und Deployment ist für das Frontend-Projekt mit Hilfe 
 Im Ordner `.github/workflows/` im Git Repo ist die Konfiguration der Actions in der Datei `deploy_to_server.yml`.
 Die Actions wird ausfeführt sobald ein Push oder Pull Request auf dem `master` Branch des Repos verarbeitet wird.
 In der Pipeline wird die React-App gebuildet und danach per SSH auf den Live Server verschoben.
+
+Beim Build über `npm run build` wird die Konfigurationsdatei `.env.production` angezogen.
 
 ```yaml
 name: Deploy to switch engine
