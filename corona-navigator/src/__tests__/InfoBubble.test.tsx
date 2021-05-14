@@ -21,11 +21,11 @@ describe("infobubble component renders correctly", () => {
         const currentDate = new Date();
         render(
           <IntlProvider locale='de-DE'>
-            <InfoBubble lat={""} lng={""} data={
+            <InfoBubble lat={"47.390434"} lng={"8.0457015"} data={
                 {
                   show:       true,
-                  lat:        "",
-                  lng:        "",
+                  lat:        "47.390434",
+                  lng:        "8.0457015",
                   name:       "Aarau",
                   zip:        5001,
                   incidence:  132.092,
