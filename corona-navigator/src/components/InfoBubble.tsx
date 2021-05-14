@@ -17,19 +17,19 @@ class InfoBubble extends Component<InfoBubbleProps & WrappedComponentProps, Info
             /* Show only if property show is true*/
             data.show &&
             <div className='infoBubble'>
-                <span className="infoBubble--municipality">
+                <span className="infoBubble--municipality" data-testid='municipality-zip-name'>
                     {data.zip} {data.name}
                 </span>
                 <span className="infoBubble--incidence">
                     {intl.formatMessage({id: 'incidence'})}:
-                    <span style={{float: 'right'}}>
+                    <span style={{float: 'right'}} data-testid='municipality-incidence'>
                         {/* If incidence not set, show a question mark */}
                         {(data.incidence || data.incidence === 0) ? data.incidence.toFixed(1) : '?'}
                     </span>
                 </span>
                 <span className="infoBubble--incidence">
                     {intl.formatMessage({id: 'incidenceDate'})}:
-                    <span style={{float: 'right'}}>
+                    <span style={{float: 'right'}} data-testid='municipality-date'>
                         {/* If incidence not set, show a question mark */}
                         {data.date ? moment(data.date).format("DD.MM.YYYY") : '?'}
                     </span>

@@ -37,7 +37,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom --silent --no-cache",
+    "test": "react-scripts test --env=jsdom --silent --no-cache --setupFiles ./src/setupFiles.js",
     "eject": "react-scripts eject",
     "openapigen": "npx openapi-generator-cli generate -g typescript-axios -o ./src/api -i http://localhost:5001/apispec_1.json --skip-validate-spec"
   },
