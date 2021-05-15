@@ -48,5 +48,38 @@ describe("infobubble component renders correctly", () => {
         expect(infobubbleDateElement).toBeInTheDocument();
         expect(infobubbleDateElement).toHaveTextContent(moment(currentDate).format("DD.MM.YYYY"));
       });
+
+
+      test("render info missing incidence", () => {
+        // given
+        render(
+          <IntlProvider locale='de-DE'>
+            <InfoBubble lat={"47.390434"} lng={"8.0457015"} data={
+                {
+                  show:       true,
+                  lat:        "47.390434",
+                  lng:        "8.0457015",
+                  name:       "Aarau",
+                  zip:        5001,
+                  incidence:  undefined,
+                  date:       undefined,
+                }
+            } />
+          </IntlProvider>
+        );
+      
+        // when
+        const infobubbleElement = screen.getByTestId("municipality-zip-name");
+        const infobubbleIncidenceElement = screen.getByTestId("municipality-incidence");
+        const infobubbleDateElement = screen.getByTestId("municipality-date");
+      
+        // then
+        expect(infobubbleElement).toBeInTheDocument();
+        expect(infobubbleElement).toHaveTextContent("5001 Aarau");
+        expect(infobubbleIncidenceElement).toBeInTheDocument();
+        expect(infobubbleIncidenceElement).toHaveTextContent("?");
+        expect(infobubbleDateElement).toBeInTheDocument();
+        expect(infobubbleDateElement).toHaveTextContent("?");
+      });
 });
 
