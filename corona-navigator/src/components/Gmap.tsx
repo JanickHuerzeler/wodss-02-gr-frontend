@@ -16,7 +16,7 @@ import { IncomingHttpHeaders } from "node:http2";
 const DefaultApiConfig              = new Configuration({basePath: process.env.REACT_APP_SERVER_URL});
 const API                           = new DefaultApi(DefaultApiConfig);
 const GOOGLE_API_KEY                = process.env.REACT_APP_GOOGLE_API_KEY!;
-const DEFAULT_MAP_CENTER            = { lat: Number.parseFloat(process.env.REACT_APP_DEFAULT_MAP_CENTER_LAT!), 
+const DEFAULT_MAP_CENTER            = { lat: Number.parseFloat(process.env.REACT_APP_DEFAULT_MAP_CENTER_LAT!),
                                         lng: Number.parseFloat(process.env.REACT_APP_DEFAULT_MAP_CENTER_LNG!) };
 const MAP_OPTIONS                   = () => { return {styles: [{stylers: [{'saturation': -99}, {'gamma': .8}, {'lightness': 5}]}]}};
 const POLY_OPTIONS                  = { strokeOpacity: .5,  fillOpacity: .3 };
@@ -87,7 +87,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             callback(response.data);
             if (response.headers && response.headers["x-cantons-timeout"]) {
               let cantons = response.headers["x-cantons-timeout"].toString().split(", ");
-              
+
               let distinctCantons = cantons.filter(
                 (v, i, a) => a.indexOf(v) === i
               );
@@ -102,8 +102,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                   ),
                 }));
                 this.showToast(
-                    this.props.intl.formatMessage({id: "error"}),
-                  this.props.intl.formatMessage({ id: "errorMessageTimeout" }).replaceAll('{CT}', distinctCantons.join(", "))                    
+                  this.props.intl.formatMessage({id: "error"}),
+                  this.props.intl.formatMessage({ id: "errorMessageTimeout" }).replaceAll('{CT}', distinctCantons.join(", "))
                 );
               }
             }
@@ -123,8 +123,8 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
     }
 
     /**
-     * Handles the request/response error type and shows 
-     * a toast containing the error message. 
+     * Handles the request/response error type and shows
+     * a toast containing the error message.
      * @param {Error} error - Error Object
      */
     handleApiError(error: any): void{
@@ -157,7 +157,6 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             // Something happened in setting up the request and triggered an Error
             errorMessage =  this.props.intl.formatMessage({ id: "errorMessageRequestError" }) +error.message;
         }
-        console.error(error);
         this.showToast(errorTitle, errorMessage);
     }
 
@@ -345,7 +344,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                                                 // mouseover listener to show info bubble
                                                 gPolygon.addListener("mouseover", () => {
                                                     gPolygon.setOptions(POLY_OPTIONS_HOVER);
-                                                    
+
                                                     this.setState({
                                                         infoBubble: {
                                                             show: true,
@@ -524,7 +523,7 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
             this.locationToBefore           = this.props.locationTo;
             this.locationStopOversBefore    = this.props.locationStopOvers;
             this.travelModeBefore           = this.props.travelMode;
-            
+
             // handle the map only if it's fully loaded
             this.state.mapLoaded && this.handleMap();
         }

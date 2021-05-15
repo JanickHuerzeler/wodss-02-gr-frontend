@@ -96,7 +96,6 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
      * @param {() => void} clearSuggestions - Callback to clear suggestions
      */
     handleError = (status: string, clearSuggestions: () => void) => {
-        console.error('Error from Google Maps API', status);
         this.setState({errorMessage: status}, () => {
             clearSuggestions();
         });
@@ -152,7 +151,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                                         })}
                                         onBlur={this.handleBlur}
                                     />
-                                    
+
                                     {/* Closebutton */}
                                     {this.state.address.length > 0 && (
                                         <button
@@ -160,7 +159,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                                             onClick={this.handleCloseClick}
                                         >x</button>
                                     )}
-                                    
+
                                 </div>
                                 {/* Show suggestions if there are any */}
                                 {suggestions.length > 0 && (
