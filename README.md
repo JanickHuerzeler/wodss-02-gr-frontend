@@ -4,7 +4,7 @@ Frontend für den Workshop in der Vertiefung "Distributed Software Systems" (WOD
 
 ---
 
-## Prerequisites
+## Voraussetzungen
 
 Dieses Frontend Projekt (React) wurde mit [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) erstellt. 
 
