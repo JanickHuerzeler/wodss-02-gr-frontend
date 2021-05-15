@@ -14,6 +14,7 @@ const DefaultApiConfig = new Configuration({
   basePath: process.env.REACT_APP_SERVER_URL,
 });
 const API = new DefaultApi(DefaultApiConfig);
+const TIME_FORMAT_API = "YYYY-MM-DD";
 
 /**
  * Render the incidence chart for the given municipality
@@ -47,8 +48,8 @@ class IncidenceHistory extends Component<
     API.cantonsCantonMunicipalitiesBfsNrIncidencesGet(
       this.props.selectedMunicipality!.canton!,
       this.props.selectedMunicipality!.bfs_nr!.toString(),
-      moment(this.state.dateFrom).format("YYYY-MM-DD"),
-      moment(this.state.dateTo).format("YYYY-MM-DD"),
+      moment(this.state.dateFrom).format(TIME_FORMAT_API),
+      moment(this.state.dateTo).format(TIME_FORMAT_API),
       this.props.selectedLocale
     ).then(
       (response: { data: IncidenceDTO[] }) => {
@@ -173,14 +174,13 @@ class IncidenceHistory extends Component<
     const data = [
       {
         type: "bar",
-        x: this.state.data.map((dt) => dt.timestamp),
+        x: this.state.data.map((dt) => dt.timestamp), 
         y: this.state.data.map((dt) => dt.value),
         marker: {
           color: chartConfig.CHART_BAR_MARKER_COLOR,
         },
       },
     ];
-
     // configure the chart layout
     const layout = {
       title: {
@@ -210,6 +210,8 @@ class IncidenceHistory extends Component<
           pad: chartConfig.CHART_XAXIS_PADDING,
         },
         automargin: false,
+        // https://plotly.com/javascript/hover-text-and-formatting/#rounding-x-and-y-hover-values
+        hoverformat: '%d.%m.%Y'
       },
       autosize: true,
       width:
@@ -267,7 +269,7 @@ class IncidenceHistory extends Component<
         >
           {this.intervalOptions.map((dt: IntervalOption) => {
             return (
-              <option value={moment(dt.date).format("YYYY-MM-DD")} key={dt.key}>
+              <option value={moment(dt.date).format(TIME_FORMAT_API)} key={dt.key}>
                 {this.props.intl.formatMessage({ id: dt.key })}
               </option>
             );
