@@ -144,7 +144,7 @@ class SearchBar extends React.Component<SearchBoxProps, SearchBoxState> {
                             <div className="SearchBar__search-bar-container">
                                 <div className="SearchBar__search-input-container">
                                     {/* Search input field */}
-                                    <input tabIndex={this.props.tabIndex}
+                                    <input tabIndex={this.props.tabIndex} data-testid="searchbarinput"
                                         ref={(input) => { this.inputFieldRef = input; }}
                                         {...getInputProps({
                                             placeholder: this.props.placeholder,
