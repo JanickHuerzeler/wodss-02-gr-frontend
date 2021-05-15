@@ -17,8 +17,10 @@ import { toast, ToastContainer } from "react-toastify";
  * Show the entire application with it's main component "SideBar" and "GoogleMaps".
  * It also acts as a data provider for the child components.
  *
- * SideBar    - Contains the search fields, travelmode selection, municipality-incident list and the language switcher.
- * GoogleMaps - Contains the Google Maps with all map related functions.
+ * SideBar          - Contains the search fields, travelmode selection, municipality-incident list and the language switcher.
+ * GoogleMaps       - Contains the Google Maps with all map related functions.
+ * IncidenceHistory - Contains the Plotly.js incidence chart for a selected municipality
+ * ToastContainer   - Represents the toast component for error messages
  */
 class App extends Component<AppProps, AppState> {
   private locales: { [key: string]: string } = {

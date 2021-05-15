@@ -1,6 +1,10 @@
 /**
  * Translation file for corona navigator.
  * Currently supported languages: de-DE, en-GB
+ * 
+ * Additional Remarks: 
+ * `{CT}` placeholder will be replaced with actual canton,
+ * if an error message contains an canton specification.
  */
 
 const messages = {
