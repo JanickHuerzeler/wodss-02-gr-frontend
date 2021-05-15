@@ -8,19 +8,23 @@ import SideBar from "../components/SideBar";
 import { cleanup, render, screen } from "@testing-library/react";
 import { IntlProvider } from "react-intl";
 
+// basic testing approach from https://jestjs.io/docs/tutorial-react#react-testing-library
 /**
- * https://stackoverflow.com/a/57013472
- * xdescribe = alias for skipping test suite
- * xtest = alias for skipping a specific test
+ * These tests doesn't work, therfore this test suite is skipped (xdescribe)
+ * Error Message:
+ * 
+ * Element type is invalid: expected a string (for built-in components)
+ * or a class/function (for composite components) but got: undefined.
+ * You likely forgot to export your component from the file it's defined in,
+ * or you might have mixed up default and named imports.
+ * Check the render method of `SideBar`.
  */
-
 xdescribe("sidebar renders correctly", () => {
-  // clean up renderer after each test
-  afterEach(() => {
-    cleanup();
-  });
+ 
+  // Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher
+  // unmount and cleanup DOM after the test is finished.
+  afterEach(cleanup);
 
-  
   test("render sidebar", () => {
     // given
     render(
@@ -45,6 +49,7 @@ xdescribe("sidebar renders correctly", () => {
                   bfs_nr: 3544,
                   canton: "GR",
                   incidence: 203,
+                  name: "Bergün Filisur",
                 },
               },
             ],
@@ -61,5 +66,44 @@ xdescribe("sidebar renders correctly", () => {
 
     // then
     expect(sidebarElement).toBeInTheDocument();
+  });
+
+  it("render route in sidebar", () => {
+    const { queryByText } = render(
+      <IntlProvider locale='de-DE'>
+        <SideBar
+          collapsed={false}
+          handleToggleSidebar={() => {}}
+          locales={{ Deutsch: "de-DE" }}
+          localeChanged={() => {}}
+          locationFromChanged={() => {}}
+          travelModeChanged={() => {}}
+          locationStopOversChanged={() => {}}
+          selectedMunicipalityChanged={() => {}}
+          routeInfos={{
+            distance: 35.8,
+            duration: 12.8,
+            incidence: 234.56,
+            municipalities: [
+              {
+                index: 0,
+                municipality: {
+                  bfs_nr: 3544,
+                  canton: "GR",
+                  incidence: 203,
+                  name: "Bergün Filisur",
+                },
+              },
+            ],
+          }}
+          locationToChanged={() => {}}
+          rtl={false}
+          toggled={false}
+        />
+      </IntlProvider>
+    );
+
+    expect(queryByText("Bergün Filisur")).toBeInTheDocument();
+    expect(queryByText("203.0")).toBeInTheDocument();
   });
 });
