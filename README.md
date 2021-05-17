@@ -175,7 +175,7 @@ sudo certbot run -a manual -i nginx -d corona-navigator.ch -d www.corona-navigat
 Das automatisierte Build und Deployment ist für das Frontend-Projekt mit Hilfe von 'Github Actions' realisiert. Github Actions sind mit CI/CD Pipelines wie sie Jenkins bieten zu vergleichen.
 
 Im Ordner `.github/workflows/` im Git Repo ist die Konfiguration der Actions in der Datei `deploy_to_server.yml`.
-Die Actions wird ausfeführt sobald ein Push oder Pull Request auf dem `master` Branch des Repos verarbeitet wird.
+Die Actions wird ausgeführt sobald ein Push oder Pull Request auf dem `master` Branch des Repos verarbeitet wird.
 In der Pipeline wird die React-App gebuildet und danach per SSH auf den Live Server verschoben.
 
 Beim Build über `npm run build` wird die Konfigurationsdatei `.env.production` angezogen.
