@@ -68,9 +68,6 @@
   "jest": {
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-      "/node_modules/(?!react-icons)/"
-    ]
+    }
   }
 }
