@@ -3,13 +3,6 @@
     bottom: 0;
 }
 
-// .closeIncidencePlotlyWrapper{
-//     width: 800px; 
-//     height: 1.75em;
-//     background-color: rgba(0,0,0,0.5);
-//     position: absolute;
-//     bottom: 200px;
-// }
 .closeIncidencePlotly {
     position: absolute;
     top: 0.125em;
@@ -52,16 +45,29 @@
     z-index: 999;
 }
 
-.incidencechart-interval-select{
-    background-color: #6475b1;
-    right: 1.75em !important;
-    // margin-left: 2.6em;
-    vertical-align: bottom;
-    width: 307px !important; // calc(20%);
-    position: absolute;
-    bottom: 148px;
-    color: #ffffff;
-    z-index: 999;
+@media only screen and (min-width: 769px) {
+    .incidencechart-interval-select{
+        background-color: #6475b1;
+        right: 1.75em !important;
+        vertical-align: bottom;
+        width: 307px !important;
+        position: absolute;
+        bottom: 148px;
+        color: #ffffff;
+        z-index: 999;
+    }
+}
+@media only screen and (max-width: 768px) {
+    .incidencechart-interval-select {
+        right: 1em !important;
+        width: calc(100% - 2em) !important;
+        background-color: #6475b1;
+        vertical-align: bottom;
+        position: absolute;
+        bottom: 148px;
+        color: #ffffff;
+        z-index: 999;
+    }
 }
 
 .modebar-container{

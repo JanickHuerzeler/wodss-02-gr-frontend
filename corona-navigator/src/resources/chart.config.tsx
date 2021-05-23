@@ -16,7 +16,7 @@ const chartConfig = {
     CHART_FONT_TITLE_SIZE_LARGE:    20,
     CHART_WINDOW_OFFSET_SMALL:      150,
     CHART_WINDOW_OFFSET_LARGE:      400,
-    CHART_MARGIN_LEFT:              20,
+    CHART_MARGIN_LEFT:              60,
     CHART_MARGIN_RIGHT:             20,
     CHART_MARGIN_BOTTOM:            60, 
     CHART_MARGIN_TOP:               60,
