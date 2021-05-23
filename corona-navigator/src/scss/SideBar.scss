@@ -14,12 +14,14 @@ $orange: #EB8B6E;
 $blue: #4c5c96;
 $light-blue: #6475b1;
 
+$sidebar-elements-padding-right: 27px;
+
 .pro-sidebar-layout {
   overflow: visible !important;
 }
 
 .sidebar-header {
-  padding: 24px 24px;
+  padding: 10px $sidebar-elements-padding-right 10px 24px;
   text-transform: uppercase;
   font-weight: bold;
   font-size: 12pt;
@@ -144,7 +146,7 @@ $light-blue: #6475b1;
 }
 
 .travelMode {
-  padding: 0 35px 0 20px;
+  padding: 0 $sidebar-elements-padding-right 0 20px;
 
   .btn-group {
     width: 100%;
@@ -159,10 +161,10 @@ $light-blue: #6475b1;
     svg {
       pointer-events: none;
     }
-
-    :first-child {
-      border-left: 0;
-    }
+    
+  }
+  button:first-child {
+    border-left: 1px solid #6475b1;
   }
 }
 
@@ -297,4 +299,18 @@ $scrollbar-width: 12px;
 
 .routeInfosLowLights {
   color: #dddddd !important;
+}
+
+.sidebar-disclaimer{ 
+  font-size: 11px;
+  margin: 0em $sidebar-elements-padding-right 0.5em 20px;
+  border: 1px solid #7480ad;
+  padding: 0.5em;
+  border-radius: 4px;
+  background-color: #3e4d84;
+  color: #ddd !important;
+ }
+
+ .pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item {
+  padding: 0 $sidebar-elements-padding-right 8px 20px !important;
 }

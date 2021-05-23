@@ -194,6 +194,9 @@ class SideBar extends Component<
             />
             {intl.formatMessage({ id: "sideBarTitle" })}
           </div>
+          <div className="sidebar-disclaimer">
+            {intl.formatMessage({id: 'incidenceDisclaimer'})}
+          </div>
         </SidebarHeader>
 
         {/* Content with searchfields, stopovers, and route municipalities list */}

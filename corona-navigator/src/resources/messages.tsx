@@ -46,7 +46,8 @@ const messages = {
         chartXTitle:                  'Datum',
         chartYTitle:                  'Tagesinzidenz',
         chartLoading:                 'Laden',
-        chartDataNotAvailable:        'Grafikdaten konnten vom Kantonsservice {CT} nicht geladen werden'
+        chartDataNotAvailable:        'Grafikdaten konnten vom Kantonsservice {CT} nicht geladen werden',
+        incidenceDisclaimer:          'Die gezeigten Zahlen entsprechen den 14-Tage-Inzidenzwerten pro 100\'000 Einwohner.'
     },
     'en-GB': {
         area: 'Area',
@@ -86,7 +87,8 @@ const messages = {
         chartXTitle:                  'Date',
         chartYTitle:                  'Daily Incidence',
         chartLoading:                 'Loading',
-        chartDataNotAvailable:        'Chart data could not be loaded from canton service {CT}'
+        chartDataNotAvailable:        'Chart data could not be loaded from canton service {CT}',
+        incidenceDisclaimer:          'The numbers shown correspond to 14-day incidence values per 100,000 population.'
     }
 
 }
