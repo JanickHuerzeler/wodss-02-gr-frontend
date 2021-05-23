@@ -163,7 +163,7 @@ $sidebar-elements-padding-right: 27px;
     }
     
   }
-  button:first-child {
+  button:first-child:not(:hover) {
     border-left: 1px solid #6475b1;
   }
 }

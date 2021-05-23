@@ -399,17 +399,27 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
                         });
                     });
                 } else {
-                    console.error(`error fetching directions ${result}`);
+
+                    console.error(`Error while fetching directions ${status}: `, result);
+                    
+                    this.resetChartDrawings();
+
+                    this.showToast(
+                        this.props.intl.formatMessage({
+                            id: "googleApiError",
+                        }),
+                        this.props.intl.formatMessage({
+                            // status should be type of type google.maps.places.PlacesServiceStatus
+                            id: "googleApiError_" + status ?? 'UNKNOWN_ERROR',
+                        })
+                    );    
                 }
             });
         } else {
             // set a marker if locationFrom or locationTo empty yet
 
             // remove route, marker and polygons
-            this.props.routeChanged({distance: 0, duration: 0, incidence: null, municipalities: []});
-            removeRoute(this.directionsRenderer);
-            removeMarker(this.locationMarker);
-            removePolygons(this.mapPolygons);
+            this.resetChartDrawings();
 
             // set the marker at the desired location
             const pos = this.props.locationFrom || this.props.locationTo;
@@ -428,6 +438,18 @@ class GoogleMaps extends Component<GmapProps & WrappedComponentProps, GmapState>
 
     };
 
+    /**
+     * Removes the route, marker and polygons from the map
+     */
+    resetChartDrawings(){
+        // remove route, marker and polygons
+        this.props.routeChanged({distance: 0, duration: 0, incidence: null, municipalities: []});
+        removeRoute(this.directionsRenderer);
+        removeMarker(this.locationMarker);
+        removePolygons(this.mapPolygons);
+
+    }
+    
     /**
      * Add a waypoint to the waypoint-array from route.
      * @param {(lat: number; lng: number;)[]} waypoints        - Waypoint-array from route
