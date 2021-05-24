@@ -458,7 +458,7 @@ class SideBar extends Component<
 
           {/* Impressum */}
           <a
-            href='https://corona-navigator.ch'
+            href={process.env.REACT_APP_PROJECT_URL}
             target='_blank'
             className='team-link'
             rel='noopener noreferrer'
