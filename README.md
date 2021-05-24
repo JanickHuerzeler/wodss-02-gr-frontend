@@ -90,6 +90,8 @@ REACT_APP_DEFAULT_MAP_CENTER_LNG=
 # Anahnd dieser Angabe wird berechnet, in wie viele Requests ans Backend die Route aufgteilt werden soll.
 # Berechnung: Anzahl_Wayoints / (Route_Distanz_km / WAYPOINT_DISTANCER_CHUNKER)
 REACT_APP_WAYPOINT_DISTANCE_CHUNKER=
+# GitHub URL des Projekts
+REACT_APP_PROJECT_URL=
 ```
 
 ---
@@ -245,7 +247,7 @@ jobs:
           echo "========Tschüssli========"
 ```
 ## Verwendete Libraries
-|Bibliothek / Package|Link|
+|Library|Link|
 |---|---|
 |react-icons: <br>- Font Awesome<br>-  Heroicons<br>- IcoMoon Free|[react-icons](https://github.com/react-icons/react-icons)
 |react-toastify|[react-tostify](https://github.com/fkhadra/react-toastify)|
