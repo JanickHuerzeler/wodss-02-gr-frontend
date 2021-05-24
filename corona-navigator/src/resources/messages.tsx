@@ -20,7 +20,7 @@ const messages = {
         municipality:                       'Gemeinde',
         municipalities:                     'Gemeinden',
         population:                         'Bevölkerung',
-        sideBarTitle:                       'Corona Wegweiser',
+        sideBarTitle:                       'Corona Navigator',
         sideBarFooter:                      'Corona Navigator, Gruppe 02 Kt. Graubünden',
         stopover:                           'Zwischenhalt',
         addStopOver:                        'Zwischenhalt hinzufügen',
