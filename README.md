@@ -244,3 +244,10 @@ jobs:
           echo "Build and deployment run successfuly"
           echo "========Tschüssli========"
 ```
+## Verwendete Libraries
+|Bibliothek / Package|Link|
+|---|---|
+|react-icons: <br>- Font Awesome<br>-  Heroicons<br>- IcoMoon Free|[react-icons](https://github.com/react-icons/react-icons)
+|react-toastify|[react-tostify](https://github.com/fkhadra/react-toastify)|
+|react-pro-sidebar|[react-pro-sidebar](https://github.com/azouaoui-med/react-pro-sidebar)|
+|plotly-react-ts|[plotly-react-ts](https://github.com/davidctj/react-plotlyjs-ts)|
