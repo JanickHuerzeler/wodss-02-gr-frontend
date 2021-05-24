@@ -389,7 +389,7 @@ class SideBar extends Component<
                     ({this.props.routeInfos.municipalities.length})
                   </div>
                   <div className='waypoints-header'>
-                    <span>{intl.formatMessage({ id: "ddincidenced14" })}</span>
+                    <span>{intl.formatMessage({ id: "incidence" })}</span>
                     <span>{intl.formatMessage({ id: "municipality" })}</span>
                   </div>
                 </span>
